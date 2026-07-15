@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventario — DAVFOOR LEGEND (Admin)</title>
+<style>
+  :root{
+    --bg:#0a0a0a; --panel:#151515; --panel2:#1d1d1d; --line:#282828;
+    --green:#3fe167; --amber:#e8a33d; --red:#ff6b6b; --txt:#ffffff; --muted:#9aa0a6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.4}
+  .wrap{max-width:560px;margin:0 auto;padding-bottom:90px}
+  img{display:block}
+  input,select,button{font-family:inherit}
+
+  header{position:sticky;top:0;z-index:30;background:rgba(10,10,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+     display:flex;align-items:center;gap:12px;padding:12px 16px}
+  header img{height:30px}
+  header .badge{margin-left:auto;background:rgba(63,225,103,.14);color:var(--green);font-size:11px;font-weight:800;
+     padding:5px 10px;border-radius:20px;border:1px solid rgba(63,225,103,.35);text-transform:uppercase;letter-spacing:.5px}
+  .subtitle{padding:14px 16px 4px;color:var(--muted);font-size:12.5px}
+  .subtitle b{color:#fff}
+
+  /* STATS (clickeables = filtro por estado) */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;padding:12px 16px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:12px 8px;text-align:center;cursor:pointer;transition:.12s}
+  .stat.active{border-color:var(--green);box-shadow:0 0 0 2px rgba(63,225,103,.25)}
+  .stat .n{font-size:20px;font-weight:900}
+  .stat .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+  .stat.ok .n{color:var(--green)} .stat.low .n{color:var(--amber)} .stat.out .n{color:var(--red)}
+
+  /* TOOLBAR */
+  .toolbar{padding:6px 16px 0}
+  .search{width:100%;background:#0e0e0e;border:1px solid var(--line);border-radius:11px;padding:12px 14px;color:#fff;font-size:14px;margin-bottom:12px}
+  .search:focus{outline:none;border-color:var(--green)}
+  .flabel{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:800;margin:2px 2px 7px}
+  .fchips{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none}
+  .fchips::-webkit-scrollbar{display:none}
+  .fchip{flex:0 0 auto;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:8px 14px;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer}
+  .fchip.active{background:var(--green);color:#04240f;border-color:var(--green)}
+
+  /* CARD PRODUCTO */
+  .list{padding:4px 16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:13px;margin-bottom:12px}
+  .card.out{border-color:rgba(255,107,107,.4)}
+  .chead{display:flex;gap:11px;align-items:center}
+  .pic{width:48px;height:48px;border-radius:10px;background:radial-gradient(120% 120% at 50% 20%,#262626,#111);flex:0 0 auto;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .pic svg{width:80%;height:80%}
+  .pic img{width:100%;height:100%;object-fit:cover}
+  .chead .nm{flex:1;min-width:0}
+  .chead .nm .t{font-weight:800;font-size:14px}
+  .chead .nm .s{font-size:11px;color:var(--muted);margin-top:1px}
+  .catbadge{display:inline-block;font-size:9px;font-weight:800;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px;margin-right:5px;vertical-align:middle}
+  .catbadge.club{background:rgba(63,225,103,.14);color:var(--green)}
+  .catbadge.seleccion{background:rgba(108,171,221,.18);color:#8fc5ef}
+  .catbadge.accesorio{background:rgba(232,163,61,.16);color:#e8a33d}
+  .status{font-size:10px;font-weight:800;padding:4px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+  .status.ok{background:rgba(63,225,103,.15);color:var(--green)}
+  .status.low{background:rgba(232,163,61,.15);color:var(--amber)}
+  .status.out{background:rgba(255,107,107,.15);color:var(--red)}
+
+  .prow{display:flex;align-items:center;gap:8px;margin:12px 0 4px}
+  .prow label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+  .price-in{width:120px;background:#0e0e0e;border:1px solid var(--line);border-radius:9px;padding:8px 10px;color:var(--green);font-weight:800;font-size:14px}
+  .price-in:focus{outline:none;border-color:var(--green)}
+
+  .sizes{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .sz{background:#0e0e0e;border:1px solid var(--line);border-radius:10px;padding:6px 6px 6px 10px;display:flex;align-items:center;gap:7px}
+  .sz .szl{font-weight:800;font-size:12px;min-width:22px}
+  .sz.zero{border-color:rgba(255,107,107,.35)}
+  .sz.zero .szl{color:var(--red)}
+  .stp{display:flex;align-items:center;gap:6px}
+  .stp button{width:24px;height:24px;border-radius:7px;border:1px solid var(--line);background:#1c1c1c;color:#fff;font-weight:800;font-size:14px;cursor:pointer;line-height:1}
+  .stp button:active{transform:scale(.92)}
+  .stp .q{min-width:20px;text-align:center;font-weight:800;font-size:13px}
+
+  .cfoot{display:flex;align-items:center;gap:12px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line)}
+  .toggle-wrap{display:flex;align-items:center;gap:9px;cursor:pointer}
+  .toggle{position:relative;width:44px;height:25px;background:#333;border-radius:20px;transition:.2s;flex:0 0 auto}
+  .toggle:after{content:"";position:absolute;top:3px;left:3px;width:19px;height:19px;background:#fff;border-radius:50%;transition:.2s}
+  .toggle.on{background:var(--green)}
+  .toggle.on:after{left:22px}
+  .toggle-wrap .tl{font-size:12.5px;font-weight:700}
+  .del{margin-left:auto;background:none;border:none;color:var(--red);font-size:12px;font-weight:700;cursor:pointer;padding:6px}
+  .total-stock{font-size:11.5px;color:var(--muted)}
+  .total-stock b{color:#fff}
+
+  .fab{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:35;max-width:560px;width:calc(100% - 32px);display:flex;gap:10px}
+  .btn{flex:1;border:none;border-radius:14px;padding:15px;font-weight:900;font-size:14px;cursor:pointer;text-transform:uppercase;letter-spacing:.4px}
+  .btn.add{background:var(--panel2);color:#fff;border:1px solid var(--line)}
+  .btn.save{background:var(--green);color:#04240f}
+  .btn:active{transform:scale(.98)}
+
+  .modal{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.7);display:none;align-items:flex-end;justify-content:center}
+  .modal.open{display:flex}
+  .msheet{max-width:560px;width:100%;background:#111;border-radius:20px 20px 0 0;padding:20px 18px 26px;max-height:94vh;overflow-y:auto}
+  .msheet h3{font-size:17px;margin-bottom:16px}
+  .field{margin-bottom:13px}
+  .field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px;font-weight:700}
+  .field input,.field select{width:100%;background:#0e0e0e;border:1px solid var(--line);border-radius:11px;padding:12px;color:#fff;font-size:14px}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--green)}
+  .mrow{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .mactions{display:flex;gap:10px;margin-top:8px}
+  .mactions .btn{border-radius:12px}
+  .btn.ghost{background:none;border:1px solid var(--line);color:#fff}
+
+  /* Carga de foto */
+  .photo-box{display:flex;gap:12px;align-items:center}
+  .photo-prev{width:66px;height:66px;border-radius:12px;border:1px dashed var(--line);background:#0e0e0e;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:0 0 auto;font-size:22px}
+  .photo-prev img{width:100%;height:100%;object-fit:cover}
+  .photo-btn{background:#0e0e0e;border:1px solid var(--line);border-radius:10px;padding:11px 14px;color:#fff;font-size:13px;font-weight:700;cursor:pointer}
+  .photo-hint{font-size:11px;color:var(--muted);margin-top:5px}
+
+  .note{margin:4px 16px 20px;background:rgba(232,163,61,.08);border:1px solid rgba(232,163,61,.3);border-radius:12px;padding:13px 14px;font-size:12px;color:#e9c88a;line-height:1.55}
+  .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);z-index:70;background:#fff;color:#111;font-weight:800;font-size:13px;padding:12px 18px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.25s}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="assets/img/logo-white.png" alt="DAVFOOR">
+    <span class="badge">● Panel Admin</span>
+  </header>
+
+  <div class="subtitle">Inventario privado — solo <b>ustedes</b> ven esta pantalla. Aquí controlan el stock que se muestra en la tienda.</div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="toolbar">
+    <input class="search" id="search" placeholder="🔎 Buscar por equipo (ej: nacional, madrid)..." oninput="render()">
+
+    <div class="flabel">Categoría</div>
+    <div class="fchips" id="fcat">
+      <div class="fchip active" data-f="todos" onclick="setCat(this)">Todos</div>
+      <div class="fchip" data-f="club" onclick="setCat(this)">⚽ Clubes</div>
+      <div class="fchip" data-f="seleccion" onclick="setCat(this)">🏳️ Selecciones</div>
+      <div class="fchip" data-f="accesorio" onclick="setCat(this)">🧢 Accesorios</div>
+    </div>
+
+    <div class="flabel">Tipo</div>
+    <div class="fchips" id="ftipo">
+      <div class="fchip active" data-f="todas" onclick="setTipo(this)">Todas</div>
+      <div class="fchip" data-f="actual" onclick="setTipo(this)">Actuales</div>
+      <div class="fchip" data-f="retro" onclick="setTipo(this)">Retro</div>
+    </div>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <div class="note">
+    💡 <b>Cómo funciona:</b> cuando bajas el stock de una talla a <b>0</b>, en la tienda esa talla aparece como no disponible. Si un producto queda en <b>0 en todas las tallas</b> o lo pones en <b>“Agotado”</b>, se muestra agotado a los clientes. Toca las tarjetas de arriba (En stock, Stock bajo, Agotados) para filtrar por estado.
+  </div>
+</div>
+
+<div class="fab">
+  <button class="btn add" onclick="openAdd()">+ Agregar</button>
+  <button class="btn save" onclick="guardar()">💾 Guardar</button>
+</div>
+
+<!-- MODAL AGREGAR -->
+<div class="modal" id="modal">
+  <div class="msheet">
+    <h3>Agregar producto</h3>
+
+    <div class="mrow">
+      <div class="field"><label>Categoría</label>
+        <select id="a_cat" onchange="fillTeams()"><option value="club">⚽ Club</option><option value="seleccion">🏳️ Selección</option><option value="accesorio">🧢 Accesorio</option></select>
+      </div>
+      <div class="field" id="tipoWrap"><label>Tipo</label>
+        <select id="a_tipo" onchange="addTipoChanged()"><option value="actual">Actual</option><option value="retro">Retro</option></select>
+      </div>
+    </div>
+
+    <div class="field"><label id="a_team_label">Equipo</label>
+      <select id="a_team" onchange="teamChanged()"></select>
+    </div>
+    <div class="field" id="otroWrap" style="display:none"><label>Nombre del equipo</label><input id="a_otro" placeholder="Escribe el nombre"></div>
+
+    <div class="mrow">
+      <div class="field"><label>Precio</label><input id="a_precio" inputmode="numeric" placeholder="110000"></div>
+      <div class="field"><label>Stock por talla</label><input id="a_stock" inputmode="numeric" value="5"></div>
+    </div>
+
+    <div class="field"><label>Temporada / descripción</label><input id="a_season" placeholder="Ej: Local 2024/25"></div>
+
+    <div class="field">
+      <label>Foto de la camiseta (opcional)</label>
+      <div class="photo-box">
+        <div class="photo-prev" id="a_prev">📷</div>
+        <div>
+          <button type="button" class="photo-btn" onclick="document.getElementById('a_file').click()">Subir foto</button>
+          <input type="file" id="a_file" accept="image/*" style="display:none" onchange="loadPhoto(this)">
+          <div class="photo-hint">Si no subes foto, se usa un dibujo por defecto.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mactions">
+      <button class="btn ghost" onclick="closeAdd()">Cancelar</button>
+      <button class="btn save" onclick="addProduct()">Agregar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const fmt = n => '$'+Number(n).toLocaleString('es-CO');
+  const SIZES = {actual:['S','M','L','XL','2XL'], retro:['S','M','L','XL'], accesorio:['U']};
+  const PRECIO_ACC = {Botilito:50000, Gorra:30000};
+  const LOW = 3;
+  const norm = s => (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); // sin tildes
+
+  // Catálogo de equipos para la lista
+  const CATALOGO = {
+    club:[
+      {name:'Real Madrid', c1:'#ffffff', c2:'#00529f'},
+      {name:'FC Barcelona', c1:'#a50044', c2:'#004d98'},
+      {name:'Bayern Munich', c1:'#dc052d', c2:'#ffffff'},
+      {name:'Manchester City', c1:'#6cabdd', c2:'#ffffff'},
+      {name:'Millonarios', c1:'#004ba0', c2:'#ffffff'},
+      {name:'Atlético Nacional', c1:'#00843d', c2:'#ffffff'},
+      {name:'River Plate', c1:'#ffffff', c2:'#c8102e'},
+      {name:'Boca Juniors', c1:'#0a3d91', c2:'#ffd100'},
+    ],
+    seleccion:[
+      {name:'Colombia', c1:'#FCD116', c2:'#003893'},
+      {name:'Argentina', c1:'#75AADB', c2:'#ffffff'},
+      {name:'España', c1:'#C60B1E', c2:'#FFC400'},
+      {name:'Inglaterra', c1:'#ffffff', c2:'#0a3d91'},
+      {name:'Alemania', c1:'#ffffff', c2:'#111111'},
+    ]
+  };
+
+  let productos = [
+    {id:1, categoria:'club', team:'Real Madrid', tipo:'actual', season:'Local 2024/25', precio:110000, activo:true, foto:null, c1:'#ffffff', c2:'#00529f', stock:{S:4,M:6,L:5,XL:3,'2XL':2}},
+    {id:2, categoria:'club', team:'FC Barcelona', tipo:'actual', season:'Local 2024/25', precio:110000, activo:true, foto:null, c1:'#a50044', c2:'#004d98', stock:{S:1,M:2,L:0,XL:0,'2XL':0}},
+    {id:3, categoria:'club', team:'Bayern Munich', tipo:'actual', season:'Local 2024/25', precio:110000, activo:true, foto:null, c1:'#dc052d', c2:'#ffffff', stock:{S:5,M:5,L:6,XL:4,'2XL':3}},
+    {id:4, categoria:'club', team:'Atlético Nacional', tipo:'actual', season:'Local 2024', precio:110000, activo:false, foto:null, c1:'#00843d', c2:'#ffffff', stock:{S:0,M:0,L:0,XL:0,'2XL':0}},
+    {id:5, categoria:'club', team:'Boca Juniors', tipo:'retro', season:'Retro 1981', precio:130000, activo:true, foto:null, c1:'#0a3d91', c2:'#ffd100', stock:{S:2,M:1,L:0,XL:0}},
+    {id:6, categoria:'seleccion', team:'Colombia', tipo:'actual', season:'Selección 2024', precio:110000, activo:true, foto:null, c1:'#FCD116', c2:'#003893', stock:{S:8,M:9,L:7,XL:5,'2XL':4}},
+    {id:7, categoria:'accesorio', team:'Botilito', tipo:'accesorio', season:'Diseño estándar · nombre opcional +$15.000', precio:50000, activo:true, foto:null, c1:'#1d1d1d', c2:'#3fe167', stock:{U:15}},
+    {id:8, categoria:'accesorio', team:'Gorra', tipo:'accesorio', season:'Bordada · escudo o palabra del jugador', precio:30000, activo:true, foto:null, c1:'#1d1d1d', c2:'#3fe167', stock:{U:10}},
+  ];
+  let nextId = 9, fCat='todos', fTipo='todas', fEstado='todos', newFoto=null;
+
+  function jersey(c1,c2){return `<svg viewBox="0 0 120 120"><path d="M42 14 L16 26 L8 48 L26 57 L34 50 L34 106 L86 106 L86 50 L94 57 L112 48 L104 26 L78 14 C74 25 66 30 60 30 C54 30 46 25 42 14 Z" fill="${c1}" stroke="#00000030" stroke-width="1.5"/><path d="M42 14 C46 25 54 30 60 30 C66 30 74 25 78 14 L72 11 C68 20 52 20 48 11 Z" fill="${c2}"/></svg>`;}
+
+  const totalStock = p => Object.values(p.stock).reduce((a,b)=>a+b,0);
+  function estado(p){
+    if(!p.activo) return 'out';
+    const t = totalStock(p);
+    if(t===0) return 'out';
+    if(t<=LOW) return 'low';
+    return 'ok';
+  }
+  const estadoTxt = {ok:'En stock', low:'Stock bajo', out:'Agotado'};
+
+  function renderStats(){
+    const tot = productos.length;
+    const ok = productos.filter(p=>estado(p)==='ok').length;
+    const low = productos.filter(p=>estado(p)==='low').length;
+    const out = productos.filter(p=>estado(p)==='out').length;
+    const A = e => fEstado===e ? 'active' : '';
+    document.getElementById('stats').innerHTML = `
+      <div class="stat ${A('todos')}" onclick="setEstado('todos')"><div class="n">${tot}</div><div class="l">Productos</div></div>
+      <div class="stat ok ${A('ok')}" onclick="setEstado('ok')"><div class="n">${ok}</div><div class="l">En stock</div></div>
+      <div class="stat low ${A('low')}" onclick="setEstado('low')"><div class="n">${low}</div><div class="l">Stock bajo</div></div>
+      <div class="stat out ${A('out')}" onclick="setEstado('out')"><div class="n">${out}</div><div class="l">Agotados</div></div>`;
+  }
+
+  function render(){
+    renderStats();
+    const q = norm(document.getElementById('search').value.trim());
+    let list = productos.filter(p=>{
+      if(q && !norm(p.team).includes(q)) return false;
+      if(fCat!=='todos' && p.categoria!==fCat) return false;
+      if(fTipo!=='todas' && p.tipo!==fTipo) return false;
+      if(fEstado!=='todos' && estado(p)!==fEstado) return false;
+      return true;
+    });
+    const el = document.getElementById('list');
+    if(!list.length){el.innerHTML='<div style="text-align:center;color:var(--muted);padding:30px;font-size:13px">No hay productos con ese filtro.</div>';return;}
+    el.innerHTML = list.map(p=>{
+      const st = estado(p);
+      const pic = p.foto ? `<img src="${p.foto}" alt="">` : (p.categoria==='accesorio' ? `<div style="font-size:26px">${p.team.toLowerCase().includes('gorra')?'🧢':'🥤'}</div>` : jersey(p.c1,p.c2));
+      const sizes = SIZES[p.tipo].map(s=>{
+        const q = p.stock[s] ?? 0;
+        return `<div class="sz ${q===0?'zero':''}">
+          <span class="szl">${s==='U'?'Uds':s}</span>
+          <div class="stp">
+            <button onclick="chStock(${p.id},'${s}',-1)">−</button>
+            <span class="q">${q}</span>
+            <button onclick="chStock(${p.id},'${s}',1)">+</button>
+          </div></div>`;
+      }).join('');
+      return `<div class="card ${st==='out'?'out':''}">
+        <div class="chead">
+          <div class="pic">${pic}</div>
+          <div class="nm">
+            <div class="t">${p.team}</div>
+            <div class="s"><span class="catbadge ${p.categoria}">${p.categoria==='club'?'Club':(p.categoria==='seleccion'?'Selección':'Accesorio')}</span>${p.season}${p.tipo==='accesorio'?'':' · '+(p.tipo==='retro'?'Retro':'Actual')}</div>
+          </div>
+          <span class="status ${st}">${estadoTxt[st]}</span>
+        </div>
+        <div class="prow">
+          <label>Precio:</label>
+          <input class="price-in" value="${p.precio}" inputmode="numeric" onchange="chPrecio(${p.id},this.value)">
+          <span class="total-stock" style="margin-left:auto">Stock total: <b>${totalStock(p)}</b></span>
+        </div>
+        <div class="sizes">${sizes}</div>
+        <div class="cfoot">
+          <div class="toggle-wrap" onclick="toggleActivo(${p.id})">
+            <div class="toggle ${p.activo?'on':''}"></div>
+            <span class="tl">${p.activo?'Disponible':'Agotado (manual)'}</span>
+          </div>
+          <button class="del" onclick="delProduct(${p.id})">🗑 Eliminar</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function chStock(id,size,d){const p=productos.find(x=>x.id===id);p.stock[size]=Math.max(0,(p.stock[size]||0)+d);render();}
+  function chPrecio(id,val){const p=productos.find(x=>x.id===id);p.precio=parseInt(String(val).replace(/[^0-9]/g,''))||0;render();}
+  function toggleActivo(id){const p=productos.find(x=>x.id===id);p.activo=!p.activo;render();}
+  function delProduct(id){if(!confirm('¿Eliminar este producto del inventario?'))return;productos=productos.filter(x=>x.id!==id);render();}
+
+  function setCat(el){document.querySelectorAll('#fcat .fchip').forEach(c=>c.classList.remove('active'));el.classList.add('active');fCat=el.dataset.f;render();}
+  function setTipo(el){document.querySelectorAll('#ftipo .fchip').forEach(c=>c.classList.remove('active'));el.classList.add('active');fTipo=el.dataset.f;render();}
+  function setEstado(e){fEstado = (fEstado===e?'todos':e);render();}
+
+  // ---- AGREGAR ----
+  function fillTeams(){
+    const cat=document.getElementById('a_cat').value;
+    const sel=document.getElementById('a_team');
+    const tipoWrap=document.getElementById('tipoWrap');
+    const lbl=document.getElementById('a_team_label');
+    if(cat==='accesorio'){
+      tipoWrap.style.display='none';
+      lbl.textContent='Producto';
+      sel.innerHTML = ['Botilito','Gorra'].map(t=>`<option value="${t}">${t}</option>`).join('');
+      document.getElementById('otroWrap').style.display='none';
+    } else {
+      tipoWrap.style.display='block';
+      lbl.textContent='Equipo';
+      sel.innerHTML = CATALOGO[cat].map(t=>`<option value="${t.name}">${t.name}</option>`).join('') + '<option value="__otro">➕ Otro (escribir)...</option>';
+    }
+    teamChanged();
+  }
+  function teamChanged(){
+    const cat=document.getElementById('a_cat').value;
+    const v=document.getElementById('a_team').value;
+    document.getElementById('otroWrap').style.display = (cat!=='accesorio' && v==='__otro') ? 'block':'none';
+    if(cat==='accesorio'){ document.getElementById('a_precio').placeholder = String(PRECIO_ACC[v]||50000); }
+  }
+  function addTipoChanged(){document.getElementById('a_precio').placeholder = document.getElementById('a_tipo').value==='retro'?'130000':'110000';}
+  function loadPhoto(input){
+    const f=input.files[0]; if(!f) return;
+    const r=new FileReader();
+    r.onload=e=>{ newFoto=e.target.result; document.getElementById('a_prev').innerHTML=`<img src="${newFoto}" alt="">`; };
+    r.readAsDataURL(f);
+  }
+  function openAdd(){newFoto=null;document.getElementById('a_prev').innerHTML='📷';document.getElementById('a_file').value='';document.getElementById('a_cat').value='club';fillTeams();addTipoChanged();document.getElementById('modal').classList.add('open');}
+  function closeAdd(){document.getElementById('modal').classList.remove('open');}
+  function addProduct(){
+    const cat=document.getElementById('a_cat').value;
+    let tipo=document.getElementById('a_tipo').value;
+    let team=document.getElementById('a_team').value;
+    let colors={c1:'#1d1d1d',c2:'#3fe167'};
+    if(cat==='accesorio'){
+      tipo='accesorio';   // team ya es 'Botilito' o 'Gorra'
+    } else if(team==='__otro'){
+      team=document.getElementById('a_otro').value.trim();
+      if(!team){alert('Escribe el nombre del equipo');return;}
+    } else {
+      const found=CATALOGO[cat].find(t=>t.name===team); if(found) colors={c1:found.c1,c2:found.c2};
+    }
+    const precioFallback = cat==='accesorio' ? (PRECIO_ACC[team]||50000) : (tipo==='retro'?130000:110000);
+    const precio=parseInt(document.getElementById('a_precio').value.replace(/[^0-9]/g,''))||precioFallback;
+    const season=document.getElementById('a_season').value.trim()||(cat==='accesorio'?'Diseño estándar':(tipo==='retro'?'Retro':'Actual'));
+    const init=Math.max(0,parseInt(document.getElementById('a_stock').value)||0);
+    const stock={}; SIZES[tipo].forEach(s=>stock[s]=init);
+    productos.unshift({id:nextId++, categoria:cat, team, tipo, season, precio, activo:true, foto:newFoto, c1:colors.c1, c2:colors.c2, stock});
+    closeAdd();
+    document.getElementById('a_otro').value=''; document.getElementById('a_season').value='';
+    render(); showToast('✅ Producto agregado');
+  }
+
+  function guardar(){ showToast('💾 Cambios guardados (demo)'); }
+  function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),2200);}
+
+  render();
+</script>
+</body>
+</html>

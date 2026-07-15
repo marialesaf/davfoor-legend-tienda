@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camiseta Real Madrid 2024/25 — DAVFOOR LEGEND</title>
+<style>
+  :root{
+    --bg:#0a0a0a; --panel:#151515; --panel2:#1d1d1d; --line:#282828;
+    --green:#3fe167; --green-d:#25a544; --txt:#ffffff; --muted:#9aa0a6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.45;overflow-x:hidden}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:480px;margin:0 auto;position:relative;min-height:100vh;background:var(--bg);box-shadow:0 0 40px rgba(0,0,0,.6);padding-bottom:110px}
+
+  header{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 14px;background:rgba(10,10,10,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .icon-btn{background:none;border:none;color:var(--txt);cursor:pointer;padding:6px;display:flex}
+  .icon-btn svg{width:25px;height:25px}
+  .logo-top{height:30px}
+  .cart-wrap{position:relative}
+  .cart-count{position:absolute;top:-2px;right:-4px;background:var(--green);color:#000;font-size:10px;font-weight:800;
+    min-width:16px;height:16px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+  .demo-flag{background:#e8a33d;color:#2a1900;text-align:center;font-size:11px;font-weight:800;padding:7px;letter-spacing:.4px}
+  .crumbs{padding:12px 16px 4px;color:var(--muted);font-size:12px}
+  .crumbs a{color:var(--green)}
+
+  /* GALERÍA */
+  .gallery{padding:6px 16px 0}
+  .main-img{position:relative;aspect-ratio:1/1;border-radius:18px;overflow:hidden;
+     background:radial-gradient(120% 120% at 50% 15%, #262626, #101010);display:flex;align-items:center;justify-content:center}
+  .main-img svg{width:80%;height:80%;filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))}
+  .main-img .tag{position:absolute;top:12px;left:12px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:5px 10px;border-radius:20px;background:var(--green);color:#04240f}
+  .thumbs{display:flex;gap:10px;margin-top:12px}
+  .thumb{flex:1;aspect-ratio:1/1;border-radius:12px;border:2px solid var(--line);background:#161616;
+     display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden}
+  .thumb svg{width:72%;height:72%}
+  .thumb.active{border-color:var(--green)}
+
+  /* INFO */
+  .pinfo{padding:20px 16px 6px}
+  .pinfo .club{font-size:12px;color:var(--green);font-weight:800;text-transform:uppercase;letter-spacing:1px}
+  .pinfo h1{font-size:22px;font-weight:900;margin:4px 0 2px;line-height:1.1}
+  .pinfo .season{color:var(--muted);font-size:13px}
+  .price-row{display:flex;align-items:baseline;gap:10px;margin-top:12px}
+  .price-row .price{font-size:26px;font-weight:900;color:var(--green)}
+  .stock-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:5px 11px;border-radius:20px;
+     background:rgba(63,225,103,.14);color:var(--green);border:1px solid rgba(63,225,103,.4)}
+  .stock-pill .d{width:8px;height:8px;border-radius:50%;background:var(--green)}
+
+  section.block{padding:20px 16px;border-top:1px solid var(--line);margin-top:16px}
+  .block h2{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px;display:flex;align-items:center;gap:9px}
+  .block h2 .bar{width:20px;height:3px;background:var(--green);border-radius:3px}
+
+  /* TALLAS */
+  .sizes{display:flex;gap:9px;flex-wrap:wrap}
+  .size{min-width:52px;text-align:center;padding:12px 4px;border:2px solid var(--line);border-radius:12px;font-weight:800;
+     cursor:pointer;background:var(--panel);transition:.12s}
+  .size:active{transform:scale(.96)}
+  .size.active{border-color:var(--green);background:rgba(63,225,103,.12);color:var(--green)}
+  .size-note{font-size:12px;color:var(--muted);margin-top:11px}
+  .size-warn{color:#ff8080;font-size:12.5px;font-weight:700;margin-top:10px;display:none}
+
+  /* PERSONALIZACIÓN */
+  .perso{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+  .perso .switch-row{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}
+  .perso .switch-row .t{font-weight:800;font-size:14px}
+  .perso .switch-row .s{font-size:12px;color:var(--muted)}
+  .perso .plus{color:var(--green);font-weight:800;font-size:13px;white-space:nowrap}
+  .toggle{position:relative;width:48px;height:27px;background:#333;border-radius:20px;transition:.2s;flex:0 0 auto}
+  .toggle:after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;background:#fff;border-radius:50%;transition:.2s}
+  .toggle.on{background:var(--green)}
+  .toggle.on:after{left:24px}
+  .perso-fields{margin-top:16px;display:none;gap:12px;grid-template-columns:1fr 78px}
+  .perso-fields.show{display:grid}
+  .field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px;font-weight:700}
+  .field input{width:100%;background:#0e0e0e;border:1px solid var(--line);border-radius:10px;padding:12px;color:#fff;font-size:15px;font-weight:700;text-transform:uppercase}
+  .field input:focus{outline:none;border-color:var(--green)}
+
+  /* HISTORIA */
+  .history{color:#cfcfcf;font-size:13.5px;line-height:1.65}
+  .history p{margin-bottom:11px}
+  .history .src{font-size:11px;color:var(--muted);margin-top:4px}
+  .history .src a{color:var(--green)}
+
+  /* ENVÍO */
+  .ship{display:flex;gap:12px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .ship .i{font-size:22px}
+  .ship p{font-size:12.5px;color:var(--muted)}
+  .ship b{color:#fff}
+
+  /* BARRA COMPRA FIJA */
+  .buybar{position:fixed;bottom:0;left:0;right:0;z-index:44;max-width:480px;margin:0 auto;
+     background:rgba(14,14,14,.97);backdrop-filter:blur(10px);border-top:1px solid var(--line);
+     padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:12px}
+  .buybar .tot{flex:0 0 auto}
+  .buybar .tot small{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .buybar .tot b{font-size:19px;color:#fff}
+  .btn-buy{flex:1;background:var(--green);color:#04240f;font-weight:900;border:none;border-radius:14px;padding:15px;
+     font-size:15px;cursor:pointer;text-transform:uppercase;letter-spacing:.5px}
+  .btn-buy:active{transform:scale(.98)}
+
+  /* WHATSAPP */
+  .wa{position:fixed;bottom:88px;right:16px;z-index:45;width:54px;height:54px;border-radius:50%;
+     background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(37,211,102,.5);cursor:pointer}
+  .wa svg{width:30px;height:30px;fill:#fff}
+
+  .toast{position:fixed;bottom:150px;left:50%;transform:translateX(-50%) translateY(20px);z-index:60;
+     background:#fff;color:#111;font-weight:800;font-size:13px;padding:12px 18px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.4);
+     opacity:0;pointer-events:none;transition:.25s;max-width:90%;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  
+
+  <header>
+    <button class="icon-btn" aria-label="Volver" onclick="location.href='index.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <img class="logo-top" src="assets/img/logo-white.png" alt="DAVFOOR LEGEND">
+    <div class="cart-wrap">
+      <button class="icon-btn" aria-label="Carrito" onclick="location.href='carrito.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2.5 3h2l2.2 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21.5 7H6"/></svg>
+      </button>
+      <span class="cart-count" id="cartCount">0</span>
+    </div>
+  </header>
+
+  <div class="crumbs"><a href="#">Inicio</a> › <a href="#">Clubes</a> › Real Madrid</div>
+
+  <!-- GALERÍA -->
+  <div class="gallery">
+    <div class="main-img">
+      <span class="tag">Actual</span>
+      <div id="mainView"></div>
+    </div>
+    <div class="thumbs" id="thumbs"></div>
+  </div>
+
+  <!-- INFO -->
+  <div class="pinfo">
+    <div class="club">Real Madrid CF</div>
+    <h1>Camiseta Local 2024/25</h1>
+    <div class="season">Versión hincha · 100% original en detalle y calidad</div>
+    <div class="price-row">
+      <span class="price" id="basePrice">$110.000</span>
+      <span class="stock-pill"><span class="d"></span> En stock</span>
+    </div>
+  </div>
+
+  <!-- TALLAS -->
+  <section class="block">
+    <h2><span class="bar"></span>Elige tu talla</h2>
+    <div class="sizes" id="sizes"></div>
+    <div class="size-note">Camisetas <b>actuales</b>: tallas S a 2XL &nbsp;·&nbsp; <b>retro</b>: S a XL.</div>
+    <div class="size-warn" id="sizeWarn">⚠️ Selecciona una talla para continuar.</div>
+  </section>
+
+  <!-- PERSONALIZACIÓN -->
+  <section class="block">
+    <h2><span class="bar"></span>Personaliza tu camiseta</h2>
+    <div class="perso">
+      <div class="switch-row" onclick="togglePerso()">
+        <div>
+          <div class="t">Agregar nombre y dorsal</div>
+          <div class="s">Estampa el nombre y número que quieras</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="plus">+$15.000</span>
+          <div class="toggle" id="persoToggle"></div>
+        </div>
+      </div>
+      <div class="perso-fields" id="persoFields">
+        <div class="field">
+          <label>Nombre / apellido</label>
+          <input id="inName" maxlength="12" placeholder="BELLINGHAM" oninput="updatePreview()">
+        </div>
+        <div class="field">
+          <label>Dorsal</label>
+          <input id="inNum" maxlength="2" inputmode="numeric" placeholder="5" oninput="cleanNum();updatePreview()">
+        </div>
+      </div>
+    </div>
+    <div class="size-note" id="persoHint" style="display:none">👀 Mira cómo queda en la foto de la espalda arriba.</div>
+  </section>
+
+  <!-- HISTORIA -->
+  <section class="block">
+    <h2><span class="bar"></span>Historia de la camiseta</h2>
+    <div class="history">
+      <p>El <b>Real Madrid</b> fue fundado el <b>6 de marzo de 1902</b>, y desde sus inicios eligió el color blanco para su uniforme como homenaje al <b>Corinthian FC</b>, un elegante equipo inglés muy admirado a finales del siglo XIX por su forma deportiva y señorial de jugar.</p>
+      <p>En los primeros estatutos de 1902 el uniforme era una <b>blusa blanca, pantalón azul oscuro y medias oscuras</b>. Con el tiempo el club se fue vistiendo completamente de blanco: hacia <b>1905</b> ya lucía la camiseta totalmente blanca, y en <b>1955</b> el conjunto pasó a ser blanco de arriba abajo, dando origen al mítico apodo de "los merengues".</p>
+      <p>El blanco del Madrid marcó tanto al fútbol mundial que equipos como el <b>Leeds United</b> cambiaron sus colores al blanco inspirados en el club tras su dominio europeo. Así nació una de las camisetas más reconocidas del planeta.</p>
+      <p class="src">Fuente: <a href="https://es.wikipedia.org/wiki/Historia_del_uniforme_del_Real_Madrid_Club_de_F%C3%BAtbol" target="_blank">Wikipedia</a> · <a href="https://www.futbolemotion.com/es/blogs/de-bota-negra/por-que-la-camiseta-del-real-madrid-es-blanca" target="_blank">Fútbol Emotion</a></p>
+    </div>
+  </section>
+
+  <!-- ENVÍO -->
+  <section class="block">
+    <div class="ship">
+      <div class="i">🚚</div>
+      <div><p><b>Envío a todo el país: $18.000.</b> ¡Gratis en compras superiores a $300.000! Empaque seguro y seguimiento de tu pedido.</p></div>
+    </div>
+  </section>
+
+</div>
+
+<!-- WHATSAPP -->
+<a class="wa" href="https://wa.me/57XXXXXXXXXX?text=Hola%20DAVFOOR,%20quiero%20la%20camiseta%20del%20Real%20Madrid" target="_blank" aria-label="WhatsApp">
+  <svg viewBox="0 0 32 32"><path d="M16 .5C7.4.5.5 7.4.5 16c0 2.8.8 5.5 2.1 7.9L.4 31.6l7.9-2.1C10.6 30.7 13.2 31.5 16 31.5 24.6 31.5 31.5 24.6 31.5 16S24.6.5 16 .5zm0 28c-2.5 0-4.9-.7-7-1.9l-.5-.3-4.7 1.2 1.2-4.6-.3-.5C3.4 20.3 2.7 18.2 2.7 16 2.7 8.6 8.6 2.7 16 2.7S29.3 8.6 29.3 16 23.4 28.5 16 28.5zm7.4-9.4c-.4-.2-2.4-1.2-2.7-1.3-.4-.1-.6-.2-.9.2s-1 1.3-1.3 1.6c-.2.2-.5.3-.9.1-.4-.2-1.7-.6-3.3-2-1.2-1.1-2-2.4-2.3-2.8-.2-.4 0-.6.2-.8.2-.2.4-.5.6-.7.2-.2.2-.4.4-.6.1-.3 0-.5 0-.7-.1-.2-.9-2.2-1.3-3-.3-.8-.7-.7-.9-.7h-.8c-.3 0-.7.1-1 .5-.4.4-1.4 1.3-1.4 3.2s1.4 3.7 1.6 4c.2.3 2.8 4.3 6.8 6 .9.4 1.7.6 2.2.8.9.3 1.8.3 2.4.2.7-.1 2.4-1 2.7-1.9.3-.9.3-1.7.2-1.9-.1-.2-.3-.3-.7-.5z"/></svg>
+</a>
+
+<!-- BARRA DE COMPRA -->
+<div class="buybar">
+  <div class="tot"><small>Total</small><b id="total">$110.000</b></div>
+  <button class="btn-buy" onclick="addToCart()">Agregar al carrito 🛒</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ---- CONFIG DEL PRODUCTO ----
+  const TIPO = 'actual';                 // 'actual' o 'retro'
+  const PRECIO_BASE = TIPO==='retro' ? 130000 : 110000;
+  const COSTO_PERSO = 15000;
+  const TALLAS = TIPO==='retro' ? ['S','M','L','XL'] : ['S','M','L','XL','2XL'];
+  const C1='#ffffff', C2='#00529f';      // colores camiseta Real Madrid
+  const fmt = n => '$'+n.toLocaleString('es-CO');
+
+  let talla=null, perso=false;
+
+  // ---- SVG CAMISETA (frente y espalda) ----
+  function jerseyFront(){
+    return `<svg viewBox="0 0 120 120">
+      <path d="M42 14 L16 26 L8 48 L26 57 L34 50 L34 106 L86 106 L86 50 L94 57 L112 48 L104 26 L78 14 C74 25 66 30 60 30 C54 30 46 25 42 14 Z" fill="${C1}" stroke="#00000030" stroke-width="1.5"/>
+      <path d="M42 14 C46 25 54 30 60 30 C66 30 74 25 78 14 L72 11 C68 20 52 20 48 11 Z" fill="${C2}"/>
+      <circle cx="76" cy="46" r="7" fill="${C2}" opacity=".85"/>
+    </svg>`;
+  }
+  function jerseyBack(){
+    const nm = (document.getElementById('inName')?.value || '').toUpperCase();
+    const nu = (document.getElementById('inNum')?.value || '');
+    const showName = perso && nm ? nm : '';
+    const showNum  = perso && nu ? nu : (perso ? '' : '');
+    return `<svg viewBox="0 0 120 120">
+      <path d="M42 14 L16 26 L8 48 L26 57 L34 50 L34 106 L86 106 L86 50 L94 57 L112 48 L104 26 L78 14 C74 22 66 26 60 26 C54 26 46 22 42 14 Z" fill="${C1}" stroke="#00000030" stroke-width="1.5"/>
+      <path d="M44 15 C48 22 54 25 60 25 C66 25 72 22 76 15 L60 20 Z" fill="${C2}"/>
+      <text x="60" y="46" font-family="Arial" font-weight="800" font-size="9" letter-spacing="1" fill="${C2}" text-anchor="middle">${showName}</text>
+      <text x="60" y="88" font-family="Arial Black,Arial" font-weight="900" font-size="40" fill="${C2}" text-anchor="middle">${showNum}</text>
+    </svg>`;
+  }
+  function jerseyCrest(){
+    return `<svg viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="34" fill="${C1}" stroke="${C2}" stroke-width="3"/>
+      <text x="60" y="70" font-family="Arial" font-weight="900" font-size="26" fill="${C2}" text-anchor="middle">RM</text>
+    </svg>`;
+  }
+
+  const views = [
+    {id:'front', label:'Frente', svg:jerseyFront},
+    {id:'back',  label:'Espalda', svg:jerseyBack},
+    {id:'crest', label:'Escudo', svg:jerseyCrest},
+  ];
+  let currentView='front';
+
+  function renderGallery(){
+    document.getElementById('mainView').innerHTML = views.find(v=>v.id===currentView).svg();
+    document.getElementById('thumbs').innerHTML = views.map(v=>
+      `<div class="thumb ${v.id===currentView?'active':''}" onclick="setView('${v.id}')">${v.svg()}</div>`).join('');
+  }
+  function setView(id){currentView=id;renderGallery();}
+
+  // ---- TALLAS ----
+  function renderSizes(){
+    document.getElementById('sizes').innerHTML = TALLAS.map(t=>
+      `<div class="size" onclick="setSize('${t}',this)">${t}</div>`).join('');
+  }
+  function setSize(t,el){
+    talla=t;
+    document.querySelectorAll('.size').forEach(s=>s.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('sizeWarn').style.display='none';
+  }
+
+  // ---- PERSONALIZACIÓN ----
+  function togglePerso(){
+    perso=!perso;
+    document.getElementById('persoToggle').classList.toggle('on',perso);
+    document.getElementById('persoFields').classList.toggle('show',perso);
+    document.getElementById('persoHint').style.display = perso?'block':'none';
+    if(perso) currentView='back';
+    renderGallery(); updateTotal();
+  }
+  function cleanNum(){const i=document.getElementById('inNum');i.value=i.value.replace(/[^0-9]/g,'');}
+  function updatePreview(){ if(currentView!=='back'){currentView='back';} renderGallery(); }
+
+  // ---- PRECIO ----
+  function updateTotal(){
+    const total = PRECIO_BASE + (perso?COSTO_PERSO:0);
+    document.getElementById('total').textContent = fmt(total);
+    document.getElementById('basePrice').textContent = fmt(PRECIO_BASE);
+  }
+
+  // ---- CARRITO (demo) ----
+  let cart=0;
+  function addToCart(){
+    if(!talla){document.getElementById('sizeWarn').style.display='block';window.scrollTo({top:document.querySelector('.sizes').offsetTop-120,behavior:'smooth'});return;}
+    if(perso && !document.getElementById('inNum').value){showToast('Escribe el número (dorsal) para personalizar 🙂');return;}
+    cart++;
+    document.getElementById('cartCount').textContent=cart;
+    const extra = perso ? ` · ${document.getElementById('inName').value||'—'} #${document.getElementById('inNum').value}` : '';
+    showToast(`✅ Agregado: Real Madrid · Talla ${talla}${extra}`);
+  }
+  function showToast(msg){
+    const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+    clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),2600);
+  }
+
+  // init
+  renderGallery(); renderSizes(); updateTotal();
+</script>
+</body>
+</html>

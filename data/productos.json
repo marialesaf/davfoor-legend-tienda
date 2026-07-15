@@ -1,0 +1,20 @@
+{
+  "_nota": "Catálogo de ejemplo. En la tienda real este archivo lo reemplaza una base de datos que se controla desde el panel admin.html.",
+  "precios": { "actual": 110000, "retro": 130000, "personalizacion": 15000, "botilito": 50000, "botilito_nombre": 15000, "gorra": 30000 },
+  "envio": { "costo": 18000, "gratis_desde": 300000 },
+  "pagos": { "contra_entrega_anticipo": 30000, "addi_recargo_porcentaje": 10 },
+  "productos": [
+    { "id": 1, "categoria": "club", "equipo": "Real Madrid", "tipo": "actual", "temporada": "Local 2024/25", "precio": 110000, "stock": { "S": 4, "M": 6, "L": 5, "XL": 3, "2XL": 2 } },
+    { "id": 2, "categoria": "club", "equipo": "FC Barcelona", "tipo": "actual", "temporada": "Local 2024/25", "precio": 110000, "stock": { "S": 1, "M": 2, "L": 0, "XL": 0, "2XL": 0 } },
+    { "id": 3, "categoria": "club", "equipo": "Bayern Munich", "tipo": "actual", "temporada": "Local 2024/25", "precio": 110000, "stock": { "S": 5, "M": 5, "L": 6, "XL": 4, "2XL": 3 } },
+    { "id": 4, "categoria": "club", "equipo": "Manchester City", "tipo": "actual", "temporada": "Local 2024/25", "precio": 110000, "stock": { "S": 3, "M": 4, "L": 4, "XL": 2, "2XL": 1 } },
+    { "id": 5, "categoria": "club", "equipo": "Millonarios", "tipo": "actual", "temporada": "Local 2024", "precio": 110000, "stock": { "S": 6, "M": 6, "L": 5, "XL": 3, "2XL": 2 } },
+    { "id": 6, "categoria": "club", "equipo": "Atletico Nacional", "tipo": "actual", "temporada": "Local 2024", "precio": 110000, "stock": { "S": 0, "M": 0, "L": 0, "XL": 0, "2XL": 0 } },
+    { "id": 7, "categoria": "club", "equipo": "River Plate", "tipo": "retro", "temporada": "Retro 1996", "precio": 130000, "stock": { "S": 3, "M": 2, "L": 2, "XL": 1 } },
+    { "id": 8, "categoria": "club", "equipo": "Boca Juniors", "tipo": "retro", "temporada": "Retro 1981", "precio": 130000, "stock": { "S": 2, "M": 1, "L": 0, "XL": 0 } },
+    { "id": 9, "categoria": "seleccion", "equipo": "Colombia", "tipo": "actual", "temporada": "Seleccion 2024", "precio": 110000, "stock": { "S": 8, "M": 9, "L": 7, "XL": 5, "2XL": 4 } },
+    { "id": 10, "categoria": "seleccion", "equipo": "Argentina", "tipo": "actual", "temporada": "Seleccion 2024", "precio": 110000, "stock": { "S": 5, "M": 6, "L": 5, "XL": 3, "2XL": 2 } },
+    { "id": 11, "categoria": "accesorio", "producto": "Botilito", "temporada": "Diseno estandar club/seleccion/jugador. Nombre opcional +15000", "precio": 50000, "stock": { "U": 15 } },
+    { "id": 12, "categoria": "accesorio", "producto": "Gorra", "temporada": "Bordada con escudo o palabra del jugador", "precio": 30000, "stock": { "U": 10 } }
+  ]
+}
