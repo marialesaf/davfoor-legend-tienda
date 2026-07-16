@@ -21,6 +21,10 @@
   .icon-btn{background:none;border:none;color:var(--txt);cursor:pointer;padding:6px;display:flex}
   .icon-btn svg{width:26px;height:26px}
   .logo-top{height:34px}
+  .topnav{display:none;gap:4px}
+  .topnav a{padding:9px 13px;border-radius:10px;font-weight:700;font-size:14px;color:var(--muted)}
+  .topnav a:hover{color:#fff;background:var(--panel)}
+  .topnav a.active{color:var(--green)}
   .cart-wrap{position:relative}
   .cart-count{position:absolute;top:-2px;right:-4px;background:var(--green);color:#000;font-size:10px;font-weight:800;
     min-width:16px;height:16px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
@@ -133,11 +137,17 @@
   @media(min-width:760px){
     .wrap{max-width:1080px;box-shadow:none}
     header{padding:16px 40px}
+    .icon-btn.menu{display:none}
+    .topnav{display:flex}
     .logo-top{height:40px}
     .hero{padding:64px 48px 56px}
     .hero h1{font-size:58px}
     .hero p{font-size:17px;max-width:460px}
     section{padding:34px 40px}
+    .chip{width:96px}
+    .chip .badge{width:78px;height:78px;font-size:22px}
+    .flag{font-size:40px}
+    .chip span{font-size:13px}
     .grid{grid-template-columns:repeat(4,1fr);gap:20px}
     .card .team{font-size:14px}.card .season{font-size:12px}.card .price{font-size:16px}
     .extra{gap:20px}
@@ -153,10 +163,17 @@
 
   <!-- ===== HEADER ===== -->
   <header>
-    <button class="icon-btn" onclick="openMenu()" aria-label="Menú">
+    <button class="icon-btn menu" onclick="openMenu()" aria-label="Menú">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <img class="logo-top" src="assets/img/logo-white.png" alt="DAVFOOR LEGEND">
+    <nav class="topnav">
+      <a href="index.html" class="active">Inicio</a>
+      <a href="catalogo.html?cat=club">Clubes</a>
+      <a href="catalogo.html?cat=seleccion">Selecciones</a>
+      <a href="catalogo.html?cat=botilito">Botilitos</a>
+      <a href="catalogo.html?cat=gorra">Gorras</a>
+    </nav>
     <div class="cart-wrap">
       <button class="icon-btn" aria-label="Carrito" onclick="location.href='carrito.html'">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2.5 3h2l2.2 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21.5 7H6"/></svg>
@@ -175,14 +192,11 @@
       </button>
     </div>
     <nav>
-      <a href="#" onclick="verTodo();return false;"><span class="dot">●</span> Inicio</a>
-      <a href="#" onclick="verCategoria('club');return false;"><span class="dot">●</span> Clubes</a>
-      <a href="#" onclick="verCategoria('seleccion');return false;"><span class="dot">●</span> Selecciones</a>
-      <a href="#"><span class="dot">●</span> Botilitos personalizados</a>
-      <a href="#"><span class="dot">●</span> Gorras bordadas</a>
-      <a href="#"><span class="dot">●</span> Personalización nombre + dorsal</a>
-      <a href="#"><span class="dot">●</span> Cómo comprar</a>
-      <a href="#"><span class="dot">●</span> Contacto / WhatsApp</a>
+      <a href="index.html"><span class="dot">●</span> Inicio</a>
+      <a href="catalogo.html?cat=club"><span class="dot">●</span> Clubes</a>
+      <a href="catalogo.html?cat=seleccion"><span class="dot">●</span> Selecciones</a>
+      <a href="catalogo.html?cat=botilito"><span class="dot">●</span> Botilitos</a>
+      <a href="catalogo.html?cat=gorra"><span class="dot">●</span> Gorras</a>
     </nav>
     <div class="mini">Envío gratis en compras sobre $300.000<br>© DAVFOOR LEGEND</div>
   </aside>
@@ -337,7 +351,7 @@
         <div class="imgbox">
           <span class="tag ${p.tipo}">${p.tipo}</span>
           <span class="stock ${sc}">${st}</span>
-          ${jerseySVG(p.c1,p.c2,p.num)}
+          ${p.foto ? `<img src="${p.foto}" alt="${p.team}" style="width:100%;height:100%;object-fit:cover">` : jerseySVG(p.c1,p.c2,p.num)}
         </div>
         <div class="info">
           <div class="team">${p.team}</div>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo — DAVFOOR LEGEND</title>
+<style>
+  :root{--bg:#0a0a0a;--panel:#151515;--panel2:#1d1d1d;--line:#282828;--green:#3fe167;--txt:#fff;--muted:#9aa0a6}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.4;overflow-x:hidden}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:480px;margin:0 auto;position:relative;min-height:100vh;background:var(--bg);box-shadow:0 0 40px rgba(0,0,0,.6);padding-bottom:60px}
+
+  header{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 16px;background:rgba(10,10,10,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .icon-btn{background:none;border:none;color:var(--txt);cursor:pointer;padding:6px;display:flex}
+  .icon-btn svg{width:26px;height:26px}
+  .logo-top{height:34px}
+  .cart-wrap{position:relative}
+  .cart-count{position:absolute;top:-2px;right:-4px;background:var(--green);color:#000;font-size:10px;font-weight:800;min-width:16px;height:16px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+  .topnav{display:none;gap:6px}
+  .topnav a{padding:9px 14px;border-radius:10px;font-weight:700;font-size:14px;color:var(--muted)}
+  .topnav a:hover{color:#fff;background:var(--panel)}
+  .topnav a.active{color:var(--green)}
+
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:.25s;z-index:50}
+  .overlay.open{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;left:0;height:100%;width:78%;max-width:330px;background:#111;z-index:60;transform:translateX(-100%);transition:.28s ease;padding:0 0 30px;overflow-y:auto}
+  .drawer.open{transform:translateX(0)}
+  .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:18px;border-bottom:1px solid var(--line)}
+  .drawer-head img{height:30px}
+  .drawer nav a{display:flex;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid #1c1c1c;font-size:15px;font-weight:600}
+  .drawer nav a .dot{color:var(--green)}
+
+  .head-sec{padding:26px 18px 6px}
+  .head-sec .crumb{color:var(--muted);font-size:12px;margin-bottom:6px}
+  .head-sec h1{font-size:26px;font-weight:900;text-transform:uppercase;letter-spacing:-.5px}
+  .head-sec h1 .g{color:var(--green)}
+  .head-sec p{color:var(--muted);font-size:13px;margin-top:6px}
+
+  section{padding:14px 16px}
+  .lbl{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:6px 2px 12px;font-weight:800}
+
+  /* CÍRCULOS DE EQUIPOS */
+  .teams{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 8px}
+  .tm{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer}
+  .tm .badge{width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;border:2px solid var(--line);background:var(--panel2);transition:.15s;overflow:hidden}
+  .tm.active .badge{border-color:var(--green);box-shadow:0 0 0 3px rgba(63,225,103,.25)}
+  .tm span{font-size:11px;color:var(--muted);text-align:center;line-height:1.15;font-weight:600}
+  .tm.active span{color:#fff}
+  .flag{font-size:32px}
+  .crest{font-size:15px;font-weight:900}
+
+  /* TABS */
+  .tabs{display:flex;gap:8px;background:var(--panel);padding:5px;border-radius:14px;margin:6px 0 16px}
+  .tab{flex:1;text-align:center;padding:11px;border-radius:10px;font-weight:700;font-size:13px;color:var(--muted);cursor:pointer;border:none;background:none;text-transform:uppercase;letter-spacing:.5px}
+  .tab.active{background:var(--green);color:#04240f}
+
+  /* GRID PRODUCTOS */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;position:relative;cursor:pointer;transition:.15s}
+  .card:active{transform:scale(.98)}
+  .card .imgbox{position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 20%,#232323,#121212)}
+  .card svg.jersey{width:78%;height:78%;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5))}
+  .card .acc-emoji{font-size:60px}
+  .tag{position:absolute;top:9px;left:9px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:4px 8px;border-radius:20px}
+  .tag.actual{background:var(--green);color:#04240f}
+  .tag.retro{background:#e8a33d;color:#2a1900}
+  .tag.acc{background:#8fc5ef;color:#06263b}
+  .card .info{padding:10px 11px 13px}
+  .card .team{font-size:12.5px;font-weight:800;line-height:1.15}
+  .card .season{font-size:10.5px;color:var(--muted);margin:2px 0 7px}
+  .card .price{font-size:14px;font-weight:900;color:var(--green)}
+  .card .price small{color:var(--muted);font-weight:600;font-size:10px}
+  .empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:34px 10px;font-size:13px}
+
+  .wa{position:fixed;bottom:18px;right:18px;z-index:45;width:58px;height:58px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(37,211,102,.5);cursor:pointer}
+  .wa svg{width:32px;height:32px;fill:#fff}
+
+  /* ---------- PC / ESCRITORIO ---------- */
+  @media(min-width:760px){
+    .wrap{max-width:1080px;box-shadow:none}
+    header{padding:14px 40px}
+    .icon-btn.menu{display:none}
+    .topnav{display:flex}
+    .logo-top{height:40px}
+    .head-sec{padding:36px 40px 6px}
+    .head-sec h1{font-size:40px}
+    section{padding:18px 40px}
+    .teams{grid-template-columns:repeat(8,1fr);gap:22px 10px}
+    .tm .badge{width:88px;height:88px}
+    .flag{font-size:46px}.crest{font-size:20px}
+    .tm span{font-size:13px}
+    .tabs{max-width:420px}
+    .grid{grid-template-columns:repeat(4,1fr);gap:20px}
+  }
+  @media(min-width:1120px){ .grid{grid-template-columns:repeat(5,1fr)} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <button class="icon-btn menu" onclick="openMenu()" aria-label="Menú">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <img class="logo-top" src="assets/img/logo-white.png" alt="DAVFOOR LEGEND">
+    <nav class="topnav">
+      <a href="index.html">Inicio</a>
+      <a href="catalogo.html?cat=club" data-nav="club">Clubes</a>
+      <a href="catalogo.html?cat=seleccion" data-nav="seleccion">Selecciones</a>
+      <a href="catalogo.html?cat=botilito" data-nav="botilito">Botilitos</a>
+      <a href="catalogo.html?cat=gorra" data-nav="gorra">Gorras</a>
+    </nav>
+    <div class="cart-wrap">
+      <button class="icon-btn" aria-label="Carrito" onclick="location.href='carrito.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2.5 3h2l2.2 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21.5 7H6"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawer-head">
+      <img src="assets/img/logo-white.png" alt="DAVFOOR">
+      <button class="icon-btn" onclick="closeMenu()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+    </div>
+    <nav>
+      <a href="index.html"><span class="dot">●</span> Inicio</a>
+      <a href="catalogo.html?cat=club"><span class="dot">●</span> Clubes</a>
+      <a href="catalogo.html?cat=seleccion"><span class="dot">●</span> Selecciones</a>
+      <a href="catalogo.html?cat=botilito"><span class="dot">●</span> Botilitos</a>
+      <a href="catalogo.html?cat=gorra"><span class="dot">●</span> Gorras</a>
+    </nav>
+  </aside>
+
+  <div class="head-sec">
+    <div class="crumb"><a href="index.html" style="color:var(--green)">Inicio</a> › <span id="crumb2">Catálogo</span></div>
+    <h1 id="pageTitle">Catálogo</h1>
+    <p id="pageDesc"></p>
+  </div>
+
+  <!-- Círculos de equipos (clubes/selecciones) -->
+  <section id="teamsSec" style="display:none">
+    <div class="lbl" id="teamsLbl">Elige tu equipo</div>
+    <div class="teams" id="teams"></div>
+  </section>
+
+  <!-- Tabs actual/retro (solo camisetas) -->
+  <section id="tabsSec" style="display:none;padding-top:4px;padding-bottom:4px">
+    <div class="tabs">
+      <button class="tab active" data-tipo="todos" onclick="setTipo(this)">Todas</button>
+      <button class="tab" data-tipo="actual" onclick="setTipo(this)">Actuales</button>
+      <button class="tab" data-tipo="retro" onclick="setTipo(this)">Retro</button>
+    </div>
+  </section>
+
+  <section style="padding-top:4px">
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <a class="wa" href="https://wa.me/57XXXXXXXXXX?text=Hola%20DAVFOOR" target="_blank" aria-label="WhatsApp">
+    <svg viewBox="0 0 32 32"><path d="M16 .5C7.4.5.5 7.4.5 16c0 2.8.8 5.5 2.1 7.9L.4 31.6l7.9-2.1C10.6 30.7 13.2 31.5 16 31.5 24.6 31.5 31.5 24.6 31.5 16S24.6.5 16 .5zm7.4 18.1c-.4-.2-2.4-1.2-2.7-1.3-.4-.1-.6-.2-.9.2s-1 1.3-1.3 1.6c-.2.2-.5.3-.9.1-.4-.2-1.7-.6-3.3-2-1.2-1.1-2-2.4-2.3-2.8-.2-.4 0-.6.2-.8.2-.2.4-.5.6-.7.2-.2.2-.4.4-.6.1-.3 0-.5 0-.7-.1-.2-.9-2.2-1.3-3-.3-.8-.7-.7-.9-.7h-.8c-.3 0-.7.1-1 .5-.4.4-1.4 1.3-1.4 3.2s1.4 3.7 1.6 4c.2.3 2.8 4.3 6.8 6 .9.4 1.7.6 2.2.8.9.3 1.8.3 2.4.2.7-.1 2.4-1 2.7-1.9.3-.9.3-1.7.2-1.9-.1-.2-.3-.3-.7-.5z"/></svg>
+  </a>
+</div>
+
+<script>
+  const fmt = n => '$'+n.toLocaleString('es-CO');
+  const PRECIO = {actual:110000, retro:130000};
+
+  const CLUBES = [
+    {id:'madrid', name:'Real Madrid', bg:'#fff', crest:'RM', cc:'#00529f'},
+    {id:'barcelona', name:'Barcelona', bg:'linear-gradient(90deg,#a50044 50%,#004d98 50%)', crest:'FCB', cc:'#ffdf1c'},
+    {id:'bayern', name:'Bayern', bg:'#dc052d', crest:'FCB', cc:'#fff'},
+    {id:'mancity', name:'Man City', bg:'#6cabdd', crest:'MCFC', cc:'#fff'},
+    {id:'millonarios', name:'Millonarios', bg:'#004ba0', crest:'M', cc:'#fff'},
+    {id:'nacional', name:'A. Nacional', bg:'#00843d', crest:'AN', cc:'#fff'},
+    {id:'river', name:'River', bg:'#fff', crest:'CARP', cc:'#c8102e'},
+    {id:'boca', name:'Boca', bg:'#0a3d91', crest:'CABJ', cc:'#ffd100'},
+  ];
+  const SELECCIONES = [
+    {id:'espana', name:'España', flag:'🇪🇸'},
+    {id:'alemania', name:'Alemania', flag:'🇩🇪'},
+    {id:'inglaterra', name:'Inglaterra', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},
+    {id:'colombia', name:'Colombia', flag:'🇨🇴'},
+    {id:'argentina', name:'Argentina', flag:'🇦🇷'},
+  ];
+  const JERSEYS = [
+    {team:'Real Madrid', categoria:'club', equipo:'madrid', season:'2024/25 Local', tipo:'actual', num:7, c1:'#ffffff', c2:'#00529f'},
+    {team:'FC Barcelona', categoria:'club', equipo:'barcelona', season:'2024/25 Local', tipo:'actual', num:9, c1:'#a50044', c2:'#004d98'},
+    {team:'Bayern Munich', categoria:'club', equipo:'bayern', season:'2024/25 Local', tipo:'actual', num:10, c1:'#dc052d', c2:'#ffffff'},
+    {team:'Manchester City', categoria:'club', equipo:'mancity', season:'2024/25 Local', tipo:'actual', num:17, c1:'#6cabdd', c2:'#ffffff'},
+    {team:'Millonarios', categoria:'club', equipo:'millonarios', season:'2024 Local', tipo:'actual', num:10, c1:'#004ba0', c2:'#ffffff'},
+    {team:'Atlético Nacional', categoria:'club', equipo:'nacional', season:'2024 Local', tipo:'actual', num:9, c1:'#00843d', c2:'#ffffff'},
+    {team:'Real Madrid', categoria:'club', equipo:'madrid', season:'Retro 2002', tipo:'retro', num:5, c1:'#f4f4f4', c2:'#c9a227'},
+    {team:'FC Barcelona', categoria:'club', equipo:'barcelona', season:'Retro 2009', tipo:'retro', num:10, c1:'#a50044', c2:'#f9d616'},
+    {team:'Boca Juniors', categoria:'club', equipo:'boca', season:'Retro 1981', tipo:'retro', num:10, c1:'#0a3d91', c2:'#ffd100'},
+    {team:'River Plate', categoria:'club', equipo:'river', season:'Retro 1996', tipo:'retro', num:9, c1:'#ffffff', c2:'#c8102e'},
+    {team:'Bayern Munich', categoria:'club', equipo:'bayern', season:'Retro 2001', tipo:'retro', num:9, c1:'#b40024', c2:'#ffffff'},
+    {team:'Millonarios', categoria:'club', equipo:'millonarios', season:'Retro 1988', tipo:'retro', num:7, c1:'#0033a0', c2:'#ffffff'},
+    {team:'Colombia', categoria:'seleccion', equipo:'colombia', season:'2024 Local', tipo:'actual', num:10, c1:'#FCD116', c2:'#003893'},
+    {team:'Argentina', categoria:'seleccion', equipo:'argentina', season:'2024 Campeón', tipo:'actual', num:10, c1:'#75AADB', c2:'#ffffff'},
+    {team:'España', categoria:'seleccion', equipo:'espana', season:'2024 Local', tipo:'actual', num:9, c1:'#C60B1E', c2:'#FFC400'},
+    {team:'Inglaterra', categoria:'seleccion', equipo:'inglaterra', season:'2024 Local', tipo:'actual', num:9, c1:'#ffffff', c2:'#0a3d91'},
+    {team:'Alemania', categoria:'seleccion', equipo:'alemania', season:'Retro 1990', tipo:'retro', num:10, c1:'#ffffff', c2:'#111111'},
+    {team:'Argentina', categoria:'seleccion', equipo:'argentina', season:'Retro 1986', tipo:'retro', num:10, c1:'#75AADB', c2:'#ffffff'},
+    {team:'Colombia', categoria:'seleccion', equipo:'colombia', season:'Retro 1990', tipo:'retro', num:9, c1:'#FCD116', c2:'#c8102e'},
+  ];
+
+  function openMenu(){document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('open')}
+  function closeMenu(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')}
+
+  function jerseySVG(c1,c2,num){
+    const dark=(c1.toLowerCase()==='#ffffff'||c1.toLowerCase()==='#f4f4f4');
+    const nc=dark?'#222':'#fff';
+    return `<svg class="jersey" viewBox="0 0 120 120"><path d="M42 14 L16 26 L8 48 L26 57 L34 50 L34 106 L86 106 L86 50 L94 57 L112 48 L104 26 L78 14 C74 25 66 30 60 30 C54 30 46 25 42 14 Z" fill="${c1}" stroke="#00000030" stroke-width="1.5"/><path d="M42 14 C46 25 54 30 60 30 C66 30 74 25 78 14 L72 11 C68 20 52 20 48 11 Z" fill="${c2}"/><text x="60" y="92" font-family="Arial" font-weight="900" font-size="34" fill="${nc}" text-anchor="middle">${num}</text></svg>`;
+  }
+
+  const params = new URLSearchParams(location.search);
+  const cat = params.get('cat') || 'club';
+  let selEquipo='todos', fTipo='todos';
+
+  const TITULOS = {
+    club:{t:'Camisetas de <span class="g">Clubes</span>', d:'Elige tu club y descubre sus camisetas actuales y retro.', lbl:'Elige tu club'},
+    seleccion:{t:'Camisetas de <span class="g">Selecciones</span>', d:'Elige tu selección y descubre sus camisetas actuales y retro.', lbl:'Elige tu selección'},
+    botilito:{t:'<span class="g">Botilitos</span> personalizados', d:'Diseño estándar de tu club, selección o jugador. Nombre opcional +$15.000.', lbl:'Elige el diseño de tu equipo'},
+    gorra:{t:'<span class="g">Gorras</span> bordadas', d:'Bordadas con el escudo del equipo o la palabra del jugador.', lbl:'Elige el diseño de tu equipo'},
+  };
+
+  function initHeader(){
+    const info=TITULOS[cat]||TITULOS.club;
+    document.getElementById('pageTitle').innerHTML=info.t;
+    document.getElementById('pageDesc').textContent=info.d;
+    document.getElementById('crumb2').textContent={club:'Clubes',seleccion:'Selecciones',botilito:'Botilitos',gorra:'Gorras'}[cat];
+    document.querySelectorAll('.topnav a[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===cat));
+  }
+
+  function renderTeams(){
+    const list = (cat==='seleccion') ? SELECCIONES : CLUBES;   // botilito/gorra usan clubes+selecciones abajo
+    let all = list;
+    if(cat==='botilito'||cat==='gorra'){ all = [...CLUBES, ...SELECCIONES]; }
+    document.getElementById('teamsLbl').textContent = (TITULOS[cat]||TITULOS.club).lbl;
+    const el=document.getElementById('teams');
+    const todos = `<div class="tm ${selEquipo==='todos'?'active':''}" onclick="pickTeam('todos')"><div class="badge"><span style="font-size:12px;font-weight:800">TODOS</span></div><span>Todos</span></div>`;
+    el.innerHTML = todos + all.map(t=>{
+      const badge = t.flag
+        ? `<div class="badge"><span class="flag">${t.flag}</span></div>`
+        : `<div class="badge" style="background:${t.bg};border:none"><span class="crest" style="color:${t.cc}">${t.crest}</span></div>`;
+      return `<div class="tm ${selEquipo===t.id?'active':''}" onclick="pickTeam('${t.id}')">${badge}<span>${t.name}</span></div>`;
+    }).join('');
+    document.getElementById('teamsSec').style.display='block';
+  }
+
+  function pickTeam(id){ selEquipo = (selEquipo===id?'todos':id); renderTeams(); renderGrid(); }
+  function setTipo(el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');fTipo=el.dataset.tipo;renderGrid();}
+
+  function renderGrid(){
+    const g=document.getElementById('grid');
+    if(cat==='botilito'||cat==='gorra'){
+      // Un producto (botilito o gorra) por cada equipo/diseño elegido
+      const precio = cat==='botilito'?50000:30000;
+      const emoji = cat==='botilito'?'🥤':'🧢';
+      const all=[...CLUBES,...SELECCIONES];
+      const list = all.filter(t=> selEquipo==='todos' || t.id===selEquipo);
+      g.innerHTML = list.map(t=>`
+        <div class="card" onclick="location.href='producto.html'">
+          <div class="imgbox"><span class="tag acc">${cat}</span><div class="acc-emoji">${emoji}</div></div>
+          <div class="info"><div class="team">${cat==='botilito'?'Botilito':'Gorra'} ${t.name}</div>
+          <div class="season">Diseño ${t.name}</div>
+          <div class="price">${fmt(precio)}</div></div>
+        </div>`).join('') || '<div class="empty">Elige un equipo arriba 👆</div>';
+      return;
+    }
+    const list = JERSEYS.filter(p => p.categoria===cat && (selEquipo==='todos'||p.equipo===selEquipo) && (fTipo==='todos'||p.tipo===fTipo));
+    if(!list.length){g.innerHTML='<div class="empty">No hay camisetas para este filtro todavía 🙈</div>';return;}
+    g.innerHTML = list.map(p=>`
+      <div class="card" onclick="location.href='producto.html'">
+        <div class="imgbox"><span class="tag ${p.tipo}">${p.tipo}</span>${p.foto ? `<img src="${p.foto}" alt="${p.team}" style="width:100%;height:100%;object-fit:cover">` : jerseySVG(p.c1,p.c2,p.num)}</div>
+        <div class="info"><div class="team">${p.team}</div><div class="season">${p.season}</div>
+        <div class="price">${fmt(PRECIO[p.tipo])} <small>${p.tipo==='retro'?'Retro':'Actual'}</small></div></div>
+      </div>`).join('');
+  }
+
+  // init
+  initHeader();
+  renderTeams();
+  if(cat==='club'||cat==='seleccion'){ document.getElementById('tabsSec').style.display='block'; }
+  renderGrid();
+</script>
+</body>
+</html>
