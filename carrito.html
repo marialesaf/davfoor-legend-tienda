@@ -229,8 +229,13 @@
 <!-- MODAL -->
 <div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
 <script>
   const fmt = n => '$'+n.toLocaleString('es-CO');
+  // Conexión a Supabase (si está configurada) para guardar el pedido
+  const _sb = (typeof supabase!=='undefined' && typeof SUPABASE_URL!=='undefined' && !SUPABASE_URL.includes('TU-PROYECTO'))
+    ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
   const ENVIO = 18000, GRATIS_DESDE = 300000, ANTICIPO = 30000;
 
   // ---- Carrito demo ----
@@ -342,7 +347,33 @@
     });
     if(!ok){first.scrollIntoView({behavior:'smooth',block:'center'});first.focus();return;}
     if(!cart.length){alert('Tu carrito está vacío');return;}
+    guardarPedido();      // guarda el pedido en la base de datos
     mercadoPago();
+  }
+
+  // Guarda el pedido en Supabase (aparece en la página de Pedidos)
+  async function guardarPedido(){
+    if(!_sb) return;      // si no hay Supabase configurado, no hace nada
+    const {sub,envio,total}=totals();
+    const items = cart.map(it=>({
+      team: it.team + (it.perso?(' ('+it.perso+')'):''),
+      talla: it.talla || '',
+      cant: it.qty || 1,
+      precio: (it.base+it.extra)
+    }));
+    const pedido = {
+      cliente: document.getElementById('f_nombre').value.trim(),
+      cedula: document.getElementById('f_cedula').value.trim(),
+      celular: document.getElementById('f_cel').value.trim(),
+      correo: document.getElementById('f_correo').value.trim(),
+      departamento: document.getElementById('f_depto').value.trim(),
+      ciudad: document.getElementById('f_ciudad').value.trim(),
+      direccion: document.getElementById('f_dir').value.trim(),
+      notas: (document.getElementById('f_notas')?document.getElementById('f_notas').value.trim():''),
+      items, subtotal: sub, envio, total,
+      metodo, pago: 'pendiente', estado: 'Nuevo'
+    };
+    try { await _sb.from('pedidos').insert(pedido); } catch(e){ /* no bloquea la compra */ }
   }
 
   function mercadoPago(){
