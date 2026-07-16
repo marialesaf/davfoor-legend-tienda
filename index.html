@@ -128,6 +128,22 @@
   .wa-note:after{content:"";position:absolute;right:-6px;bottom:14px;border:7px solid transparent;border-left-color:#fff}
 
   .demo-flag{background:#e8a33d;color:#2a1900;text-align:center;font-size:11px;font-weight:800;padding:7px;letter-spacing:.4px}
+
+  /* ---------- VERSIÓN PC / ESCRITORIO ---------- */
+  @media(min-width:760px){
+    .wrap{max-width:1080px;box-shadow:none}
+    header{padding:16px 40px}
+    .logo-top{height:40px}
+    .hero{padding:64px 48px 56px}
+    .hero h1{font-size:58px}
+    .hero p{font-size:17px;max-width:460px}
+    section{padding:34px 40px}
+    .grid{grid-template-columns:repeat(4,1fr);gap:20px}
+    .card .team{font-size:14px}.card .season{font-size:12px}.card .price{font-size:16px}
+    .extra{gap:20px}
+    footer{padding:46px 40px 60px}
+  }
+  @media(min-width:1120px){ .grid{grid-template-columns:repeat(5,1fr)} }
 </style>
 </head>
 <body>

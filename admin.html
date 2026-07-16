@@ -116,6 +116,14 @@
   .note{margin:4px 16px 20px;background:rgba(232,163,61,.08);border:1px solid rgba(232,163,61,.3);border-radius:12px;padding:13px 14px;font-size:12px;color:#e9c88a;line-height:1.55}
   .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);z-index:70;background:#fff;color:#111;font-weight:800;font-size:13px;padding:12px 18px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.25s}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ---------- VERSIÓN PC / ESCRITORIO ---------- */
+  @media(min-width:760px){
+    .wrap{max-width:960px}
+    .list{columns:2;column-gap:16px}
+    .card{break-inside:avoid}
+    .fab{max-width:960px}
+  }
 </style>
 </head>
 <body>
