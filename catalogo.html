@@ -109,7 +109,6 @@
       <a href="index.html">Inicio</a>
       <a href="catalogo.html?cat=club" data-nav="club">Clubes</a>
       <a href="catalogo.html?cat=seleccion" data-nav="seleccion">Selecciones</a>
-      <a href="catalogo.html?cat=botilito" data-nav="botilito">Botilitos</a>
       <a href="catalogo.html?cat=gorra" data-nav="gorra">Gorras</a>
     </nav>
     <div class="cart-wrap">
@@ -129,7 +128,6 @@
       <a href="index.html"><span class="dot">●</span> Inicio</a>
       <a href="catalogo.html?cat=club"><span class="dot">●</span> Clubes</a>
       <a href="catalogo.html?cat=seleccion"><span class="dot">●</span> Selecciones</a>
-      <a href="catalogo.html?cat=botilito"><span class="dot">●</span> Botilitos</a>
       <a href="catalogo.html?cat=gorra"><span class="dot">●</span> Gorras</a>
     </nav>
   </aside>
@@ -164,48 +162,13 @@
   </a>
 </div>
 
+<script src="assets/productos.js"></script>
 <script>
   const fmt = n => '$'+n.toLocaleString('es-CO');
   const PRECIO = {actual:110000, retro:130000};
 
-  const CLUBES = [
-    {id:'madrid', name:'Real Madrid', bg:'#fff', crest:'RM', cc:'#00529f'},
-    {id:'barcelona', name:'Barcelona', bg:'linear-gradient(90deg,#a50044 50%,#004d98 50%)', crest:'FCB', cc:'#ffdf1c'},
-    {id:'bayern', name:'Bayern', bg:'#dc052d', crest:'FCB', cc:'#fff'},
-    {id:'mancity', name:'Man City', bg:'#6cabdd', crest:'MCFC', cc:'#fff'},
-    {id:'millonarios', name:'Millonarios', bg:'#004ba0', crest:'M', cc:'#fff'},
-    {id:'nacional', name:'A. Nacional', bg:'#00843d', crest:'AN', cc:'#fff'},
-    {id:'river', name:'River', bg:'#fff', crest:'CARP', cc:'#c8102e'},
-    {id:'boca', name:'Boca', bg:'#0a3d91', crest:'CABJ', cc:'#ffd100'},
-  ];
-  const SELECCIONES = [
-    {id:'espana', name:'España', flag:'🇪🇸'},
-    {id:'alemania', name:'Alemania', flag:'🇩🇪'},
-    {id:'inglaterra', name:'Inglaterra', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},
-    {id:'colombia', name:'Colombia', flag:'🇨🇴'},
-    {id:'argentina', name:'Argentina', flag:'🇦🇷'},
-  ];
-  const JERSEYS = [
-    {team:'Real Madrid', categoria:'club', equipo:'madrid', season:'2024/25 Local', tipo:'actual', num:7, c1:'#ffffff', c2:'#00529f'},
-    {team:'FC Barcelona', categoria:'club', equipo:'barcelona', season:'2024/25 Local', tipo:'actual', num:9, c1:'#a50044', c2:'#004d98'},
-    {team:'Bayern Munich', categoria:'club', equipo:'bayern', season:'2024/25 Local', tipo:'actual', num:10, c1:'#dc052d', c2:'#ffffff'},
-    {team:'Manchester City', categoria:'club', equipo:'mancity', season:'2024/25 Local', tipo:'actual', num:17, c1:'#6cabdd', c2:'#ffffff'},
-    {team:'Millonarios', categoria:'club', equipo:'millonarios', season:'2024 Local', tipo:'actual', num:10, c1:'#004ba0', c2:'#ffffff'},
-    {team:'Atlético Nacional', categoria:'club', equipo:'nacional', season:'2024 Local', tipo:'actual', num:9, c1:'#00843d', c2:'#ffffff'},
-    {team:'Real Madrid', categoria:'club', equipo:'madrid', season:'Retro 2002', tipo:'retro', num:5, c1:'#f4f4f4', c2:'#c9a227'},
-    {team:'FC Barcelona', categoria:'club', equipo:'barcelona', season:'Retro 2009', tipo:'retro', num:10, c1:'#a50044', c2:'#f9d616'},
-    {team:'Boca Juniors', categoria:'club', equipo:'boca', season:'Retro 1981', tipo:'retro', num:10, c1:'#0a3d91', c2:'#ffd100'},
-    {team:'River Plate', categoria:'club', equipo:'river', season:'Retro 1996', tipo:'retro', num:9, c1:'#ffffff', c2:'#c8102e'},
-    {team:'Bayern Munich', categoria:'club', equipo:'bayern', season:'Retro 2001', tipo:'retro', num:9, c1:'#b40024', c2:'#ffffff'},
-    {team:'Millonarios', categoria:'club', equipo:'millonarios', season:'Retro 1988', tipo:'retro', num:7, c1:'#0033a0', c2:'#ffffff'},
-    {team:'Colombia', categoria:'seleccion', equipo:'colombia', season:'2024 Local', tipo:'actual', num:10, c1:'#FCD116', c2:'#003893'},
-    {team:'Argentina', categoria:'seleccion', equipo:'argentina', season:'2024 Campeón', tipo:'actual', num:10, c1:'#75AADB', c2:'#ffffff'},
-    {team:'España', categoria:'seleccion', equipo:'espana', season:'2024 Local', tipo:'actual', num:9, c1:'#C60B1E', c2:'#FFC400'},
-    {team:'Inglaterra', categoria:'seleccion', equipo:'inglaterra', season:'2024 Local', tipo:'actual', num:9, c1:'#ffffff', c2:'#0a3d91'},
-    {team:'Alemania', categoria:'seleccion', equipo:'alemania', season:'Retro 1990', tipo:'retro', num:10, c1:'#ffffff', c2:'#111111'},
-    {team:'Argentina', categoria:'seleccion', equipo:'argentina', season:'Retro 1986', tipo:'retro', num:10, c1:'#75AADB', c2:'#ffffff'},
-    {team:'Colombia', categoria:'seleccion', equipo:'colombia', season:'Retro 1990', tipo:'retro', num:9, c1:'#FCD116', c2:'#c8102e'},
-  ];
+  // CLUBES, SELECCIONES y PRODUCTOS vienen de assets/productos.js
+  const JERSEYS = PRODUCTOS;
 
   function openMenu(){document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('open')}
   function closeMenu(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')}
@@ -256,25 +219,21 @@
 
   function renderGrid(){
     const g=document.getElementById('grid');
-    if(cat==='botilito'||cat==='gorra'){
-      // Un producto (botilito o gorra) por cada equipo/diseño elegido
-      const precio = cat==='botilito'?50000:30000;
-      const emoji = cat==='botilito'?'🥤':'🧢';
-      const all=[...CLUBES,...SELECCIONES];
-      const list = all.filter(t=> selEquipo==='todos' || t.id===selEquipo);
-      g.innerHTML = list.map(t=>`
-        <div class="card" onclick="location.href='producto.html'">
-          <div class="imgbox"><span class="tag acc">${cat}</span><div class="acc-emoji">${emoji}</div></div>
-          <div class="info"><div class="team">${cat==='botilito'?'Botilito':'Gorra'} ${t.name}</div>
-          <div class="season">Diseño ${t.name}</div>
-          <div class="price">${fmt(precio)}</div></div>
-        </div>`).join('') || '<div class="empty">Elige un equipo arriba 👆</div>';
+    if(cat==='gorra'){
+      g.innerHTML = (typeof GORRAS!=='undefined'?GORRAS:[]).map(x=>`
+        <div class="card" onclick="location.href='producto.html?id=${x.id}'">
+          <div class="imgbox"><span class="tag acc">gorra</span><div class="acc-emoji">🧢</div></div>
+          <div class="info"><div class="team">Gorra ${x.team}</div>
+          <div class="season">Blanca / Negra</div>
+          <div class="price">${fmt(x.precio)}</div></div>
+        </div>`).join('') || '<div class="empty">Pronto más gorras 🧢</div>';
       return;
     }
+    if(cat==='botilito'){ g.innerHTML='<div class="empty">Sección no disponible.</div>'; return; }
     const list = JERSEYS.filter(p => p.categoria===cat && (selEquipo==='todos'||p.equipo===selEquipo) && (fTipo==='todos'||p.tipo===fTipo));
     if(!list.length){g.innerHTML='<div class="empty">No hay camisetas para este filtro todavía 🙈</div>';return;}
     g.innerHTML = list.map(p=>`
-      <div class="card" onclick="location.href='producto.html'">
+      <div class="card" onclick="location.href='producto.html?id=${p.id}'">
         <div class="imgbox"><span class="tag ${p.tipo}">${p.tipo}</span>${p.foto ? `<img src="${p.foto}" alt="${p.team}" style="width:100%;height:100%;object-fit:cover">` : jerseySVG(p.c1,p.c2,p.num)}</div>
         <div class="info"><div class="team">${p.team}</div><div class="season">${p.season}</div>
         <div class="price">${fmt(PRECIO[p.tipo])} <small>${p.tipo==='retro'?'Retro':'Actual'}</small></div></div>
@@ -283,8 +242,7 @@
 
   // init
   initHeader();
-  renderTeams();
-  if(cat==='club'||cat==='seleccion'){ document.getElementById('tabsSec').style.display='block'; }
+  if(cat==='club'||cat==='seleccion'){ renderTeams(); document.getElementById('tabsSec').style.display='block'; }
   renderGrid();
 </script>
 </body>

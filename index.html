@@ -171,7 +171,6 @@
       <a href="index.html" class="active">Inicio</a>
       <a href="catalogo.html?cat=club">Clubes</a>
       <a href="catalogo.html?cat=seleccion">Selecciones</a>
-      <a href="catalogo.html?cat=botilito">Botilitos</a>
       <a href="catalogo.html?cat=gorra">Gorras</a>
     </nav>
     <div class="cart-wrap">
@@ -195,7 +194,6 @@
       <a href="index.html"><span class="dot">●</span> Inicio</a>
       <a href="catalogo.html?cat=club"><span class="dot">●</span> Clubes</a>
       <a href="catalogo.html?cat=seleccion"><span class="dot">●</span> Selecciones</a>
-      <a href="catalogo.html?cat=botilito"><span class="dot">●</span> Botilitos</a>
       <a href="catalogo.html?cat=gorra"><span class="dot">●</span> Gorras</a>
     </nav>
     <div class="mini">Envío gratis en compras sobre $300.000<br>© DAVFOOR LEGEND</div>
@@ -251,21 +249,14 @@
 
   <!-- ===== ACCESORIOS ===== -->
   <section>
-    <div class="sec-title"><span class="bar"></span><h2>🧢 Accesorios personalizados</h2></div>
+    <div class="sec-title"><span class="bar"></span><h2>🧢 Gorras bordadas</h2></div>
     <div class="extra">
-      <div class="ecard">
-        <div class="ico">🥤</div>
-        <h3>Botilito personalizado</h3>
-        <p>Diseño estándar de tu club, selección o jugador (sticker DTF UV).</p>
-        <div style="color:var(--green);font-weight:900;font-size:17px;margin-top:9px">$50.000</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:3px">➕ Nombre personalizado: $15.000</div>
-      </div>
-      <div class="ecard">
+      <div class="ecard" style="cursor:pointer" onclick="location.href='catalogo.html?cat=gorra'">
         <div class="ico">🧢</div>
         <h3>Gorra bordada</h3>
-        <p>Bordada con el escudo del equipo o la palabra del jugador.</p>
+        <p>Bordada con el escudo del equipo o la palabra del jugador. Disponible en blanca y negra.</p>
         <div style="color:var(--green);font-weight:900;font-size:17px;margin-top:9px">$30.000</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:3px">Diseño estándar incluido</div>
+        <div style="font-size:11px;color:var(--green);margin-top:3px">Ver gorras →</div>
       </div>
     </div>
   </section>
@@ -288,36 +279,15 @@
 
 </div>
 
+<script src="assets/productos.js"></script>
 <script>
   // ---- Menú hamburguesa ----
   function openMenu(){document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('open')}
   function closeMenu(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')}
   setTimeout(()=>{var n=document.getElementById('waNote');if(n)n.style.display='none'},5000);
 
-  // ---- Datos de productos (esto luego saldrá del inventario) ----
-  const productos = [
-    // ---- CLUBES ----
-    {team:'Real Madrid', categoria:'club', club:'madrid', pais:'espana', season:'2024/25 Local', tipo:'actual', num:7, c1:'#ffffff', c2:'#00529f', stock:'ok'},
-    {team:'FC Barcelona', categoria:'club', club:'barcelona', pais:'espana', season:'2024/25 Local', tipo:'actual', num:9, c1:'#a50044', c2:'#004d98', stock:'low'},
-    {team:'Bayern Munich', categoria:'club', club:'bayern', pais:'alemania', season:'2024/25 Local', tipo:'actual', num:10, c1:'#dc052d', c2:'#ffffff', stock:'ok'},
-    {team:'Manchester City', categoria:'club', club:'mancity', pais:'inglaterra', season:'2024/25 Local', tipo:'actual', num:17, c1:'#6cabdd', c2:'#ffffff', stock:'ok'},
-    {team:'Millonarios', categoria:'club', club:'millonarios', pais:'colombia', season:'2024 Local', tipo:'actual', num:10, c1:'#004ba0', c2:'#ffffff', stock:'ok'},
-    {team:'Atlético Nacional', categoria:'club', club:'nacional', pais:'colombia', season:'2024 Local', tipo:'actual', num:9, c1:'#00843d', c2:'#ffffff', stock:'out'},
-    {team:'Real Madrid', categoria:'club', club:'madrid', pais:'espana', season:'Retro 2002', tipo:'retro', num:5, c1:'#f4f4f4', c2:'#c9a227', stock:'ok'},
-    {team:'FC Barcelona', categoria:'club', club:'barcelona', pais:'espana', season:'Retro 2009', tipo:'retro', num:10, c1:'#a50044', c2:'#f9d616', stock:'ok'},
-    {team:'Boca Juniors', categoria:'club', club:'boca', pais:'argentina', season:'Retro 1981', tipo:'retro', num:10, c1:'#0a3d91', c2:'#ffd100', stock:'low'},
-    {team:'River Plate', categoria:'club', club:'river', pais:'argentina', season:'Retro 1996', tipo:'retro', num:9, c1:'#ffffff', c2:'#c8102e', stock:'ok'},
-    {team:'Bayern Munich', categoria:'club', club:'bayern', pais:'alemania', season:'Retro 2001', tipo:'retro', num:9, c1:'#b40024', c2:'#ffffff', stock:'ok'},
-    {team:'Millonarios', categoria:'club', club:'millonarios', pais:'colombia', season:'Retro 1988', tipo:'retro', num:7, c1:'#0033a0', c2:'#ffffff', stock:'ok'},
-    // ---- SELECCIONES ----
-    {team:'Colombia', categoria:'seleccion', pais:'colombia', season:'2024 Local', tipo:'actual', num:10, c1:'#FCD116', c2:'#003893', stock:'ok'},
-    {team:'Argentina', categoria:'seleccion', pais:'argentina', season:'2024 Campeón', tipo:'actual', num:10, c1:'#75AADB', c2:'#ffffff', stock:'low'},
-    {team:'España', categoria:'seleccion', pais:'espana', season:'2024 Local', tipo:'actual', num:9, c1:'#C60B1E', c2:'#FFC400', stock:'ok'},
-    {team:'Inglaterra', categoria:'seleccion', pais:'inglaterra', season:'2024 Local', tipo:'actual', num:9, c1:'#ffffff', c2:'#0a3d91', stock:'ok'},
-    {team:'Alemania', categoria:'seleccion', pais:'alemania', season:'Retro 1990', tipo:'retro', num:10, c1:'#ffffff', c2:'#111111', stock:'ok'},
-    {team:'Argentina', categoria:'seleccion', pais:'argentina', season:'Retro 1986', tipo:'retro', num:10, c1:'#75AADB', c2:'#ffffff', stock:'ok'},
-    {team:'Colombia', categoria:'seleccion', pais:'colombia', season:'Retro 1990', tipo:'retro', num:9, c1:'#FCD116', c2:'#c8102e', stock:'ok'},
-  ];
+  // ---- Datos de productos: vienen del archivo único assets/productos.js ----
+  const productos = PRODUCTOS;
 
   function jerseySVG(c1,c2,num){
     const dark = (c1.toLowerCase()==='#ffffff'||c1.toLowerCase()==='#f4f4f4'||c1.toLowerCase()==='#f9f9f9');
@@ -347,7 +317,7 @@
     g.innerHTML = list.map(p=>{
       const [sc,st]=stockLabel[p.stock];
       const out = p.stock==='out';
-      return `<div class="card ${out?'soldout':''}" style="cursor:pointer" onclick="location.href='producto.html'">
+      return `<div class="card ${out?'soldout':''}" style="cursor:pointer" onclick="location.href='producto.html?id=${p.id}'">
         <div class="imgbox">
           <span class="tag ${p.tipo}">${p.tipo}</span>
           <span class="stock ${sc}">${st}</span>

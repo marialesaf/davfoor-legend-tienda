@@ -1,10 +1,1 @@
-{
-  "name": "davfoor-legend-tienda",
-  "version": "1.0.0",
-  "description": "Tienda online DAVFOOR LEGEND - camisetas de futbol y articulos deportivos",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "echo \"Abre index.html en tu navegador para ver la tienda\""
-  }
-}
+{ "name":"davfoor-legend-tienda", "version":"1.0.0", "description":"Tienda online DAVFOOR LEGEND", "private":true, "type":"module" }
