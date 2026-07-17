@@ -141,7 +141,7 @@
     </div>
   </header>
 
-  <div class="crumbs"><a href="#">Inicio</a> › <a href="#">Clubes</a> › Real Madrid</div>
+  <div class="crumbs" id="crumbs"><a href="index.html" style="color:var(--green)">Inicio</a> › Clubes › Real Madrid</div>
 
   <!-- GALERÍA -->
   <div class="gallery">
@@ -173,30 +173,44 @@
 
   <!-- PERSONALIZACIÓN -->
   <section class="block" id="persoSection">
-    <h2><span class="bar"></span>Personaliza tu camiseta</h2>
-    <div class="perso">
-      <div class="switch-row" onclick="togglePerso()">
-        <div>
-          <div class="t">Agregar nombre y dorsal</div>
-          <div class="s">Estampa el nombre y número que quieras</div>
+    <h2><span class="bar"></span>Personalización</h2>
+
+    <!-- Normal: agregar nombre y dorsal (opcional) -->
+    <div id="persoNormal">
+      <div class="perso">
+        <div class="switch-row" onclick="togglePerso()">
+          <div>
+            <div class="t">Agregar nombre y dorsal</div>
+            <div class="s">Estampa el nombre y número que quieras</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <span class="plus">+$15.000</span>
+            <div class="toggle" id="persoToggle"></div>
+          </div>
         </div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <span class="plus">+$15.000</span>
-          <div class="toggle" id="persoToggle"></div>
-        </div>
-      </div>
-      <div class="perso-fields" id="persoFields">
-        <div class="field">
-          <label>Nombre / apellido</label>
-          <input id="inName" maxlength="12" placeholder="BELLINGHAM" oninput="updatePreview()">
-        </div>
-        <div class="field">
-          <label>Dorsal</label>
-          <input id="inNum" maxlength="2" inputmode="numeric" placeholder="5" oninput="cleanNum();updatePreview()">
+        <div class="perso-fields" id="persoFields">
+          <div class="field"><label>Nombre / apellido</label><input id="inName" maxlength="12" placeholder="BELLINGHAM" oninput="updatePreview()"></div>
+          <div class="field"><label>Dorsal</label><input id="inNum" maxlength="2" inputmode="numeric" placeholder="5" oninput="cleanNum();updatePreview()"></div>
         </div>
       </div>
     </div>
-    <div class="size-note" id="persoHint" style="display:none">👀 Mira cómo queda en la foto de la espalda arriba.</div>
+
+    <!-- Condicional: estampado incluido (fijo o a elegir) -->
+    <div id="persoCond" style="display:none">
+      <div class="perso">
+        <div class="switch-row" style="cursor:default">
+          <div>
+            <div class="t">Estampado incluido ✔</div>
+            <div class="s" id="condDesc">Viene con su dorsal especial</div>
+          </div>
+          <span class="plus">+$15.000</span>
+        </div>
+        <div class="field" id="condSelWrap" style="margin-top:14px;display:none">
+          <label>Elige el jugador</label>
+          <select id="condSel" onchange="updatePreview()" style="width:100%;background:#0e0e0e;border:1px solid var(--line);border-radius:11px;padding:12px;color:#fff;font-size:15px"></select>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- DETALLES -->
@@ -248,7 +262,26 @@
                    : (TIPO==='retro' ? ['S','M','L','XL'] : ['S','M','L','XL','2XL']);
   const sinDorsal = esGorra || (P.nota && /SIN DORSAL/i.test(P.nota));
 
-  let sel=null, perso=false, cart=0, currentView='front';
+  // Condicionales: "Condicional: solo dorsal Ronaldo 7" -> estampado incluido (fijo o a elegir)
+  function parseCond(nota){
+    if(!nota || /sin dorsal/i.test(nota) || !/condicional/i.test(nota)) return null;
+    let s = nota.replace(/condicional\s*:?/i,'').replace(/solo\s+dorsal/i,'').replace(/dorsal/i,'').trim();
+    const opts = s.split(';').map(x=>x.trim()).filter(Boolean).map(p=>{
+      const m = p.match(/^(.*?)(\d+)\s*$/);
+      return m ? {name:m[1].trim().toUpperCase(), num:m[2]} : {name:p.toUpperCase(), num:''};
+    });
+    return opts.length ? opts : null;
+  }
+  const CONDOPTS = esGorra ? null : parseCond(P.nota);
+  const esCond = !!(CONDOPTS && CONDOPTS.length);
+
+  let sel=null, perso=false, cart=0, currentView='front', condIndex=0;
+
+  function estampado(){ return esCond ? true : perso; }
+  function curPerso(){
+    if(esCond){ const o=CONDOPTS[condIndex]||CONDOPTS[0]; return {name:o.name, num:o.num}; }
+    return {name:(document.getElementById('inName')?.value||'').toUpperCase(), num:(document.getElementById('inNum')?.value||'')};
+  }
 
   function initProduct(){
     document.getElementById('pClub').textContent   = P.team || '';
@@ -259,7 +292,29 @@
       ? 'Disponible en <b>Blanca</b> y <b>Negra</b>.'
       : 'Camisetas <b>actuales</b>: tallas S a 2XL &nbsp;·&nbsp; <b>retro</b>: S a XL.';
     document.getElementById('sizeWarn').textContent = esGorra ? '⚠️ Elige un color para continuar.' : '⚠️ Selecciona una talla para continuar.';
-    document.getElementById('persoSection').style.display = sinDorsal ? 'none' : 'block';
+    // Ruta (breadcrumb) según el producto
+    const catLabel = esGorra?'Gorras':(P.categoria==='seleccion'?'Selecciones':'Clubes');
+    const catHref  = esGorra?'catalogo.html?cat=gorra':(P.categoria==='seleccion'?'catalogo.html?cat=seleccion':'catalogo.html?cat=club');
+    document.getElementById('crumbs').innerHTML = `<a href="index.html" style="color:var(--green)">Inicio</a> › <a href="${catHref}" style="color:var(--green)">${catLabel}</a> › ${P.team}`;
+    // Personalización: normal / condicional / oculta
+    if(sinDorsal){ document.getElementById('persoSection').style.display='none'; }
+    else if(esCond){
+      document.getElementById('persoSection').style.display='block';
+      document.getElementById('persoNormal').style.display='none';
+      document.getElementById('persoCond').style.display='block';
+      if(CONDOPTS.length===1){
+        document.getElementById('condDesc').textContent = `Viene con el estampado: ${CONDOPTS[0].name} ${CONDOPTS[0].num}`;
+      } else {
+        document.getElementById('condDesc').textContent = 'Incluye el estampado del jugador que elijas';
+        document.getElementById('condSelWrap').style.display='block';
+        document.getElementById('condSel').innerHTML = CONDOPTS.map((o,i)=>`<option value="${i}">${o.name} ${o.num}</option>`).join('');
+      }
+      if(!P.foto) currentView='back';
+    } else {
+      document.getElementById('persoSection').style.display='block';
+      document.getElementById('persoNormal').style.display='block';
+      document.getElementById('persoCond').style.display='none';
+    }
     let det = '';
     if(P.nota) det += `<p>⚠️ <b>Nota:</b> ${P.nota}</p>`;
     det += esGorra
@@ -270,9 +325,8 @@
 
   function jerseyFront(){ return `<svg viewBox="0 0 120 120"><path d="M42 14 L16 26 L8 48 L26 57 L34 50 L34 106 L86 106 L86 50 L94 57 L112 48 L104 26 L78 14 C74 25 66 30 60 30 C54 30 46 25 42 14 Z" fill="${C1}" stroke="#00000030" stroke-width="1.5"/><path d="M42 14 C46 25 54 30 60 30 C66 30 74 25 78 14 L72 11 C68 20 52 20 48 11 Z" fill="${C2}"/></svg>`; }
   function jerseyBack(){
-    const nm=(document.getElementById('inName')?.value||'').toUpperCase();
-    const nu=(document.getElementById('inNum')?.value||'');
-    return `<svg viewBox="0 0 120 120"><path d="M42 14 L16 26 L8 48 L26 57 L34 50 L34 106 L86 106 L86 50 L94 57 L112 48 L104 26 L78 14 C74 22 66 26 60 26 C54 26 46 22 42 14 Z" fill="${C1}" stroke="#00000030" stroke-width="1.5"/><path d="M44 15 C48 22 54 25 60 25 C66 25 72 22 76 15 L60 20 Z" fill="${C2}"/><text x="60" y="46" font-family="Arial" font-weight="800" font-size="9" fill="${C2}" text-anchor="middle">${perso?nm:''}</text><text x="60" y="88" font-family="Arial" font-weight="900" font-size="40" fill="${C2}" text-anchor="middle">${perso?nu:''}</text></svg>`;
+    const on=estampado(); const {name,num}=curPerso();
+    return `<svg viewBox="0 0 120 120"><path d="M42 14 L16 26 L8 48 L26 57 L34 50 L34 106 L86 106 L86 50 L94 57 L112 48 L104 26 L78 14 C74 22 66 26 60 26 C54 26 46 22 42 14 Z" fill="${C1}" stroke="#00000030" stroke-width="1.5"/><path d="M44 15 C48 22 54 25 60 25 C66 25 72 22 76 15 L60 20 Z" fill="${C2}"/><text x="60" y="46" font-family="Arial" font-weight="800" font-size="9" fill="${C2}" text-anchor="middle">${on?name:''}</text><text x="60" y="88" font-family="Arial" font-weight="900" font-size="40" fill="${C2}" text-anchor="middle">${on?num:''}</text></svg>`;
   }
   function crestSVG(){ return `<svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="34" fill="${C1}" stroke="${C2}" stroke-width="3"/><text x="60" y="70" font-family="Arial" font-weight="900" font-size="20" fill="${C2}" text-anchor="middle">${CREST}</text></svg>`; }
   function gorraSVG(){
@@ -300,17 +354,18 @@
   }
   function setOpcion(t,el){ sel=t; document.querySelectorAll('.size').forEach(s=>s.classList.remove('active')); el.classList.add('active'); document.getElementById('sizeWarn').style.display='none'; if(esGorra) renderGallery(); }
 
-  function togglePerso(){ perso=!perso; document.getElementById('persoToggle').classList.toggle('on',perso); document.getElementById('persoFields').classList.toggle('show',perso); document.getElementById('persoHint').style.display=perso?'block':'none'; if(perso) currentView='back'; renderGallery(); updateTotal(); }
+  function togglePerso(){ perso=!perso; document.getElementById('persoToggle').classList.toggle('on',perso); document.getElementById('persoFields').classList.toggle('show',perso); if(perso) currentView='back'; renderGallery(); updateTotal(); }
   function cleanNum(){const i=document.getElementById('inNum');i.value=i.value.replace(/[^0-9]/g,'');}
-  function updatePreview(){ if(currentView!=='back'){currentView='back';} renderGallery(); }
+  function updatePreview(){ if(esCond){ condIndex = +(document.getElementById('condSel')?.value||0); } if(currentView!=='back'){currentView='back';} renderGallery(); updateTotal(); }
 
-  function updateTotal(){ const total=PRECIO_BASE+(perso?COSTO_PERSO:0); document.getElementById('total').textContent=fmt(total); document.getElementById('basePrice').textContent=fmt(PRECIO_BASE); }
+  function updateTotal(){ const total=PRECIO_BASE+(estampado()?COSTO_PERSO:0); document.getElementById('total').textContent=fmt(total); document.getElementById('basePrice').textContent=fmt(PRECIO_BASE); }
 
   function addToCart(){
     if(!sel){document.getElementById('sizeWarn').style.display='block';window.scrollTo({top:document.querySelector('.sizes').offsetTop-120,behavior:'smooth'});return;}
-    if(perso && !document.getElementById('inNum').value){showToast('Escribe el número (dorsal) 🙂');return;}
+    if(perso && !esCond && !document.getElementById('inNum').value){showToast('Escribe el número (dorsal) 🙂');return;}
     cart++; document.getElementById('cartCount').textContent=cart;
-    const extra = perso?` · ${document.getElementById('inName').value||'—'} #${document.getElementById('inNum').value}`:'';
+    const on=estampado(); const {name,num}=curPerso();
+    const extra = on?` · ${name||'—'} #${num}`:'';
     showToast(`✅ Agregado: ${P.team} · ${sel}${extra}`);
   }
   function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),2600);}
