@@ -347,7 +347,10 @@
     });
     if(!ok){first.scrollIntoView({behavior:'smooth',block:'center'});first.focus();return;}
     if(!cart.length){alert('Tu carrito está vacío');return;}
-    guardarPedido();      // guarda el pedido en la base de datos
+    irAPagar();
+  }
+  async function irAPagar(){
+    await guardarPedido();   // guarda el pedido en la base de datos primero
     mercadoPago();
   }
 
@@ -376,17 +379,40 @@
     try { await _sb.from('pedidos').insert(pedido); } catch(e){ /* no bloquea la compra */ }
   }
 
-  function mercadoPago(){
+  async function mercadoPago(){
     const m=document.getElementById('modal');m.classList.add('open');window.scrollTo(0,0);
-    const {ahora}=totals();
-    const nota = metodo==='addi' ? 'Redirigiendo a Addi…' : 'Redirigiendo a Mercado Pago…';
+    const {sub,envio,total,ahora}=totals();
+    const nota = metodo==='addi' ? 'Preparando pago con Addi…' : 'Redirigiendo a Mercado Pago…';
     document.getElementById('sheet').innerHTML=`
       <div class="mp-load">
         <div class="spin"></div>
         <div class="mp-badge">${metodo==='addi'?'addi':'Mercado Pago'}</div>
         <div style="color:var(--muted);font-size:13px">${nota}<br>Pago seguro por ${fmt(ahora)}</div>
       </div>`;
-    setTimeout(confirmacion,2600);
+    // Addi todavía no está integrado -> confirmación (se coordina el pago aparte)
+    if(metodo==='addi'){ setTimeout(confirmacion,2200); return; }
+    // Arma los productos a cobrar AHORA
+    let items;
+    if(metodo==='contra'){
+      items=[{title:'Anticipo contra entrega · DAVFOOR LEGEND', quantity:1, unit_price:ANTICIPO}];
+    } else {
+      items = cart.map(it=>({title:it.team, quantity:it.qty, unit_price:(it.base+it.extra)}));
+      if(envio>0) items.push({title:'Envío', quantity:1, unit_price:envio});
+    }
+    const payer={
+      nombre:document.getElementById('f_nombre').value.trim(),
+      correo:document.getElementById('f_correo').value.trim(),
+      celular:document.getElementById('f_cel').value.trim()
+    };
+    try{
+      const r=await fetch('/api/crear-preferencia',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items,payer,metodo})});
+      const data=await r.json();
+      if(r.ok && data.init_point){ window.location.href=data.init_point; return; }  // ¡a Mercado Pago real!
+      throw new Error('sin init_point');
+    }catch(e){
+      // Si aún NO has puesto tu clave de Mercado Pago en Vercel, mostramos la confirmación de demostración
+      setTimeout(confirmacion,1200);
+    }
   }
 
   function confirmacion(){
