@@ -219,26 +219,11 @@
 
     <!-- Filtro selección -->
     <div class="filter-label">Filtrar por selección</div>
-    <div class="chips" id="selecciones">
-      <div class="chip" data-pais="espana" onclick="setSeleccion(this)"><div class="badge"><span class="flag">🇪🇸</span></div><span>España</span></div>
-      <div class="chip" data-pais="alemania" onclick="setSeleccion(this)"><div class="badge"><span class="flag">🇩🇪</span></div><span>Alemania</span></div>
-      <div class="chip" data-pais="inglaterra" onclick="setSeleccion(this)"><div class="badge"><span class="flag">🏴󠁧󠁢󠁥󠁮󠁧󠁿</span></div><span>Inglaterra</span></div>
-      <div class="chip" data-pais="colombia" onclick="setSeleccion(this)"><div class="badge"><span class="flag">🇨🇴</span></div><span>Colombia</span></div>
-      <div class="chip" data-pais="argentina" onclick="setSeleccion(this)"><div class="badge"><span class="flag">🇦🇷</span></div><span>Argentina</span></div>
-    </div>
+    <div class="chips" id="selecciones"></div>
 
     <!-- Filtro club -->
     <div class="filter-label">Filtrar por club</div>
-    <div class="chips" id="clubes">
-      <div class="chip" data-club="madrid" onclick="setClub(this)"><div class="badge" style="background:#fff"><span class="crest" style="color:#00529f">RM</span></div><span>Real Madrid</span></div>
-      <div class="chip" data-club="barcelona" onclick="setClub(this)"><div class="badge" style="background:linear-gradient(90deg,#a50044 50%,#004d98 50%)"><span class="crest" style="color:#ffdf1c">FCB</span></div><span>Barcelona</span></div>
-      <div class="chip" data-club="bayern" onclick="setClub(this)"><div class="badge" style="background:#dc052d"><span class="crest">FCB</span></div><span>Bayern</span></div>
-      <div class="chip" data-club="mancity" onclick="setClub(this)"><div class="badge" style="background:#6cabdd"><span class="crest" style="color:#fff">MCFC</span></div><span>Man City</span></div>
-      <div class="chip" data-club="millonarios" onclick="setClub(this)"><div class="badge" style="background:#004ba0"><span class="crest" style="color:#fff">M</span></div><span>Millonarios</span></div>
-      <div class="chip" data-club="nacional" onclick="setClub(this)"><div class="badge" style="background:#00843d"><span class="crest" style="color:#fff">AN</span></div><span>A. Nacional</span></div>
-      <div class="chip" data-club="river" onclick="setClub(this)"><div class="badge" style="background:#fff"><span class="crest" style="color:#c8102e">CARP</span></div><span>River</span></div>
-      <div class="chip" data-club="boca" onclick="setClub(this)"><div class="badge" style="background:#0a3d91"><span class="crest" style="color:#ffd100">CABJ</span></div><span>Boca</span></div>
-    </div>
+    <div class="chips" id="clubes"></div>
   </section>
 
   <!-- ===== MÁS VENDIDOS ===== -->
@@ -311,8 +296,8 @@
     const list = productos.filter(p =>
       (fTipo==='todos'||p.tipo===fTipo) &&
       (fCat==='todos'||p.categoria===fCat) &&
-      (fPais==='todos'||p.pais===fPais) &&
-      (fClub==='todos'||p.club===fClub));
+      (fPais==='todos'||p.equipo===fPais) &&
+      (fClub==='todos'||p.equipo===fClub));
     if(!list.length){g.innerHTML='<div class="empty">No hay productos para este filtro todavía 🙈</div>';return;}
     g.innerHTML = list.map(p=>{
       const [sc,st]=stockLabel[p.stock];
@@ -373,6 +358,15 @@
     render();
   }
 
+  // Círculos de filtro generados desde el catálogo real (assets/productos.js)
+  function renderChips(){
+    document.getElementById('selecciones').innerHTML = SELECCIONES.map(s=>
+      `<div class="chip" data-pais="${s.id}" onclick="setSeleccion(this)"><div class="badge"><span class="flag">${s.flag}</span></div><span>${s.name}</span></div>`).join('');
+    document.getElementById('clubes').innerHTML = CLUBES.map(c=>
+      `<div class="chip" data-club="${c.id}" onclick="setClub(this)"><div class="badge" style="background:${c.bg}"><span class="crest" style="color:${c.cc}">${c.crest}</span></div><span>${c.name}</span></div>`).join('');
+  }
+
+  renderChips();
   render();
 </script>
 </body>
