@@ -51,7 +51,7 @@
   .tm.active span{color:#fff}
   .flag{font-size:32px}
   .crest{font-size:15px;font-weight:900}
-  .logo-img{width:100%;height:100%;object-fit:contain;padding:6px;background:#fff}
+  .logo-img{width:78%;height:78%;object-fit:contain;background:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
 
   /* TABS */
   .tabs{display:flex;gap:8px;background:var(--panel);padding:5px;border-radius:14px;margin:6px 0 16px}
@@ -208,7 +208,7 @@
     const todos = `<div class="tm ${selEquipo==='todos'?'active':''}" onclick="pickTeam('todos')"><div class="badge"><span style="font-size:12px;font-weight:800">TODOS</span></div><span>Todos</span></div>`;
     el.innerHTML = todos + all.map(t=>{
       const badge = t.logo
-        ? `<div class="badge" style="background:#fff;border:none"><img class="logo-img" src="${t.logo}" alt="${t.name}"></div>`
+        ? `<div class="badge" style="background:${t.bg||'#0e1116'};border:none"><img class="logo-img" src="${t.logo}" alt="${t.name}"></div>`
         : (t.flag
           ? `<div class="badge"><span class="flag">${t.flag}</span></div>`
           : `<div class="badge" style="background:${t.bg};border:none"><span class="crest" style="color:${t.cc}">${t.crest}</span></div>`);
