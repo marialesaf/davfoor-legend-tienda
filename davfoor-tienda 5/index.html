@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DAVFOOR LEGEND — Camisetas de Fútbol</title>
+<style>
+  :root{
+    --bg:#0a0a0a; --panel:#151515; --panel2:#1d1d1d; --line:#282828;
+    --green:#3fe167; --green-d:#25a544; --txt:#ffffff; --muted:#9aa0a6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.4;overflow-x:hidden}
+  img{max-width:100%;display:block}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:480px;margin:0 auto;position:relative;min-height:100vh;background:var(--bg);box-shadow:0 0 40px rgba(0,0,0,.6)}
+
+  /* ---------- TOP BAR ---------- */
+  header{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;
+    padding:12px 16px;background:rgba(10,10,10,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .icon-btn{background:none;border:none;color:var(--txt);cursor:pointer;padding:6px;display:flex}
+  .icon-btn svg{width:26px;height:26px}
+  .logo-top{height:34px}
+  .topnav{display:none;gap:4px}
+  .topnav a{padding:9px 13px;border-radius:10px;font-weight:700;font-size:14px;color:var(--muted)}
+  .topnav a:hover{color:#fff;background:var(--panel)}
+  .topnav a.active{color:var(--green)}
+  .cart-wrap{position:relative}
+  .cart-count{position:absolute;top:-2px;right:-4px;background:var(--green);color:#000;font-size:10px;font-weight:800;
+    min-width:16px;height:16px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+  /* ---------- DRAWER (hamburguesa) ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:.25s;z-index:50}
+  .overlay.open{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;left:0;height:100%;width:78%;max-width:330px;background:#111;z-index:60;
+    transform:translateX(-100%);transition:.28s ease;padding:0 0 30px;overflow-y:auto}
+  .drawer.open{transform:translateX(0)}
+  .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:18px 18px;border-bottom:1px solid var(--line)}
+  .drawer-head img{height:30px}
+  .drawer nav a{display:flex;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid #1c1c1c;font-size:15px;font-weight:600}
+  .drawer nav a:active{background:#1a1a1a}
+  .drawer nav a .dot{color:var(--green)}
+  .drawer .mini{padding:18px 20px;color:var(--muted);font-size:12px}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;padding:34px 20px 30px;background:
+     radial-gradient(120% 90% at 80% 10%, rgba(63,225,103,.18), transparent 60%),
+     linear-gradient(180deg,#0f0f0f, #0a0a0a);
+     border-bottom:1px solid var(--line);overflow:hidden}
+  .hero:before{content:"";position:absolute;right:-40px;top:-30px;width:220px;height:220px;
+     background:radial-gradient(circle, rgba(63,225,103,.25), transparent 65%);filter:blur(6px)}
+  .hero h1{font-size:34px;line-height:1;font-weight:900;letter-spacing:-1px;text-transform:uppercase}
+  .hero h1 .g{color:var(--green)}
+  .hero p{color:var(--muted);margin:12px 0 20px;font-size:14px;max-width:280px}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#04240f;font-weight:800;
+     border:none;border-radius:30px;padding:13px 22px;font-size:14px;cursor:pointer;text-transform:uppercase;letter-spacing:.4px}
+  .btn:active{transform:scale(.97)}
+
+  /* ---------- SECTION ---------- */
+  section{padding:22px 16px}
+  .sec-title{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  .sec-title h2{font-size:17px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+  .sec-title .bar{width:22px;height:3px;background:var(--green);border-radius:3px}
+
+  /* ---------- TABS actual/retro ---------- */
+  .tabs{display:flex;gap:8px;background:var(--panel);padding:5px;border-radius:14px;margin-bottom:16px}
+  .tab{flex:1;text-align:center;padding:11px;border-radius:10px;font-weight:700;font-size:13px;color:var(--muted);cursor:pointer;border:none;background:none;text-transform:uppercase;letter-spacing:.5px}
+  .tab.active{background:var(--green);color:#04240f}
+
+  /* ---------- FILTER ROWS ---------- */
+  .filter-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:4px 2px 9px;font-weight:700}
+  .chips{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;margin-bottom:6px}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;width:60px}
+  .chip .badge{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+     font-weight:800;font-size:15px;border:2px solid var(--line);background:var(--panel2);transition:.15s;overflow:hidden;position:relative}
+  .chip.active .badge{border-color:var(--green);box-shadow:0 0 0 3px rgba(63,225,103,.25)}
+  .chip span{font-size:10.5px;color:var(--muted);text-align:center;line-height:1.1;font-weight:600}
+  .chip.active span{color:var(--txt)}
+  .flag{font-size:26px}
+
+  /* team crest mini (CSS) */
+  .crest{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900}
+
+  /* ---------- PRODUCT GRID ---------- */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;position:relative;transition:.15s}
+  .card:active{transform:scale(.98)}
+  .card .imgbox{position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+     background:radial-gradient(120% 120% at 50% 20%, #232323, #121212)}
+  .card svg.jersey{width:78%;height:78%;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5))}
+  .tag{position:absolute;top:9px;left:9px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+     padding:4px 8px;border-radius:20px}
+  .tag.actual{background:var(--green);color:#04240f}
+  .tag.retro{background:#e8a33d;color:#2a1900}
+  .stock{position:absolute;top:9px;right:9px;font-size:9px;font-weight:800;padding:4px 7px;border-radius:20px;text-transform:uppercase}
+  .stock.ok{background:rgba(63,225,103,.15);color:var(--green);border:1px solid rgba(63,225,103,.4)}
+  .stock.low{background:rgba(232,163,61,.15);color:#e8a33d;border:1px solid rgba(232,163,61,.4)}
+  .stock.out{background:rgba(255,80,80,.12);color:#ff6b6b;border:1px solid rgba(255,80,80,.4)}
+  .card.soldout .imgbox{opacity:.4}
+  .card .info{padding:10px 11px 13px}
+  .card .team{font-size:12.5px;font-weight:800;line-height:1.15}
+  .card .season{font-size:10.5px;color:var(--muted);margin:2px 0 7px}
+  .card .price{font-size:14px;font-weight:900;color:var(--green)}
+  .card .price small{color:var(--muted);font-weight:600;font-size:10px}
+  .empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:30px 10px;font-size:13px}
+
+  /* ---------- EXTRAS ---------- */
+  .extra{display:flex;gap:12px}
+  .extra .ecard{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;text-align:center}
+  .extra .ico{width:46px;height:46px;margin:0 auto 10px;border-radius:12px;background:rgba(63,225,103,.12);
+     display:flex;align-items:center;justify-content:center;font-size:24px}
+  .extra h3{font-size:13px;margin-bottom:3px}
+  .extra p{font-size:11px;color:var(--muted)}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:#0c0c0c;border-top:1px solid var(--line);padding:26px 18px 90px;margin-top:14px}
+  footer img{height:34px;margin-bottom:12px}
+  footer p{color:var(--muted);font-size:12px;max-width:260px;margin-bottom:16px}
+  .fcols{display:flex;gap:30px;flex-wrap:wrap}
+  .fcols b{font-size:12px;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:8px}
+  .fcols a{display:block;color:var(--muted);font-size:12.5px;padding:4px 0}
+
+  /* ---------- WHATSAPP ---------- */
+  .wa{position:fixed;bottom:18px;right:18px;z-index:45;width:58px;height:58px;border-radius:50%;
+     background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(37,211,102,.5);
+     cursor:pointer;animation:pulse 2.4s infinite}
+  .wa svg{width:32px;height:32px;fill:#fff}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.5)}70%{box-shadow:0 0 0 16px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
+  .wa-note{position:fixed;bottom:34px;right:84px;z-index:45;background:#fff;color:#111;font-size:12px;font-weight:700;
+     padding:8px 12px;border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,.35);max-width:150px}
+  .wa-note:after{content:"";position:absolute;right:-6px;bottom:14px;border:7px solid transparent;border-left-color:#fff}
+
+  .demo-flag{background:#e8a33d;color:#2a1900;text-align:center;font-size:11px;font-weight:800;padding:7px;letter-spacing:.4px}
+
+  /* ---------- VERSIÓN PC / ESCRITORIO ---------- */
+  @media(min-width:760px){
+    .wrap{max-width:1080px;box-shadow:none}
+    header{padding:16px 40px}
+    .icon-btn.menu{display:none}
+    .topnav{display:flex}
+    .logo-top{height:40px}
+    .hero{padding:64px 48px 56px}
+    .hero h1{font-size:58px}
+    .hero p{font-size:17px;max-width:460px}
+    section{padding:34px 40px}
+    .chip{width:96px}
+    .chip .badge{width:78px;height:78px;font-size:22px}
+    .flag{font-size:40px}
+    .chip span{font-size:13px}
+    .grid{grid-template-columns:repeat(4,1fr);gap:20px}
+    .card .team{font-size:14px}.card .season{font-size:12px}.card .price{font-size:16px}
+    .extra{gap:20px}
+    footer{padding:46px 40px 60px}
+  }
+  @media(min-width:1120px){ .grid{grid-template-columns:repeat(5,1fr)} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <button class="icon-btn menu" onclick="openMenu()" aria-label="Menú">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <img class="logo-top" src="assets/img/logo-white.png" alt="DAVFOOR LEGEND">
+    <nav class="topnav">
+      <a href="index.html" class="active">Inicio</a>
+      <a href="catalogo.html?cat=club">Clubes</a>
+      <a href="catalogo.html?cat=seleccion">Selecciones</a>
+      <a href="catalogo.html?cat=gorra">Gorras</a>
+    </nav>
+    <div class="cart-wrap">
+      <button class="icon-btn" aria-label="Carrito" onclick="location.href='carrito.html'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/><path d="M2.5 3h2l2.2 12.4a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21.5 7H6"/></svg>
+      </button>
+      <span class="cart-count">2</span>
+    </div>
+  </header>
+
+  <!-- ===== DRAWER ===== -->
+  <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawer-head">
+      <img src="assets/img/logo-white.png" alt="DAVFOOR">
+      <button class="icon-btn" onclick="closeMenu()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+      </button>
+    </div>
+    <nav>
+      <a href="index.html"><span class="dot">●</span> Inicio</a>
+      <a href="catalogo.html?cat=club"><span class="dot">●</span> Clubes</a>
+      <a href="catalogo.html?cat=seleccion"><span class="dot">●</span> Selecciones</a>
+      <a href="catalogo.html?cat=gorra"><span class="dot">●</span> Gorras</a>
+    </nav>
+    <div class="mini">Envío gratis en compras sobre $300.000<br>© DAVFOOR LEGEND</div>
+  </aside>
+
+  <!-- ===== HERO ===== -->
+  <div class="hero">
+    <h1>VIVE POR EL <span class="g">FÚTBOL</span></h1>
+    <p>Camisetas actuales y retro de tus equipos favoritos. Botilitos y gorras personalizadas.</p>
+    <button class="btn" onclick="document.getElementById('tienda').scrollIntoView({behavior:'smooth'})">⚽ Ver camisetas</button>
+  </div>
+
+  <!-- ===== TIENDA / FILTROS ===== -->
+  <section id="tienda">
+    <div class="sec-title"><span class="bar"></span><h2>Nuestra tienda</h2></div>
+
+    <!-- Tabs actual / retro -->
+    <div class="tabs">
+      <button class="tab active" data-tipo="todos" onclick="setTipo(this)">Todas</button>
+      <button class="tab" data-tipo="actual" onclick="setTipo(this)">Actuales</button>
+      <button class="tab" data-tipo="retro" onclick="setTipo(this)">Retro</button>
+    </div>
+
+    <!-- Filtro selección -->
+    <div class="filter-label">Filtrar por selección</div>
+    <div class="chips" id="selecciones"></div>
+
+    <!-- Filtro club -->
+    <div class="filter-label">Filtrar por club</div>
+    <div class="chips" id="clubes"></div>
+  </section>
+
+  <!-- ===== MÁS VENDIDOS ===== -->
+  <section style="padding-top:4px">
+    <div class="sec-title"><span class="bar"></span><h2>🔥 Más vendidos</h2></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <!-- ===== ACCESORIOS ===== -->
+  <section>
+    <div class="sec-title"><span class="bar"></span><h2>🧢 Gorras bordadas</h2></div>
+    <div class="extra">
+      <div class="ecard" style="cursor:pointer" onclick="location.href='catalogo.html?cat=gorra'">
+        <div class="ico">🧢</div>
+        <h3>Gorra bordada</h3>
+        <p>Bordada con el escudo del equipo o la palabra del jugador. Disponible en blanca y negra.</p>
+        <div style="color:var(--green);font-weight:900;font-size:17px;margin-top:9px">$30.000</div>
+        <div style="font-size:11px;color:var(--green);margin-top:3px">Ver gorras →</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <img src="assets/img/logo-white.png" alt="DAVFOOR LEGEND">
+    <p>Tu tienda de camisetas de fútbol, actuales y retro, y artículos deportivos personalizados.</p>
+    <div class="fcols">
+      <div><b>Tienda</b><a href="#">Actuales</a><a href="#">Retro</a><a href="#">Botilitos</a><a href="#">Gorras</a></div>
+      <div><b>Ayuda</b><a href="#">Cómo comprar</a><a href="#">Envíos</a><a href="#">Personalización</a><a href="#">Contacto</a></div>
+    </div>
+  </footer>
+
+  <!-- ===== WHATSAPP ===== -->
+  <div class="wa-note" id="waNote">¿Dudas? ¡Escríbenos! 👋</div>
+  <a class="wa" href="https://wa.me/57XXXXXXXXXX?text=Hola%20DAVFOOR,%20quiero%20información" target="_blank" aria-label="WhatsApp">
+    <svg viewBox="0 0 32 32"><path d="M16 .5C7.4.5.5 7.4.5 16c0 2.8.8 5.5 2.1 7.9L.4 31.6l7.9-2.1C10.6 30.7 13.2 31.5 16 31.5 24.6 31.5 31.5 24.6 31.5 16S24.6.5 16 .5zm0 28c-2.5 0-4.9-.7-7-1.9l-.5-.3-4.7 1.2 1.2-4.6-.3-.5C3.4 20.3 2.7 18.2 2.7 16 2.7 8.6 8.6 2.7 16 2.7S29.3 8.6 29.3 16 23.4 28.5 16 28.5zm7.4-9.4c-.4-.2-2.4-1.2-2.7-1.3-.4-.1-.6-.2-.9.2s-1 1.3-1.3 1.6c-.2.2-.5.3-.9.1-.4-.2-1.7-.6-3.3-2-1.2-1.1-2-2.4-2.3-2.8-.2-.4 0-.6.2-.8.2-.2.4-.5.6-.7.2-.2.2-.4.4-.6.1-.3 0-.5 0-.7-.1-.2-.9-2.2-1.3-3-.3-.8-.7-.7-.9-.7h-.8c-.3 0-.7.1-1 .5-.4.4-1.4 1.3-1.4 3.2s1.4 3.7 1.6 4c.2.3 2.8 4.3 6.8 6 .9.4 1.7.6 2.2.8.9.3 1.8.3 2.4.2.7-.1 2.4-1 2.7-1.9.3-.9.3-1.7.2-1.9-.1-.2-.3-.3-.7-.5z"/></svg>
+  </a>
+
+</div>
+
+<script src="assets/productos.js"></script>
+<script>
+  // ---- Menú hamburguesa ----
+  function openMenu(){document.getElementById('drawer').classList.add('open');document.getElementById('overlay').classList.add('open')}
+  function closeMenu(){document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')}
+  setTimeout(()=>{var n=document.getElementById('waNote');if(n)n.style.display='none'},5000);
+
+  // ---- Datos de productos: vienen del archivo único assets/productos.js ----
+  const productos = PRODUCTOS;
+
+  function jerseySVG(c1,c2,num){
+    const dark = (c1.toLowerCase()==='#ffffff'||c1.toLowerCase()==='#f4f4f4'||c1.toLowerCase()==='#f9f9f9');
+    const numColor = dark ? '#222' : '#ffffff';
+    return `<svg class="jersey" viewBox="0 0 120 120">
+      <path d="M42 14 L16 26 L8 48 L26 57 L34 50 L34 106 L86 106 L86 50 L94 57 L112 48 L104 26 L78 14 C74 25 66 30 60 30 C54 30 46 25 42 14 Z" fill="${c1}" stroke="#00000030" stroke-width="1.5"/>
+      <path d="M34 50 L34 62 L86 62 L86 50 L94 57 L98 51 L86 45 L86 50 Z" fill="${c2}" opacity=".9"/>
+      <path d="M42 14 C46 25 54 30 60 30 C66 30 74 25 78 14 L72 11 C68 20 52 20 48 11 Z" fill="${c2}"/>
+      <text x="60" y="92" font-family="Arial" font-weight="900" font-size="34" fill="${numColor}" text-anchor="middle">${num}</text>
+    </svg>`;
+  }
+
+  const PRECIO = {actual:110000, retro:130000};
+  const fmt = n => '$'+n.toLocaleString('es-CO');
+  const stockLabel = {ok:['ok','En stock'], low:['low','Últimas'], out:['out','Agotado']};
+
+  let fTipo='todos', fCat='todos', fPais='todos', fClub='todos';
+
+  function render(){
+    const g = document.getElementById('grid');
+    const list = productos.filter(p =>
+      (fTipo==='todos'||p.tipo===fTipo) &&
+      (fCat==='todos'||p.categoria===fCat) &&
+      (fPais==='todos'||p.equipo===fPais) &&
+      (fClub==='todos'||p.equipo===fClub));
+    if(!list.length){g.innerHTML='<div class="empty">No hay productos para este filtro todavía 🙈</div>';return;}
+    g.innerHTML = list.map(p=>{
+      const [sc,st]=stockLabel[p.stock];
+      const out = p.stock==='out';
+      return `<div class="card ${out?'soldout':''}" style="cursor:pointer" onclick="location.href='producto.html?id=${p.id}'">
+        <div class="imgbox">
+          <span class="tag ${p.tipo}">${p.tipo}</span>
+          <span class="stock ${sc}">${st}</span>
+          ${p.foto ? `<img src="${p.foto}" alt="${p.team}" style="width:100%;height:100%;object-fit:cover">` : jerseySVG(p.c1,p.c2,p.num)}
+        </div>
+        <div class="info">
+          <div class="team">${p.team}</div>
+          <div class="season">${p.season}</div>
+          <div class="price">${fmt(PRECIO[p.tipo])} <small>${p.tipo==='retro'?'Retro':'Actual'}</small></div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // limpia la selección visual de los dos filtros redondos
+  function clearChips(){document.querySelectorAll('#selecciones .chip,#clubes .chip').forEach(c=>c.classList.remove('active'));}
+
+  function setTipo(el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');fTipo=el.dataset.tipo;render();}
+
+  // Filtrar por SELECCIÓN (toca de nuevo para quitar el filtro)
+  function setSeleccion(el){
+    const activo = el.classList.contains('active');
+    clearChips();
+    if(activo){ fCat='todos'; fPais='todos'; }
+    else { el.classList.add('active'); fCat='seleccion'; fPais=el.dataset.pais; fClub='todos'; }
+    render();
+  }
+
+  // Filtrar por CLUB (toca de nuevo para quitar el filtro)
+  function setClub(el){
+    const activo = el.classList.contains('active');
+    clearChips();
+    if(activo){ fCat='todos'; fClub='todos'; }
+    else { el.classList.add('active'); fCat='club'; fClub=el.dataset.club; fPais='todos'; }
+    render();
+  }
+
+  // Desde el menú hamburguesa: ver TODOS los clubes o TODAS las selecciones
+  function verCategoria(cat){
+    clearChips();
+    fCat=cat; fPais='todos'; fClub='todos';
+    closeMenu();
+    document.getElementById('tienda').scrollIntoView({behavior:'smooth'});
+    render();
+  }
+  // Inicio: quitar todos los filtros
+  function verTodo(){
+    clearChips();
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelector('.tab[data-tipo="todos"]').classList.add('active');
+    fTipo='todos'; fCat='todos'; fPais='todos'; fClub='todos';
+    closeMenu();
+    render();
+  }
+
+  // Círculos de filtro generados desde el catálogo real (assets/productos.js)
+  function renderChips(){
+    document.getElementById('selecciones').innerHTML = SELECCIONES.map(s=>
+      `<div class="chip" data-pais="${s.id}" onclick="setSeleccion(this)"><div class="badge"><span class="flag">${s.flag}</span></div><span>${s.name}</span></div>`).join('');
+    document.getElementById('clubes').innerHTML = CLUBES.map(c=>
+      `<div class="chip" data-club="${c.id}" onclick="setClub(this)"><div class="badge" style="background:${c.bg}"><span class="crest" style="color:${c.cc}">${c.crest}</span></div><span>${c.name}</span></div>`).join('');
+  }
+
+  renderChips();
+  render();
+  try{const _c=JSON.parse(localStorage.getItem('davfoor_cart')||'[]');document.querySelectorAll('.cart-count').forEach(e=>e.textContent=_c.reduce((a,it)=>a+(it.qty||1),0));}catch(e){}
+</script>
+</body>
+</html>

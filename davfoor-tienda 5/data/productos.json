@@ -1,0 +1,6 @@
+{
+  "_nota": "Catalogo de ejemplo. En la tienda real lo reemplaza una base de datos controlada desde admin.html.",
+  "precios": { "actual": 110000, "retro": 130000, "personalizacion": 15000, "botilito": 50000, "botilito_nombre": 15000, "gorra": 30000 },
+  "envio": { "costo": 18000, "gratis_desde": 300000 },
+  "pagos": { "contra_entrega_anticipo": 30000, "addi_recargo_porcentaje": 10 }
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¡Gracias por tu compra! — DAVFOOR LEGEND</title>
+<style>
+  :root{--bg:#0a0a0a;--panel:#151515;--line:#282828;--green:#3fe167;--amber:#e8a33d;--red:#ff6b6b;--txt:#fff;--muted:#9aa0a6}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.5;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+  .card{max-width:420px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:34px 26px;text-align:center}
+  .card img{height:40px;margin:0 auto 20px}
+  .icon{width:74px;height:74px;border-radius:50%;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;font-size:38px}
+  .ok{background:rgba(63,225,103,.15)} .pend{background:rgba(232,163,61,.15)} .fail{background:rgba(255,107,107,.15)}
+  h1{font-size:22px;margin-bottom:8px}
+  p{color:var(--muted);font-size:14px;margin-bottom:8px}
+  .ref{display:inline-block;margin-top:8px;background:#000;border:1px solid var(--line);border-radius:8px;padding:7px 14px;font-weight:800;letter-spacing:1px;font-size:13px}
+  .btn{display:inline-block;margin-top:24px;background:var(--green);color:#04240f;font-weight:800;border:none;border-radius:14px;padding:14px 26px;font-size:14px;cursor:pointer;text-decoration:none;text-transform:uppercase;letter-spacing:.4px}
+  .wa{display:block;margin-top:12px;color:var(--green);font-size:13px;text-decoration:none}
+</style>
+</head>
+<body>
+  <div class="card">
+    <img src="assets/img/logo-white.png" alt="DAVFOOR LEGEND">
+    <div class="icon ok" id="icon">✅</div>
+    <h1 id="titulo">¡Gracias por tu compra!</h1>
+    <p id="mensaje">Tu pago fue recibido. Ya estamos preparando tu pedido y te contactaremos por WhatsApp con el estado y la guía de envío.</p>
+    <div class="ref" id="ref" style="display:none"></div>
+    <a class="btn" href="index.html">Volver a la tienda</a>
+    <a class="wa" href="https://wa.me/57XXXXXXXXXX" target="_blank">¿Dudas? Escríbenos por WhatsApp 💬</a>
+  </div>
+<script>
+  const p = new URLSearchParams(location.search);
+  const status = p.get('status') || p.get('collection_status') || 'approved';
+  const ref = p.get('external_reference') || p.get('preference_id') || '';
+  const icon=document.getElementById('icon'), tit=document.getElementById('titulo'), msg=document.getElementById('mensaje');
+  if(status==='approved'){
+    icon.className='icon ok'; icon.textContent='✅';
+    tit.textContent='¡Gracias por tu compra!';
+    msg.textContent='Tu pago fue aprobado. Ya estamos preparando tu pedido y te contactaremos por WhatsApp con el estado y la guía de envío.';
+  } else if(status==='pending' || status==='in_process'){
+    icon.className='icon pend'; icon.textContent='⏳';
+    tit.textContent='Pago en proceso';
+    msg.textContent='Tu pago está siendo procesado. Apenas se confirme, empezamos a preparar tu pedido. Te avisaremos por WhatsApp.';
+  } else {
+    icon.className='icon fail'; icon.textContent='⚠️';
+    tit.textContent='El pago no se completó';
+    msg.textContent='No pudimos confirmar tu pago. Puedes intentar de nuevo o escribirnos por WhatsApp para ayudarte.';
+  }
+  if(ref){ const r=document.getElementById('ref'); r.style.display='inline-block'; r.textContent='Ref: '+ref; }
+  // Si el pago fue aprobado, vaciamos el carrito
+  if(status==='approved'){ try{ localStorage.removeItem('davfoor_cart'); }catch(e){} }
+</script>
+</body>
+</html>
