@@ -1,28 +1,28 @@
 /* DAVFOOR LEGEND — CATALOGO REAL. Para poner foto: foto:'assets/img/archivo.jpg' */
 
 const CLUBES = [
-  {id:'madrid', name:'Real Madrid', bg:"#ffffff", crest:'RM', cc:'#00529f'},
-  {id:'barcelona', name:'Barcelona', bg:"linear-gradient(90deg,#a50044 50%,#004d98 50%)", crest:'FCB', cc:'#ffdf1c'},
-  {id:'bayern', name:'Bayern Munich', bg:"#dc052d", crest:'FCB', cc:'#ffffff'},
-  {id:'liverpool', name:'Liverpool', bg:"#c8102e", crest:'LFC', cc:'#ffffff'},
-  {id:'manutd', name:'Manchester United', bg:"#da291c", crest:'MUFC', cc:'#ffffff'},
-  {id:'milan', name:'Milan', bg:"#fb090b", crest:'ACM', cc:'#000000'},
-  {id:'santos', name:'Santos', bg:"#ffffff", crest:'SFC', cc:'#000000'},
-  {id:'sporting', name:'Sporting Lisboa', bg:"#1a9f54", crest:'SCP', cc:'#ffffff'},
-  {id:'boca', name:'Boca Juniors', bg:"#0a3d91", crest:'CABJ', cc:'#ffd100'},
-  {id:'river', name:'River Plate', bg:"#ffffff", crest:'CARP', cc:'#c8102e'},
-  {id:'millonarios', name:'Millonarios', bg:"#004ba0", crest:'MFC', cc:'#ffffff'},
-  {id:'santafe', name:'Santa Fé', bg:"#d3122a", crest:'ISF', cc:'#ffffff'},
-  {id:'nacional', name:'A. Nacional', bg:"#00843d", crest:'AN', cc:'#ffffff'},
-  {id:'america', name:'América', bg:"#d3122a", crest:'AC', cc:'#ffd100'},
+  {id:'madrid', name:'Real Madrid', bg:"#ffffff", crest:'RM', cc:'#00529f', logo:'assets/img/logo-madrid.jpg'},
+  {id:'barcelona', name:'Barcelona', bg:"linear-gradient(90deg,#a50044 50%,#004d98 50%)", crest:'FCB', cc:'#ffdf1c', logo:'assets/img/logo-barcelona.jpg'},
+  {id:'bayern', name:'Bayern Munich', bg:"#dc052d", crest:'FCB', cc:'#ffffff', logo:'assets/img/logo-bayern.jpg'},
+  {id:'liverpool', name:'Liverpool', bg:"#c8102e", crest:'LFC', cc:'#ffffff', logo:'assets/img/logo-liverpool.jpg'},
+  {id:'manutd', name:'Manchester United', bg:"#da291c", crest:'MUFC', cc:'#ffffff', logo:'assets/img/logo-manutd.jpg'},
+  {id:'milan', name:'Milan', bg:"#fb090b", crest:'ACM', cc:'#000000', logo:'assets/img/logo-milan.jpg'},
+  {id:'santos', name:'Santos', bg:"#ffffff", crest:'SFC', cc:'#000000', logo:'assets/img/logo-santos.jpg'},
+  {id:'sporting', name:'Sporting Lisboa', bg:"#1a9f54", crest:'SCP', cc:'#ffffff', logo:'assets/img/logo-sporting.jpg'},
+  {id:'boca', name:'Boca Juniors', bg:"#0a3d91", crest:'CABJ', cc:'#ffd100', logo:'assets/img/logo-boca.jpg'},
+  {id:'river', name:'River Plate', bg:"#ffffff", crest:'CARP', cc:'#c8102e', logo:'assets/img/logo-river.jpg'},
+  {id:'millonarios', name:'Millonarios', bg:"#004ba0", crest:'MFC', cc:'#ffffff', logo:'assets/img/logo-millonarios.jpg'},
+  {id:'santafe', name:'Santa Fé', bg:"#d3122a", crest:'ISF', cc:'#ffffff', logo:'assets/img/logo-santafe.jpg'},
+  {id:'nacional', name:'A. Nacional', bg:"#00843d", crest:'AN', cc:'#ffffff', logo:'assets/img/logo-nacional.jpg'},
+  {id:'america', name:'América', bg:"#d3122a", crest:'AC', cc:'#ffd100', logo:'assets/img/logo-america.jpg'},
 ];
 
 const SELECCIONES = [
-  {id:'argentina', name:'Argentina', flag:'🇦🇷'},
-  {id:'portugal', name:'Portugal', flag:'🇵🇹'},
-  {id:'brasil', name:'Brasil', flag:'🇧🇷'},
-  {id:'espana', name:'España', flag:'🇪🇸'},
-  {id:'colombia', name:'Colombia', flag:'🇨🇴'},
+  {id:'argentina', name:'Argentina', flag:'🇦🇷', logo:'assets/img/logo-argentina.jpg'},
+  {id:'portugal', name:'Portugal', flag:'🇵🇹', logo:'assets/img/logo-portugal.jpg'},
+  {id:'brasil', name:'Brasil', flag:'🇧🇷', logo:'assets/img/logo-brasil.jpg'},
+  {id:'espana', name:'España', flag:'🇪🇸', logo:'assets/img/logo-espana.jpg'},
+  {id:'colombia', name:'Colombia', flag:'🇨🇴', logo:'assets/img/logo-colombia.jpg'},
 ];
 
 const PRODUCTOS = [
