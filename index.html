@@ -81,6 +81,7 @@
 
   /* team crest mini (CSS) */
   .crest{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900}
+  .logo-img{width:100%;height:100%;object-fit:contain;padding:5px;background:#fff}
 
   /* ---------- PRODUCT GRID ---------- */
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
@@ -361,9 +362,9 @@
   // Círculos de filtro generados desde el catálogo real (assets/productos.js)
   function renderChips(){
     document.getElementById('selecciones').innerHTML = SELECCIONES.map(s=>
-      `<div class="chip" data-pais="${s.id}" onclick="setSeleccion(this)"><div class="badge"><span class="flag">${s.flag}</span></div><span>${s.name}</span></div>`).join('');
+      `<div class="chip" data-pais="${s.id}" onclick="setSeleccion(this)"><div class="badge" style="background:#fff">${s.logo?`<img class="logo-img" src="${s.logo}" alt="${s.name}">`:`<span class="flag">${s.flag}</span>`}</div><span>${s.name}</span></div>`).join('');
     document.getElementById('clubes').innerHTML = CLUBES.map(c=>
-      `<div class="chip" data-club="${c.id}" onclick="setClub(this)"><div class="badge" style="background:${c.bg}"><span class="crest" style="color:${c.cc}">${c.crest}</span></div><span>${c.name}</span></div>`).join('');
+      `<div class="chip" data-club="${c.id}" onclick="setClub(this)"><div class="badge" style="background:${c.logo?'#fff':c.bg}">${c.logo?`<img class="logo-img" src="${c.logo}" alt="${c.name}">`:`<span class="crest" style="color:${c.cc}">${c.crest}</span>`}</div><span>${c.name}</span></div>`).join('');
   }
 
   renderChips();
