@@ -239,11 +239,7 @@
   const ENVIO = 18000, GRATIS_DESDE = 300000, ANTICIPO = 30000;
 
   // ---- Carrito demo ----
-  let cart = [
-    {team:'Real Madrid', season:'Local 2024/25', tipo:'actual', talla:'L', perso:'BELLINGHAM #5', base:110000, extra:15000, qty:1, c1:'#ffffff', c2:'#00529f'},
-    {team:'Boca Juniors', season:'Retro 1981', tipo:'retro', talla:'M', perso:'', base:130000, extra:0, qty:1, c1:'#0a3d91', c2:'#ffd100'},
-    {team:'Botilito personalizado', season:'Diseño Real Madrid + nombre', tipo:'accesorio', talla:'Único', perso:'JAMES', base:50000, extra:15000, qty:1, c1:'#1d1d1d', c2:'#3fe167'},
-  ];
+  let cart = JSON.parse(localStorage.getItem('davfoor_cart')||'[]');
   let metodo='contado';
 
   function jersey(c1,c2){return `<svg viewBox="0 0 120 120"><path d="M42 14 L16 26 L8 48 L26 57 L34 50 L34 106 L86 106 L86 50 L94 57 L112 48 L104 26 L78 14 C74 25 66 30 60 30 C54 30 46 25 42 14 Z" fill="${c1}" stroke="#00000030" stroke-width="1.5"/><path d="M42 14 C46 25 54 30 60 30 C66 30 74 25 78 14 L72 11 C68 20 52 20 48 11 Z" fill="${c2}"/></svg>`;}
@@ -255,7 +251,7 @@
         <div class="pic">${it.tipo==='accesorio' ? '<div style="font-size:30px">'+(it.team.toLowerCase().includes('gorra')?'🧢':'🥤')+'</div>' : jersey(it.c1,it.c2)}</div>
         <div class="d">
           <div class="t">${it.team}</div>
-          <div class="sub">${it.season} · Talla <b>${it.talla}</b>${it.perso?` · <b>${it.perso}</b>`:''}${it.extra?' · +personalización':''}</div>
+          <div class="sub">${it.season} · ${(it.tipo==='accesorio'||it.tipo==='gorra')?'Color':'Talla'} <b>${it.talla}</b>${it.perso?` · <b>${it.perso}</b>`:''}${it.extra?' · +personalización':''}</div>
           <div class="pr">${fmt(itemPrice(it))}</div>
           <div class="qty">
             <button onclick="chq(${i},-1)">−</button><span>${it.qty}</span><button onclick="chq(${i},1)">+</button>
@@ -263,10 +259,12 @@
           </div>
         </div>
       </div>`).join('') || '<div style="color:var(--muted);text-align:center;padding:20px">Tu carrito está vacío</div>';
+    document.querySelectorAll('.cart-count').forEach(e=>e.textContent=cart.reduce((a,it)=>a+(it.qty||1),0));
     calc();
   }
-  function chq(i,d){cart[i].qty=Math.max(1,cart[i].qty+d);renderCart();}
-  function rm(i){cart.splice(i,1);renderCart();}
+  function saveCart(){ localStorage.setItem('davfoor_cart', JSON.stringify(cart)); }
+  function chq(i,d){cart[i].qty=Math.max(1,cart[i].qty+d);saveCart();renderCart();}
+  function rm(i){cart.splice(i,1);saveCart();renderCart();}
 
   function setPago(m){
     metodo=m;
@@ -382,21 +380,20 @@
   async function mercadoPago(){
     const m=document.getElementById('modal');m.classList.add('open');window.scrollTo(0,0);
     const {sub,envio,total,ahora}=totals();
-    const nota = metodo==='addi' ? 'Preparando pago con Addi…' : 'Redirigiendo a Mercado Pago…';
+    // Addi aún no está integrado -> mensaje claro (sin confirmación falsa)
+    if(metodo==='addi'){ mpError('El pago con Addi estará disponible muy pronto. Por ahora puedes pagar de contado o contra entrega, o escribirnos por WhatsApp para coordinar. 🙂'); return; }
     document.getElementById('sheet').innerHTML=`
       <div class="mp-load">
         <div class="spin"></div>
-        <div class="mp-badge">${metodo==='addi'?'addi':'Mercado Pago'}</div>
-        <div style="color:var(--muted);font-size:13px">${nota}<br>Pago seguro por ${fmt(ahora)}</div>
+        <div class="mp-badge">Mercado Pago</div>
+        <div style="color:var(--muted);font-size:13px">Redirigiendo a Mercado Pago…<br>Pago seguro por ${fmt(ahora)}</div>
       </div>`;
-    // Addi todavía no está integrado -> confirmación (se coordina el pago aparte)
-    if(metodo==='addi'){ setTimeout(confirmacion,2200); return; }
     // Arma los productos a cobrar AHORA
     let items;
     if(metodo==='contra'){
       items=[{title:'Anticipo contra entrega · DAVFOOR LEGEND', quantity:1, unit_price:ANTICIPO}];
     } else {
-      items = cart.map(it=>({title:it.team, quantity:it.qty, unit_price:(it.base+it.extra)}));
+      items = cart.map(it=>({title:it.team, quantity:it.qty||1, unit_price:(it.base+it.extra)}));
       if(envio>0) items.push({title:'Envío', quantity:1, unit_price:envio});
     }
     const payer={
@@ -410,9 +407,16 @@
       if(r.ok && data.init_point){ window.location.href=data.init_point; return; }  // ¡a Mercado Pago real!
       throw new Error('sin init_point');
     }catch(e){
-      // Si aún NO has puesto tu clave de Mercado Pago en Vercel, mostramos la confirmación de demostración
-      setTimeout(confirmacion,1200);
+      mpError('No pudimos iniciar el pago con Mercado Pago en este momento. Revisa tu conexión e inténtalo de nuevo. Si el problema sigue, escríbenos por WhatsApp y te ayudamos a completar tu compra.');
     }
+  }
+  function mpError(msg){
+    document.getElementById('sheet').innerHTML=`<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;gap:14px">
+      <div style="font-size:46px">⚠️</div>
+      <h3 style="font-size:19px;font-weight:900">Ups, algo pasó</h3>
+      <p style="color:var(--muted);font-size:14px;max-width:320px;line-height:1.5">${msg}</p>
+      <button onclick="document.getElementById('modal').classList.remove('open')" style="background:var(--green);color:#04240f;border:none;border-radius:12px;padding:14px 24px;font-weight:900;cursor:pointer;margin-top:6px">Volver al carrito</button>
+    </div>`;
   }
 
   function confirmacion(){

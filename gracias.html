@@ -48,6 +48,8 @@
     msg.textContent='No pudimos confirmar tu pago. Puedes intentar de nuevo o escribirnos por WhatsApp para ayudarte.';
   }
   if(ref){ const r=document.getElementById('ref'); r.style.display='inline-block'; r.textContent='Ref: '+ref; }
+  // Si el pago fue aprobado, vaciamos el carrito
+  if(status==='approved'){ try{ localStorage.removeItem('davfoor_cart'); }catch(e){} }
 </script>
 </body>
 </html>

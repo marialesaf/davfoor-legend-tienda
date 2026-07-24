@@ -244,6 +244,7 @@
   initHeader();
   if(cat==='club'||cat==='seleccion'){ renderTeams(); document.getElementById('tabsSec').style.display='block'; }
   renderGrid();
+  try{const _c=JSON.parse(localStorage.getItem('davfoor_cart')||'[]');document.querySelectorAll('.cart-count').forEach(e=>e.textContent=_c.reduce((a,it)=>a+(it.qty||1),0));}catch(e){}
 </script>
 </body>
 </html>

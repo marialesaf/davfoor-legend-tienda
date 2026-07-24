@@ -360,17 +360,25 @@
 
   function updateTotal(){ const total=PRECIO_BASE+(estampado()?COSTO_PERSO:0); document.getElementById('total').textContent=fmt(total); document.getElementById('basePrice').textContent=fmt(PRECIO_BASE); }
 
+  function updateCartCount(){ const c=JSON.parse(localStorage.getItem('davfoor_cart')||'[]'); document.querySelectorAll('.cart-count').forEach(e=>e.textContent=c.reduce((a,it)=>a+(it.qty||1),0)); }
   function addToCart(){
     if(!sel){document.getElementById('sizeWarn').style.display='block';window.scrollTo({top:document.querySelector('.sizes').offsetTop-120,behavior:'smooth'});return;}
     if(perso && !esCond && !document.getElementById('inNum').value){showToast('Escribe el número (dorsal) 🙂');return;}
-    cart++; document.getElementById('cartCount').textContent=cart;
     const on=estampado(); const {name,num}=curPerso();
-    const extra = on?` · ${name||'—'} #${num}`:'';
-    showToast(`✅ Agregado: ${P.team} · ${sel}${extra}`);
+    const item = {
+      id:P.id, team:P.team, season:(esGorra?'Gorra bordada':(P.nombre||'')),
+      tipo:TIPO, talla:sel, perso:(on ? (esGorra?'':(name+' #'+num)) : ''),
+      base:PRECIO_BASE, extra:(on?COSTO_PERSO:0), qty:1, c1:C1, c2:C2
+    };
+    const cart=JSON.parse(localStorage.getItem('davfoor_cart')||'[]');
+    cart.push(item);
+    localStorage.setItem('davfoor_cart', JSON.stringify(cart));
+    updateCartCount();
+    showToast(`✅ Agregado al carrito: ${P.team}${on&&name?(' · '+name):(esGorra?(' · '+sel):'')}`);
   }
   function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),2600);}
 
-  initProduct(); renderGallery(); renderOpciones(); updateTotal();
+  initProduct(); renderGallery(); renderOpciones(); updateTotal(); updateCartCount();
 </script>
 </body>
 </html>
