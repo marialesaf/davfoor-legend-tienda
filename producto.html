@@ -38,6 +38,7 @@
   .thumb{flex:1;aspect-ratio:1/1;border-radius:12px;border:2px solid var(--line);background:#161616;
      display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden}
   .thumb svg{width:72%;height:72%}
+  .thumb img{width:100%;height:100%;object-fit:cover}
   .thumb.active{border-color:var(--green)}
 
   /* INFO */
@@ -335,8 +336,10 @@
     return `<svg viewBox="0 0 120 120"><ellipse cx="60" cy="82" rx="40" ry="9" fill="${col}"/><path d="M24 82 Q60 34 96 82 Z" fill="${col}" stroke="#00000025"/><path d="M60 82 Q96 78 108 88 Q96 92 60 88 Z" fill="${col}" stroke="#00000025"/><text x="60" y="68" font-family="Arial" font-weight="900" font-size="15" fill="${txt}" text-anchor="middle">${CREST}</text></svg>`;
   }
 
-  function garmentMain(){ return P.foto ? `<img src="${P.foto}" alt="${P.team}" style="width:100%;height:100%;object-fit:cover">` : (esGorra?gorraSVG():jerseyFront()); }
+  function imgView(src){ return `<img src="${src}" alt="${P.team}" style="width:100%;height:100%;object-fit:cover">`; }
+  function garmentMain(){ return P.foto ? imgView(P.foto) : (esGorra?gorraSVG():jerseyFront()); }
   function views(){
+    if(P.fotos && P.fotos.length) return P.fotos.map((f,i)=>({id:'f'+i, svg:()=>imgView(f)}));
     if(P.foto) return [{id:'front',svg:garmentMain}];
     if(esGorra) return [{id:'front',svg:gorraSVG},{id:'crest',svg:crestSVG}];
     return [{id:'front',svg:jerseyFront},{id:'back',svg:jerseyBack},{id:'crest',svg:crestSVG}];
