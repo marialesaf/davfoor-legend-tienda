@@ -75,6 +75,23 @@
   .size.active{border-color:var(--green);background:rgba(63,225,103,.12);color:var(--green)}
   .size-note{font-size:12px;color:var(--muted);margin-top:11px}
   .size-warn{color:#ff8080;font-size:12.5px;font-weight:700;margin-top:10px;display:none}
+  /* Entrega */
+  .deliv{display:inline-flex;align-items:center;gap:7px;margin-top:10px;background:rgba(63,225,103,.1);
+     border:1px solid rgba(63,225,103,.35);color:var(--green);font-weight:800;font-size:12.5px;padding:7px 12px;border-radius:20px}
+  /* Guía de tallas */
+  .sizeguide{margin-top:14px}
+  .sg-toggle{display:flex;align-items:center;justify-content:space-between;background:var(--panel);
+     border:1px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;font-weight:800;font-size:13.5px}
+  .sg-toggle .chev{transition:.2s;color:var(--green)}
+  .sg-toggle.open .chev{transform:rotate(180deg)}
+  .sg-wrap{max-height:0;overflow:hidden;transition:max-height .35s ease}
+  .sg-wrap.open{max-height:900px}
+  table.sg{width:100%;border-collapse:collapse;margin-top:10px;font-size:12.5px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  table.sg th{background:var(--green);color:#04240f;font-weight:900;padding:9px 5px;text-transform:uppercase;font-size:10.5px;letter-spacing:.3px}
+  table.sg td{padding:9px 5px;text-align:center;border-top:1px solid var(--line);color:#e6e6e6}
+  table.sg td.t{font-weight:900;color:#fff;background:#101010}
+  table.sg tr:nth-child(even) td{background:#161616}
+  .sg-cap{font-size:11.5px;color:var(--muted);margin-top:8px;text-align:center}
 
   /* PERSONALIZACIÓN */
   .perso{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
@@ -176,6 +193,7 @@
       <span class="price" id="basePrice">$110.000</span>
       <span class="stock-pill"><span class="d"></span> En stock</span>
     </div>
+    <div class="deliv">🚚 Entrega de 3 a 4 días hábiles</div>
   </div>
 
   <!-- TALLAS -->
@@ -184,6 +202,10 @@
     <div class="sizes" id="sizes"></div>
     <div class="size-note" id="sizeNote">Camisetas <b>actuales</b>: tallas S a 2XL &nbsp;·&nbsp; <b>retro</b>: S a XL.</div>
     <div class="size-warn" id="sizeWarn">⚠️ Selecciona una talla para continuar.</div>
+    <div class="sizeguide" id="sizeGuide">
+      <div class="sg-toggle" id="sgToggle" onclick="toggleSG()"><span>📏 Guía de tallas</span><span class="chev">▾</span></div>
+      <div class="sg-wrap" id="sgWrap"><div id="sgTable"></div></div>
+    </div>
   </section>
 
   <!-- PERSONALIZACIÓN -->
@@ -238,7 +260,7 @@
   <section class="block">
     <div class="ship">
       <div class="i">🚚</div>
-      <div><p><b>Envío a todo el país: $18.000.</b> ¡Gratis en compras superiores a $300.000! Empaque seguro y seguimiento de tu pedido.</p></div>
+      <div><p><b>Entrega de 3 a 4 días hábiles.</b> Envío a todo el país: <b>$18.000</b> — ¡gratis en compras superiores a $300.000! Empaque seguro y seguimiento de tu pedido.</p></div>
     </div>
   </section>
 
@@ -371,6 +393,22 @@
     document.getElementById('dots').innerHTML = multi ? vs.map((v,i)=>`<span class="dot ${i===idx?'on':''}"></span>`).join('') : '';
   }
   function setView(id){currentView=id;renderGallery();}
+
+  // ----- Guía de tallas (según tipo) -----
+  const SIZES_ACTUAL=[['S','150–160 cm','50–55 kg','66 cm','48 cm'],['M','160–170 cm','55–60 kg','68 cm','50 cm'],['L','170–175 cm','60–70 kg','71 cm','52 cm'],['XL','175–180 cm','70–75 kg','74 cm','54 cm'],['XXL','185–190 cm','85–90 kg','77 cm','56 cm']];
+  const SIZES_RETRO=[['S','160–170 cm','50–60 kg','71 cm','50 cm'],['M','170–175 cm','60–70 kg','73 cm','52 cm'],['L','175–180 cm','70–80 kg','75 cm','54 cm'],['XL','185–190 cm','85–90 kg','79 cm','58 cm']];
+  function renderSizeGuide(){
+    const g=document.getElementById('sizeGuide');
+    if(esGorra){ g.style.display='none'; return; }
+    const retro = TIPO==='retro';
+    const rows = retro?SIZES_RETRO:SIZES_ACTUAL;
+    const cap = retro?'Camisetas RETRO · tallas S a XL':'Camisetas ACTUALES (player) · tallas S a XXL';
+    document.getElementById('sgTable').innerHTML =
+      `<table class="sg"><tr><th>Talla</th><th>Altura</th><th>Peso</th><th>Largo</th><th>Ancho</th></tr>`+
+      rows.map(r=>`<tr><td class="t">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('')+
+      `</table><div class="sg-cap">${cap} · Medidas aproximadas de la prenda (largo y ancho).</div>`;
+  }
+  function toggleSG(){ document.getElementById('sgToggle').classList.toggle('open'); document.getElementById('sgWrap').classList.toggle('open'); }
   function stepView(d){ const vs=views(); let i=vs.findIndex(v=>v.id===currentView); i=(i+d+vs.length)%vs.length; currentView=vs[i].id; renderGallery(); }
   function nextView(){ stepView(1); }
   function prevView(){ stepView(-1); }
@@ -411,7 +449,7 @@
   }
   function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>t.classList.remove('show'),2600);}
 
-  initProduct(); renderGallery(); renderOpciones(); updateTotal(); updateCartCount();
+  initProduct(); renderGallery(); renderOpciones(); renderSizeGuide(); updateTotal(); updateCartCount();
 </script>
 </body>
 </html>
