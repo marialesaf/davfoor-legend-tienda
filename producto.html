@@ -31,11 +31,11 @@
   /* GALERÍA */
   .gallery{padding:6px 16px 0}
   .main-img{position:relative;aspect-ratio:1/1;border-radius:18px;overflow:hidden;
-     background:#0d0d0d url('assets/img/fondo.jpg') center/cover;display:flex;align-items:center;justify-content:center}
+     background:radial-gradient(120% 120% at 50% 15%, #262626, #101010);display:flex;align-items:center;justify-content:center}
   .main-img svg{width:80%;height:80%;filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))}
   .main-img .tag{position:absolute;top:12px;left:12px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:5px 10px;border-radius:20px;background:var(--green);color:#04240f;z-index:3}
-  .main-img #mainView{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:7%}
-  .main-img #mainView img{width:100%;height:100%;object-fit:contain;border-radius:12px;box-shadow:0 8px 20px rgba(0,0,0,.5)}
+  .main-img #mainView{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+  .main-img #mainView img{width:100%;height:100%;object-fit:cover}
   .main-img .nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;
      background:rgba(0,0,0,.42);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;
      cursor:pointer;z-index:4;border:none;line-height:1;transition:.15s}

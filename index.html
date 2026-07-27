@@ -87,9 +87,8 @@
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;position:relative;transition:.15s}
   .card:active{transform:scale(.98)}
-  .card .imgbox{position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;padding:9%;
-     background:#0d0d0d url('assets/img/fondo.jpg') center/cover}
-  .card .imgbox img{border-radius:10px;box-shadow:0 6px 16px rgba(0,0,0,.55)}
+  .card .imgbox{position:relative;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;
+     background:radial-gradient(120% 120% at 50% 20%, #232323, #121212)}
   .card svg.jersey{width:78%;height:78%;filter:drop-shadow(0 6px 10px rgba(0,0,0,.5))}
   .tag{position:absolute;top:9px;left:9px;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
      padding:4px 8px;border-radius:20px}
@@ -309,7 +308,7 @@
         <div class="imgbox">
           <span class="tag ${p.tipo}">${p.tipo}</span>
           <span class="stock ${sc}">${st}</span>
-          ${p.foto ? `<img src="${p.foto}" alt="${p.team}" style="width:100%;height:100%;object-fit:contain">` : jerseySVG(p.c1,p.c2,p.num)}
+          ${p.foto ? `<img src="${p.foto}" alt="${p.team}" style="width:100%;height:100%;object-fit:cover">` : jerseySVG(p.c1,p.c2,p.num)}
         </div>
         <div class="info">
           <div class="team">${p.team}</div>
