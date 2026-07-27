@@ -248,7 +248,7 @@
   function renderCart(){
     document.getElementById('cartList').innerHTML = cart.map((it,i)=>`
       <div class="item">
-        <div class="pic">${it.tipo==='accesorio' ? '<div style="font-size:30px">'+(it.team.toLowerCase().includes('gorra')?'🧢':'🥤')+'</div>' : jersey(it.c1,it.c2)}</div>
+        <div class="pic">${it.foto ? `<img src="${it.foto}" alt="${it.team}">` : (it.tipo==='accesorio' ? '<div style="font-size:30px">'+(it.team.toLowerCase().includes('gorra')?'🧢':'🥤')+'</div>' : jersey(it.c1,it.c2))}</div>
         <div class="d">
           <div class="t">${it.team}</div>
           <div class="sub">${it.season} · ${(it.tipo==='accesorio'||it.tipo==='gorra')?'Color':'Talla'} <b>${it.talla}</b>${it.perso?` · <b>${it.perso}</b>`:''}${it.extra?' · +personalización':''}</div>

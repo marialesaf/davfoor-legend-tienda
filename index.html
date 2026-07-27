@@ -252,8 +252,8 @@
     <img src="assets/img/logo-white.png" alt="DAVFOOR LEGEND">
     <p>Tu tienda de camisetas de fútbol, actuales y retro, y artículos deportivos personalizados.</p>
     <div class="fcols">
-      <div><b>Tienda</b><a href="#">Actuales</a><a href="#">Retro</a><a href="#">Botilitos</a><a href="#">Gorras</a></div>
-      <div><b>Ayuda</b><a href="#">Cómo comprar</a><a href="#">Envíos</a><a href="#">Personalización</a><a href="#">Contacto</a></div>
+      <div><b>Tienda</b><a style="cursor:pointer" onclick="irTipo('actual')">Actuales</a><a style="cursor:pointer" onclick="irTipo('retro')">Retro</a><a href="catalogo.html?cat=gorra">Gorras</a></div>
+      <div><b>Ayuda</b><a href="https://wa.me/573222664358?text=Hola%20DAVFOOR%20LEGEND,%20quiero%20saber%20sobre%20los%20env%C3%ADos" target="_blank" rel="noopener">Envíos</a><a href="https://wa.me/573222664358?text=Hola%20DAVFOOR%20LEGEND%20%F0%9F%91%8B" target="_blank" rel="noopener">Contacto</a></div>
     </div>
   </footer>
 
@@ -323,6 +323,7 @@
   function clearChips(){document.querySelectorAll('#selecciones .chip,#clubes .chip').forEach(c=>c.classList.remove('active'));}
 
   function setTipo(el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');fTipo=el.dataset.tipo;render();}
+  function irTipo(t){ const b=document.querySelector('.tab[data-tipo="'+t+'"]'); if(b){ b.click(); document.querySelector('.tabs').scrollIntoView({behavior:'smooth',block:'start'}); } }
 
   // Filtrar por SELECCIÓN (toca de nuevo para quitar el filtro)
   function setSeleccion(el){
