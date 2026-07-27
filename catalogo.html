@@ -203,6 +203,10 @@
     const list = (cat==='seleccion') ? SELECCIONES : CLUBES;   // botilito/gorra usan clubes+selecciones abajo
     let all = list;
     if(cat==='botilito'||cat==='gorra'){ all = [...CLUBES, ...SELECCIONES]; }
+    else { // solo equipos con al menos una camiseta con foto en esta categoría
+      const conFoto = new Set(JERSEYS.filter(p=>p.categoria===cat && p.fotos && p.fotos.length).map(p=>p.equipo));
+      all = all.filter(t=>conFoto.has(t.id));
+    }
     document.getElementById('teamsLbl').textContent = (TITULOS[cat]||TITULOS.club).lbl;
     const el=document.getElementById('teams');
     const todos = `<div class="tm ${selEquipo==='todos'?'active':''}" onclick="pickTeam('todos')"><div class="badge"><span style="font-size:12px;font-weight:800">TODOS</span></div><span>Todos</span></div>`;
@@ -233,13 +237,13 @@
       return;
     }
     if(cat==='botilito'){ g.innerHTML='<div class="empty">Sección no disponible.</div>'; return; }
-    const list = JERSEYS.filter(p => p.categoria===cat && (selEquipo==='todos'||p.equipo===selEquipo) && (fTipo==='todos'||p.tipo===fTipo));
+    const list = JERSEYS.filter(p => (p.fotos && p.fotos.length) && p.categoria===cat && (selEquipo==='todos'||p.equipo===selEquipo) && (fTipo==='todos'||p.tipo===fTipo));
     if(!list.length){g.innerHTML='<div class="empty">No hay camisetas para este filtro todavía 🙈</div>';return;}
     g.innerHTML = list.map(p=>`
       <div class="card" onclick="location.href='producto.html?id=${p.id}'">
         <div class="imgbox"><span class="tag ${p.tipo}">${p.tipo}</span>${p.foto ? `<img src="${p.foto}" alt="${p.team}" style="width:100%;height:100%;object-fit:cover">` : jerseySVG(p.c1,p.c2,p.num)}</div>
         <div class="info"><div class="team">${p.team}</div><div class="season">${p.season}</div>
-        <div class="price">${fmt(PRECIO[p.tipo])} <small>${p.tipo==='retro'?'Retro':'Actual'}</small></div></div>
+        <div class="price">${fmt(p.precio)} <small>${p.tipo==='retro'?'Retro':'Actual'}</small></div></div>
       </div>`).join('');
   }
 

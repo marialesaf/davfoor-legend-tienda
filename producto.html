@@ -33,7 +33,18 @@
   .main-img{position:relative;aspect-ratio:1/1;border-radius:18px;overflow:hidden;
      background:radial-gradient(120% 120% at 50% 15%, #262626, #101010);display:flex;align-items:center;justify-content:center}
   .main-img svg{width:80%;height:80%;filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))}
-  .main-img .tag{position:absolute;top:12px;left:12px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:5px 10px;border-radius:20px;background:var(--green);color:#04240f}
+  .main-img .tag{position:absolute;top:12px;left:12px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:5px 10px;border-radius:20px;background:var(--green);color:#04240f;z-index:3}
+  .main-img #mainView{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+  .main-img #mainView img{width:100%;height:100%;object-fit:cover}
+  .main-img .nav{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;
+     background:rgba(0,0,0,.42);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;
+     cursor:pointer;z-index:4;border:none;line-height:1;transition:.15s}
+  .main-img .nav:hover{background:rgba(0,0,0,.7)}
+  .main-img .nav.prev{left:10px}
+  .main-img .nav.next{right:10px}
+  .main-img .dots{position:absolute;bottom:12px;left:0;right:0;display:flex;gap:7px;justify-content:center;z-index:4}
+  .main-img .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);transition:.15s}
+  .main-img .dot.on{background:#fff;transform:scale(1.15)}
   .thumbs{display:flex;gap:10px;margin-top:12px}
   .thumb{flex:1;aspect-ratio:1/1;border-radius:12px;border:2px solid var(--line);background:#161616;
      display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden}
@@ -146,9 +157,12 @@
 
   <!-- GALERÍA -->
   <div class="gallery">
-    <div class="main-img">
+    <div class="main-img" id="mainImg">
       <span class="tag">Actual</span>
+      <button class="nav prev" id="navPrev" onclick="prevView()" aria-label="Anterior">‹</button>
       <div id="mainView"></div>
+      <button class="nav next" id="navNext" onclick="nextView()" aria-label="Siguiente">›</button>
+      <div class="dots" id="dots"></div>
     </div>
     <div class="thumbs" id="thumbs"></div>
   </div>
@@ -347,10 +361,26 @@
   function renderGallery(){
     const vs=views();
     if(!vs.find(v=>v.id===currentView)) currentView=vs[0].id;
-    document.getElementById('mainView').innerHTML = vs.find(v=>v.id===currentView).svg();
+    const idx=vs.findIndex(v=>v.id===currentView);
+    document.getElementById('mainView').innerHTML = vs[idx].svg();
     document.getElementById('thumbs').innerHTML = vs.map(v=>`<div class="thumb ${v.id===currentView?'active':''}" onclick="setView('${v.id}')">${v.svg()}</div>`).join('');
+    // carrusel: flechas + puntos solo si hay más de una foto
+    const multi = vs.length>1;
+    document.getElementById('navPrev').style.display = multi?'flex':'none';
+    document.getElementById('navNext').style.display = multi?'flex':'none';
+    document.getElementById('dots').innerHTML = multi ? vs.map((v,i)=>`<span class="dot ${i===idx?'on':''}"></span>`).join('') : '';
   }
   function setView(id){currentView=id;renderGallery();}
+  function stepView(d){ const vs=views(); let i=vs.findIndex(v=>v.id===currentView); i=(i+d+vs.length)%vs.length; currentView=vs[i].id; renderGallery(); }
+  function nextView(){ stepView(1); }
+  function prevView(){ stepView(-1); }
+  // deslizar (swipe) en la imagen principal
+  (function(){
+    const el=document.getElementById('mainImg'); if(!el) return;
+    let x0=null;
+    el.addEventListener('touchstart',e=>{ x0=e.touches[0].clientX; },{passive:true});
+    el.addEventListener('touchend',e=>{ if(x0===null) return; const dx=e.changedTouches[0].clientX-x0; if(Math.abs(dx)>40){ dx<0?nextView():prevView(); } x0=null; });
+  })();
 
   function renderOpciones(){
     document.getElementById('sizes').innerHTML = OPCIONES.map(t=>`<div class="size" onclick="setOpcion('${t}',this)">${t}</div>`).join('');

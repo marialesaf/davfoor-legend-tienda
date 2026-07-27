@@ -295,6 +295,7 @@
   function render(){
     const g = document.getElementById('grid');
     const list = productos.filter(p =>
+      (p.fotos && p.fotos.length) &&
       (fTipo==='todos'||p.tipo===fTipo) &&
       (fCat==='todos'||p.categoria===fCat) &&
       (fPais==='todos'||p.equipo===fPais) &&
@@ -312,7 +313,7 @@
         <div class="info">
           <div class="team">${p.team}</div>
           <div class="season">${p.season}</div>
-          <div class="price">${fmt(PRECIO[p.tipo])} <small>${p.tipo==='retro'?'Retro':'Actual'}</small></div>
+          <div class="price">${fmt(p.precio)} <small>${p.tipo==='retro'?'Retro':'Actual'}</small></div>
         </div>
       </div>`;
     }).join('');
@@ -360,10 +361,11 @@
   }
 
   // Círculos de filtro generados desde el catálogo real (assets/productos.js)
+  const conFoto = new Set(PRODUCTOS.filter(p=>p.fotos && p.fotos.length).map(p=>p.equipo));
   function renderChips(){
-    document.getElementById('selecciones').innerHTML = SELECCIONES.map(s=>
+    document.getElementById('selecciones').innerHTML = SELECCIONES.filter(s=>conFoto.has(s.id)).map(s=>
       `<div class="chip" data-pais="${s.id}" onclick="setSeleccion(this)"><div class="badge" style="background:${s.bg||'#0e1116'}">${s.logo?`<img class="logo-img" src="${s.logo}" alt="${s.name}">`:`<span class="flag">${s.flag}</span>`}</div><span>${s.name}</span></div>`).join('');
-    document.getElementById('clubes').innerHTML = CLUBES.map(c=>
+    document.getElementById('clubes').innerHTML = CLUBES.filter(c=>conFoto.has(c.id)).map(c=>
       `<div class="chip" data-club="${c.id}" onclick="setClub(this)"><div class="badge" style="background:${c.bg}">${c.logo?`<img class="logo-img" src="${c.logo}" alt="${c.name}">`:`<span class="crest" style="color:${c.cc}">${c.crest}</span>`}</div><span>${c.name}</span></div>`).join('');
   }
 
