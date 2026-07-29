@@ -73,6 +73,8 @@
      cursor:pointer;background:var(--panel);transition:.12s}
   .size:active{transform:scale(.96)}
   .size.active{border-color:var(--green);background:rgba(63,225,103,.12);color:var(--green)}
+  .player-note{background:rgba(63,225,103,.1);border:1px solid rgba(63,225,103,.35);color:#d8ffe4;font-size:12.5px;padding:10px 12px;border-radius:10px;margin-bottom:12px;line-height:1.45}
+  .player-note b{color:var(--green)}
   .size-note{font-size:12px;color:var(--muted);margin-top:11px}
   .size-warn{color:#ff8080;font-size:12.5px;font-weight:700;margin-top:10px;display:none}
   /* Entrega */
@@ -199,6 +201,7 @@
   <!-- TALLAS -->
   <section class="block">
     <h2><span class="bar"></span><span id="sizeTitle">Elige tu talla</span></h2>
+    <div class="player-note" id="playerNote" style="display:none">👕 <b>Recomendación:</b> pide <b>una talla más</b> de la que usas normalmente, ya que son <b>versión player</b> (corte entallado).</div>
     <div class="sizes" id="sizes"></div>
     <div class="size-note" id="sizeNote">Camisetas <b>actuales</b>: tallas S a 2XL &nbsp;·&nbsp; <b>retro</b>: S a XL.</div>
     <div class="size-warn" id="sizeWarn">⚠️ Selecciona una talla para continuar.</div>
@@ -228,6 +231,18 @@
         <div class="perso-fields" id="persoFields">
           <div class="field"><label>Nombre / apellido</label><input id="inName" maxlength="12" placeholder="BELLINGHAM" oninput="updatePreview()"></div>
           <div class="field"><label>Dorsal</label><input id="inNum" maxlength="2" inputmode="numeric" placeholder="5" oninput="cleanNum();updatePreview()"></div>
+        </div>
+      </div>
+      <div class="perso" id="parchesRow" style="margin-top:12px">
+        <div class="switch-row" onclick="toggleParches()">
+          <div>
+            <div class="t">Añadir parches</div>
+            <div class="s">Parches oficiales (Champions, liga, etc.)</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <span class="plus">+$10.000</span>
+            <div class="toggle" id="parchesToggle"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -283,6 +298,8 @@
 <script>
   const fmt = n => '$'+Number(n).toLocaleString('es-CO');
   const COSTO_PERSO = 15000;
+  const COSTO_PARCHES = 10000;
+  let parches = false;
 
   // Buscar el producto elegido por su id (?id=)
   const _id = new URLSearchParams(location.search).get('id');
@@ -398,6 +415,8 @@
   const SIZES_ACTUAL=[['S','150–160 cm','50–55 kg','66 cm','48 cm'],['M','160–170 cm','55–60 kg','68 cm','50 cm'],['L','170–175 cm','60–70 kg','71 cm','52 cm'],['XL','175–180 cm','70–75 kg','74 cm','54 cm'],['XXL','185–190 cm','85–90 kg','77 cm','56 cm']];
   const SIZES_RETRO=[['S','160–170 cm','50–60 kg','71 cm','50 cm'],['M','170–175 cm','60–70 kg','73 cm','52 cm'],['L','175–180 cm','70–80 kg','75 cm','54 cm'],['XL','185–190 cm','85–90 kg','79 cm','58 cm']];
   function renderSizeGuide(){
+    // aviso "pide una talla más" solo en camisetas actuales (versión player)
+    document.getElementById('playerNote').style.display = (!esGorra && TIPO==='actual') ? 'block' : 'none';
     const g=document.getElementById('sizeGuide');
     if(esGorra){ g.style.display='none'; return; }
     const retro = TIPO==='retro';
@@ -429,7 +448,8 @@
   function cleanNum(){const i=document.getElementById('inNum');i.value=i.value.replace(/[^0-9]/g,'');}
   function updatePreview(){ if(esCond){ condIndex = +(document.getElementById('condSel')?.value||0); } if(currentView!=='back'){currentView='back';} renderGallery(); updateTotal(); }
 
-  function updateTotal(){ const total=PRECIO_BASE+(estampado()?COSTO_PERSO:0); document.getElementById('total').textContent=fmt(total); document.getElementById('basePrice').textContent=fmt(PRECIO_BASE); }
+  function toggleParches(){ parches=!parches; document.getElementById('parchesToggle').classList.toggle('on',parches); updateTotal(); }
+  function updateTotal(){ const total=PRECIO_BASE+(estampado()?COSTO_PERSO:0)+(parches?COSTO_PARCHES:0); document.getElementById('total').textContent=fmt(total); document.getElementById('basePrice').textContent=fmt(PRECIO_BASE); }
 
   function updateCartCount(){ const c=JSON.parse(localStorage.getItem('davfoor_cart')||'[]'); document.querySelectorAll('.cart-count').forEach(e=>e.textContent=c.reduce((a,it)=>a+(it.qty||1),0)); }
   function addToCart(){
@@ -439,7 +459,7 @@
     const item = {
       id:P.id, team:P.team, season:(esGorra?'Gorra bordada':(P.nombre||'')),
       tipo:TIPO, talla:sel, perso:(on ? (esGorra?'':(name+' #'+num)) : ''),
-      base:PRECIO_BASE, extra:(on?COSTO_PERSO:0), qty:1, c1:C1, c2:C2, foto:(P.foto||'')
+      base:PRECIO_BASE, extra:(on?COSTO_PERSO:0)+(parches?COSTO_PARCHES:0), parches:parches, qty:1, c1:C1, c2:C2, foto:(P.foto||'')
     };
     const cart=JSON.parse(localStorage.getItem('davfoor_cart')||'[]');
     cart.push(item);
