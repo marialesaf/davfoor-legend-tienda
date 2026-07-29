@@ -235,25 +235,6 @@
           <div class="field"><label>Dorsal</label><input id="inNum" maxlength="2" inputmode="numeric" placeholder="5" oninput="cleanNum();updatePreview()"></div>
         </div>
       </div>
-      <div class="perso" id="parchesRow" style="margin-top:12px">
-        <div class="switch-row" onclick="toggleParches()">
-          <div>
-            <div class="t">Añadir parches</div>
-            <div class="s">Parches oficiales bordados</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:12px">
-            <span class="plus">+$10.000</span>
-            <div class="toggle" id="parchesToggle"></div>
-          </div>
-        </div>
-        <div class="parches-opts" id="parchesOpts" style="display:none">
-          <div class="parches-lbl">Elige un parche:</div>
-          <div class="sizes">
-            <div class="size" data-parche="Liga" onclick="setParche('Liga',this)">Liga</div>
-            <div class="size" data-parche="Champions" onclick="setParche('Champions',this)">Champions</div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- Condicional: estampado incluido (fijo o a elegir) -->
@@ -269,6 +250,27 @@
         <div class="field" id="condSelWrap" style="margin-top:14px;display:none">
           <label>Elige el jugador</label>
           <select id="condSel" onchange="updatePreview()" style="width:100%;background:#0e0e0e;border:1px solid var(--line);border-radius:11px;padding:12px;color:#fff;font-size:15px"></select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Parches: solo camisetas de clubes europeos -->
+    <div class="perso" id="parchesRow" style="margin-top:12px;display:none">
+      <div class="switch-row" onclick="toggleParches()">
+        <div>
+          <div class="t">Añadir parches</div>
+          <div class="s">Parches oficiales bordados</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="plus">+$10.000</span>
+          <div class="toggle" id="parchesToggle"></div>
+        </div>
+      </div>
+      <div class="parches-opts" id="parchesOpts" style="display:none">
+        <div class="parches-lbl">Elige un parche:</div>
+        <div class="sizes">
+          <div class="size" data-parche="Liga" onclick="setParche('Liga',this)">Liga</div>
+          <div class="size" data-parche="Champions" onclick="setParche('Champions',this)">Champions</div>
         </div>
       </div>
     </div>
@@ -308,6 +310,7 @@
   const fmt = n => '$'+Number(n).toLocaleString('es-CO');
   const COSTO_PERSO = 15000;
   const COSTO_PARCHES = 10000;
+  const PARCHES_OK = ['madrid','barcelona','bayern','liverpool','manutd','milan','sporting']; // clubes europeos
   let parches = false, parcheTipo = null;
 
   // Buscar el producto elegido por su id (?id=)
@@ -426,6 +429,8 @@
   function renderSizeGuide(){
     // aviso "pide una talla más" solo en camisetas actuales (versión player)
     document.getElementById('playerNote').style.display = (!esGorra && TIPO==='actual') ? 'block' : 'none';
+    // parches solo en camisetas de clubes europeos
+    document.getElementById('parchesRow').style.display = (!esGorra && PARCHES_OK.includes(P.equipo)) ? 'block' : 'none';
     const g=document.getElementById('sizeGuide');
     if(esGorra){ g.style.display='none'; return; }
     const retro = TIPO==='retro';
