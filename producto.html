@@ -274,6 +274,20 @@
         </div>
       </div>
     </div>
+
+    <!-- Caja de colección (según equipo/marca) -->
+    <div class="perso" id="cajaRow" style="margin-top:12px;display:none">
+      <div class="switch-row" onclick="toggleCaja()">
+        <div>
+          <div class="t">Añadir caja de colección</div>
+          <div class="s" id="cajaDesc">Caja de colección</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="plus">+$10.000</span>
+          <div class="toggle" id="cajaToggle"></div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- DETALLES -->
@@ -312,6 +326,12 @@
   const COSTO_PARCHES = 10000;
   const PARCHES_OK = ['madrid','barcelona','bayern','liverpool','manutd','milan','sporting']; // clubes europeos
   let parches = false, parcheTipo = null;
+  // Caja de colección: equipo -> tipo de caja (equipo propio o marca)
+  const COSTO_CAJA = 10000;
+  const CAJA_MAP = {barcelona:'Barcelona', madrid:'Real Madrid', portugal:'Portugal', argentina:'Argentina',
+    bayern:'Adidas', liverpool:'Adidas', boca:'Adidas', river:'Adidas', espana:'Adidas', colombia:'Adidas', milan:'Adidas',
+    manutd:'Nike', santos:'Nike', nacional:'Nike', brasil:'Nike', sporting:'Nike'};
+  let caja = false;
 
   // Buscar el producto elegido por su id (?id=)
   const _id = new URLSearchParams(location.search).get('id');
@@ -321,6 +341,7 @@
 
   const esGorra = (P.clase==='gorra');
   const TIPO = esGorra ? 'gorra' : P.tipo;
+  const cajaNombre = esGorra ? null : (CAJA_MAP[P.equipo] || null);
   const PRECIO_BASE = P.precio || (TIPO==='retro'?130000:110000);
   const C1 = P.c1 || '#888', C2 = P.c2 || '#3fe167';
   const CREST = P.crest || (P.team? P.team.substring(0,3).toUpperCase() : '');
@@ -431,6 +452,10 @@
     document.getElementById('playerNote').style.display = (!esGorra && TIPO==='actual') ? 'block' : 'none';
     // parches solo en camisetas de clubes europeos
     document.getElementById('parchesRow').style.display = (!esGorra && PARCHES_OK.includes(P.equipo)) ? 'block' : 'none';
+    // caja de colección (según equipo/marca)
+    const cajaRow=document.getElementById('cajaRow');
+    if(cajaNombre){ cajaRow.style.display='block'; document.getElementById('cajaDesc').textContent='Caja de colección '+cajaNombre; }
+    else { cajaRow.style.display='none'; }
     const g=document.getElementById('sizeGuide');
     if(esGorra){ g.style.display='none'; return; }
     const retro = TIPO==='retro';
@@ -477,7 +502,8 @@
     el.classList.add('active');
     updateTotal();
   }
-  function updateTotal(){ const total=PRECIO_BASE+(estampado()?COSTO_PERSO:0)+(parches?COSTO_PARCHES:0); document.getElementById('total').textContent=fmt(total); document.getElementById('basePrice').textContent=fmt(PRECIO_BASE); }
+  function toggleCaja(){ caja=!caja; document.getElementById('cajaToggle').classList.toggle('on',caja); updateTotal(); }
+  function updateTotal(){ const total=PRECIO_BASE+(estampado()?COSTO_PERSO:0)+(parches?COSTO_PARCHES:0)+(caja?COSTO_CAJA:0); document.getElementById('total').textContent=fmt(total); document.getElementById('basePrice').textContent=fmt(PRECIO_BASE); }
 
   function updateCartCount(){ const c=JSON.parse(localStorage.getItem('davfoor_cart')||'[]'); document.querySelectorAll('.cart-count').forEach(e=>e.textContent=c.reduce((a,it)=>a+(it.qty||1),0)); }
   function addToCart(){
@@ -487,7 +513,7 @@
     const item = {
       id:P.id, team:P.team, season:(esGorra?'Gorra bordada':(P.nombre||'')),
       tipo:TIPO, talla:sel, perso:(on ? (esGorra?'':(name+' #'+num)) : ''),
-      base:PRECIO_BASE, extra:(on?COSTO_PERSO:0)+(parches?COSTO_PARCHES:0), parches:parches, parcheTipo:(parches?parcheTipo:null), qty:1, c1:C1, c2:C2, foto:(P.foto||'')
+      base:PRECIO_BASE, extra:(on?COSTO_PERSO:0)+(parches?COSTO_PARCHES:0)+(caja?COSTO_CAJA:0), parches:parches, parcheTipo:(parches?parcheTipo:null), caja:caja, cajaNombre:(caja?cajaNombre:null), qty:1, c1:C1, c2:C2, foto:(P.foto||'')
     };
     const cart=JSON.parse(localStorage.getItem('davfoor_cart')||'[]');
     cart.push(item);

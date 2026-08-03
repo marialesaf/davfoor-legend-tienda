@@ -111,6 +111,7 @@
       <a href="catalogo.html?cat=club" data-nav="club">Clubes</a>
       <a href="catalogo.html?cat=seleccion" data-nav="seleccion">Selecciones</a>
       <a href="catalogo.html?cat=gorra" data-nav="gorra">Gorras</a>
+      <a href="catalogo.html?cat=caja" data-nav="caja">Cajas</a>
     </nav>
     <div class="cart-wrap">
       <button class="icon-btn" aria-label="Carrito" onclick="location.href='carrito.html'">
@@ -189,13 +190,14 @@
     seleccion:{t:'Camisetas de <span class="g">Selecciones</span>', d:'Elige tu selección y descubre sus camisetas actuales y retro.', lbl:'Elige tu selección'},
     botilito:{t:'<span class="g">Botilitos</span> personalizados', d:'Diseño estándar de tu club, selección o jugador. Nombre opcional +$15.000.', lbl:'Elige el diseño de tu equipo'},
     gorra:{t:'<span class="g">Gorras</span> bordadas', d:'Bordadas con el escudo del equipo o la palabra del jugador.', lbl:'Elige el diseño de tu equipo'},
+    caja:{t:'<span class="g">Cajas</span> de colección', d:'Caja temática para tu camiseta. Se agrega al comprar tu camiseta (+$10.000).', lbl:''},
   };
 
   function initHeader(){
     const info=TITULOS[cat]||TITULOS.club;
     document.getElementById('pageTitle').innerHTML=info.t;
     document.getElementById('pageDesc').textContent=info.d;
-    document.getElementById('crumb2').textContent={club:'Clubes',seleccion:'Selecciones',botilito:'Botilitos',gorra:'Gorras'}[cat];
+    document.getElementById('crumb2').textContent={club:'Clubes',seleccion:'Selecciones',botilito:'Botilitos',gorra:'Gorras',caja:'Cajas'}[cat];
     document.querySelectorAll('.topnav a[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===cat));
   }
 
@@ -234,6 +236,17 @@
           <div class="season">Blanca / Negra</div>
           <div class="price">${fmt(x.precio)}</div></div>
         </div>`).join('') || '<div class="empty">Pronto más gorras 🧢</div>';
+      return;
+    }
+    if(cat==='caja'){
+      const boxes=['Barcelona','Real Madrid','Portugal','Argentina','Adidas','Nike'];
+      g.innerHTML = boxes.map(b=>`
+        <div class="card">
+          <div class="imgbox"><span class="tag acc">caja</span><div class="acc-emoji">📦</div></div>
+          <div class="info"><div class="team">Caja ${b}</div>
+          <div class="season">Se agrega al comprar tu camiseta</div>
+          <div class="price">${fmt(10000)}</div></div>
+        </div>`).join('');
       return;
     }
     if(cat==='botilito'){ g.innerHTML='<div class="empty">Sección no disponible.</div>'; return; }

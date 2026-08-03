@@ -251,7 +251,7 @@
         <div class="pic">${it.foto ? `<img src="${it.foto}" alt="${it.team}">` : (it.tipo==='accesorio' ? '<div style="font-size:30px">'+(it.team.toLowerCase().includes('gorra')?'🧢':'🥤')+'</div>' : jersey(it.c1,it.c2))}</div>
         <div class="d">
           <div class="t">${it.team}</div>
-          <div class="sub">${it.season} · ${(it.tipo==='accesorio'||it.tipo==='gorra')?'Color':'Talla'} <b>${it.talla}</b>${it.perso?` · <b>${it.perso}</b>`:''}${it.perso?' · +personalización':''}${it.parches?` · Parche ${it.parcheTipo||''}`:''}</div>
+          <div class="sub">${it.season} · ${(it.tipo==='accesorio'||it.tipo==='gorra')?'Color':'Talla'} <b>${it.talla}</b>${it.perso?` · <b>${it.perso}</b>`:''}${it.perso?' · +personalización':''}${it.parches?` · Parche ${it.parcheTipo||''}`:''}${it.caja?` · Caja ${it.cajaNombre||''}`:''}</div>
           <div class="pr">${fmt(itemPrice(it))}</div>
           <div class="qty">
             <button onclick="chq(${i},-1)">−</button><span>${it.qty}</span><button onclick="chq(${i},1)">+</button>
