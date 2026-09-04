@@ -301,14 +301,22 @@
 
   let fTipo='todos', fCat='todos', fPais='todos', fClub='todos';
 
+  // Destacadas en el inicio (cuando no hay ningún filtro activo)
+  const DESTACADAS = ['Argentina Local 26','Manchester United 2008','Barcelona 2009','Barcelona Local 27','Real Madrid Local 27','Portugal Black Panther'];
   function render(){
     const g = document.getElementById('grid');
-    const list = productos.filter(p =>
-      (p.fotos && p.fotos.length) &&
-      (fTipo==='todos'||p.tipo===fTipo) &&
-      (fCat==='todos'||p.categoria===fCat) &&
-      (fPais==='todos'||p.equipo===fPais) &&
-      (fClub==='todos'||p.equipo===fClub));
+    const sinFiltro = (fTipo==='todos' && fCat==='todos' && fPais==='todos' && fClub==='todos');
+    let list;
+    if(sinFiltro){
+      list = DESTACADAS.map(n=>productos.find(p=>p.season===n && p.fotos && p.fotos.length)).filter(Boolean);
+    } else {
+      list = productos.filter(p =>
+        (p.fotos && p.fotos.length) &&
+        (fTipo==='todos'||p.tipo===fTipo) &&
+        (fCat==='todos'||p.categoria===fCat) &&
+        (fPais==='todos'||p.equipo===fPais) &&
+        (fClub==='todos'||p.equipo===fClub));
+    }
     if(!list.length){g.innerHTML='<div class="empty">No hay productos para este filtro todavía 🙈</div>';return;}
     g.innerHTML = list.map(p=>{
       const [sc,st]=stockLabel[p.stock];

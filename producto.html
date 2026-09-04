@@ -77,6 +77,7 @@
   .player-note b{color:var(--green)}
   .parches-opts{margin-top:14px}
   .parches-lbl{font-size:12px;color:var(--muted);margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+  .caja-thumb{width:48px;height:48px;border-radius:9px;object-fit:cover;border:1px solid var(--line);background:#0e0e0e;flex:0 0 auto}
   .size-note{font-size:12px;color:var(--muted);margin-top:11px}
   .size-warn{color:#ff8080;font-size:12.5px;font-weight:700;margin-top:10px;display:none}
   /* Entrega */
@@ -278,9 +279,12 @@
     <!-- Caja de colección (según equipo/marca) -->
     <div class="perso" id="cajaRow" style="margin-top:12px;display:none">
       <div class="switch-row" onclick="toggleCaja()">
-        <div>
-          <div class="t">Añadir caja de colección</div>
-          <div class="s" id="cajaDesc">Caja de colección</div>
+        <div style="display:flex;align-items:center;gap:11px">
+          <img id="cajaImg" class="caja-thumb" alt="Caja" style="display:none" onerror="this.style.display='none'">
+          <div>
+            <div class="t">Añadir caja de colección</div>
+            <div class="s" id="cajaDesc">Caja de colección</div>
+          </div>
         </div>
         <div style="display:flex;align-items:center;gap:12px">
           <span class="plus">+$10.000</span>
@@ -454,8 +458,14 @@
     document.getElementById('parchesRow').style.display = (!esGorra && PARCHES_OK.includes(P.equipo)) ? 'block' : 'none';
     // caja de colección (según equipo/marca)
     const cajaRow=document.getElementById('cajaRow');
-    if(cajaNombre){ cajaRow.style.display='block'; document.getElementById('cajaDesc').textContent='Caja de colección '+cajaNombre; }
-    else { cajaRow.style.display='none'; }
+    if(cajaNombre){
+      cajaRow.style.display='block';
+      document.getElementById('cajaDesc').textContent='Caja de colección '+cajaNombre;
+      const slug=cajaNombre.toLowerCase().replace(/\s+/g,'-');
+      const cim=document.getElementById('cajaImg');
+      cim.style.display='block';
+      cim.src='assets/img/cajas/caja-'+slug+'.jpg';   // se oculta solo si aún no existe la foto
+    } else { cajaRow.style.display='none'; }
     const g=document.getElementById('sizeGuide');
     if(esGorra){ g.style.display='none'; return; }
     const retro = TIPO==='retro';
