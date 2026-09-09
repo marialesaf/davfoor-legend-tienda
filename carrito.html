@@ -46,6 +46,8 @@
   .field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px;font-weight:700}
   .field input,.field select,.field textarea{width:100%;background:#0e0e0e;border:1px solid var(--line);border-radius:11px;padding:13px;color:#fff;font-size:14.5px}
   .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green)}
+  .field input:not([type=email]),.field textarea{text-transform:uppercase}
+  .field input::placeholder,.field textarea::placeholder{text-transform:none}
   .field.err input{border-color:#ff6b6b}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
   .chk{display:flex;align-items:center;gap:9px;font-size:13px;color:#cfcfcf;margin:2px 0 6px;cursor:pointer}
@@ -357,12 +359,12 @@
   // Addi (manual): manda al cliente al WhatsApp de DAVFOOR con el detalle y el total
   function addiWhatsApp(){
     const {total}=totals();
-    const nombre=(document.getElementById('f_nombre').value||'').trim();
+    const nombre=(document.getElementById('f_nombre').value||'').trim().toUpperCase();
     const cedula=(document.getElementById('f_cedula').value||'').trim();
     const cel=(document.getElementById('f_cel').value||'').trim();
-    const dir=(document.getElementById('f_dir').value||'').trim();
-    const ciudad=(document.getElementById('f_ciudad').value||'').trim();
-    const depto=(document.getElementById('f_depto').value||'').trim();
+    const dir=(document.getElementById('f_dir').value||'').trim().toUpperCase();
+    const ciudad=(document.getElementById('f_ciudad').value||'').trim().toUpperCase();
+    const depto=(document.getElementById('f_depto').value||'').trim().toUpperCase();
     const lineas=cart.map(it=>{
       const ex=[];
       if(it.talla) ex.push('Talla '+it.talla);
@@ -386,14 +388,14 @@
       precio: (it.base+it.extra)
     }));
     const pedido = {
-      cliente: document.getElementById('f_nombre').value.trim(),
+      cliente: document.getElementById('f_nombre').value.trim().toUpperCase(),
       cedula: document.getElementById('f_cedula').value.trim(),
       celular: document.getElementById('f_cel').value.trim(),
       correo: document.getElementById('f_correo').value.trim(),
-      departamento: document.getElementById('f_depto').value.trim(),
-      ciudad: document.getElementById('f_ciudad').value.trim(),
-      direccion: document.getElementById('f_dir').value.trim(),
-      notas: (document.getElementById('f_notas')?document.getElementById('f_notas').value.trim():''),
+      departamento: document.getElementById('f_depto').value.trim().toUpperCase(),
+      ciudad: document.getElementById('f_ciudad').value.trim().toUpperCase(),
+      direccion: document.getElementById('f_dir').value.trim().toUpperCase(),
+      notas: (document.getElementById('f_notas')?document.getElementById('f_notas').value.trim().toUpperCase():''),
       items, subtotal: sub, envio, total,
       metodo, pago: 'pendiente', estado: 'Nuevo'
     };

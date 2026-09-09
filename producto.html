@@ -149,12 +149,22 @@
 
   /* ---------- VERSIÓN PC / ESCRITORIO ---------- */
   @media(min-width:760px){
-    .wrap{max-width:820px;box-shadow:none}
-    .buybar{max-width:820px}
+    .wrap{max-width:1100px;box-shadow:none}
+    .buybar{max-width:1100px}
     .main-img{max-width:540px;margin-left:auto;margin-right:auto}
     .thumbs{max-width:540px;margin-left:auto;margin-right:auto}
     .toast{bottom:120px}
   }
+
+  /* ---------- MOVIMIENTO / ANIMACIONES ---------- */
+  .size{transition:transform .14s ease, border-color .14s ease}
+  .size:hover{transform:translateY(-3px);border-color:var(--green)}
+  .thumb{transition:transform .16s ease, border-color .16s ease}
+  .thumb:hover{transform:translateY(-3px) scale(1.03)}
+  .btn-buy{transition:box-shadow .15s ease, filter .15s ease}
+  .btn-buy:hover{box-shadow:0 12px 28px rgba(63,225,103,.5); filter:brightness(1.06)}
+  .main-img .nav{transition:transform .15s ease, background .15s ease}
+  .main-img .nav:hover{transform:translateY(-50%) scale(1.12)}
 </style>
 </head>
 <body>
