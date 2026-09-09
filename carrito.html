@@ -379,7 +379,6 @@
 
   // Guarda el pedido en Supabase (aparece en la página de Pedidos)
   async function guardarPedido(){
-    if(!_sb) return;      // si no hay Supabase configurado, no hace nada
     const {sub,envio,total}=totals();
     const items = cart.map(it=>({
       team: it.team + (it.perso?(' ('+it.perso+')'):''),
@@ -399,7 +398,13 @@
       items, subtotal: sub, envio, total,
       metodo, pago: 'pendiente', estado: 'Nuevo'
     };
-    try { await _sb.from('pedidos').insert(pedido); } catch(e){ /* no bloquea la compra */ }
+    if(_sb){ try { await _sb.from('pedidos').insert(pedido); } catch(e){ /* no bloquea la compra */ } }
+    // Enviar correos (a la tienda y al cliente). sendBeacon asegura el envío aunque la página redirija.
+    try {
+      const blob = new Blob([JSON.stringify(pedido)], {type:'application/json'});
+      if(navigator.sendBeacon){ navigator.sendBeacon('/api/enviar-correo', blob); }
+      else { fetch('/api/enviar-correo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pedido),keepalive:true}); }
+    } catch(e){}
   }
 
   async function mercadoPago(){
