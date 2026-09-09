@@ -358,8 +358,11 @@
   function addiWhatsApp(){
     const {total}=totals();
     const nombre=(document.getElementById('f_nombre').value||'').trim();
+    const cedula=(document.getElementById('f_cedula').value||'').trim();
     const cel=(document.getElementById('f_cel').value||'').trim();
+    const dir=(document.getElementById('f_dir').value||'').trim();
     const ciudad=(document.getElementById('f_ciudad').value||'').trim();
+    const depto=(document.getElementById('f_depto').value||'').trim();
     const lineas=cart.map(it=>{
       const ex=[];
       if(it.talla) ex.push('Talla '+it.talla);
@@ -368,7 +371,7 @@
       if(it.caja) ex.push('Caja '+(it.cajaNombre||''));
       return `• ${it.qty||1}x ${it.team} - ${it.season}${ex.length?' ('+ex.join(', ')+')':''} — ${fmt((it.base+it.extra)*(it.qty||1))}`;
     }).join('\n');
-    const msg=`¡Hola DAVFOOR LEGEND! Quiero pagar mi pedido con *Addi* (a cuotas).\n\n*Mi pedido:*\n${lineas}\n\n*Total a pagar (con Addi): ${fmt(total)}*\n(Incluye el recargo del 10%. El envío se paga al recibir.)\n\n*Mis datos:*\nNombre: ${nombre}\nCiudad: ${ciudad}\nCelular: ${cel}\n\n¿Me pasan el link de pago de Addi, por favor?`;
+    const msg=`¡Hola DAVFOOR LEGEND! Quiero pagar mi pedido con *Addi* (a cuotas).\n\n*Mi pedido:*\n${lineas}\n\n*Total a pagar (con Addi): ${fmt(total)}*\n(Incluye el recargo del 10%. El envío se paga al recibir.)\n\n*Mis datos:*\nNombre: ${nombre}\nCédula: ${cedula}\nCelular: ${cel}\nDirección: ${dir}\nCiudad: ${ciudad}${depto?', '+depto:''}\n\n¿Me pasan el link de pago de Addi, por favor?`;
     window.location.href = `https://wa.me/573222664358?text=${encodeURIComponent(msg)}`;
   }
 
