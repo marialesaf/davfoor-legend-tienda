@@ -196,7 +196,7 @@
 
     <label class="pay" id="pay_addi" onclick="setPago('addi')">
       <div class="top"><span class="radio"></span><span class="ttl">Paga a cuotas con Addi</span><span class="ico">🟣</span></div>
-      <div class="desc">Financia tu compra con <b>Addi</b> y págala en cuotas. Aprobación rápida desde tu celular.</div>
+      <div class="desc">Págala <b>a cuotas con Addi</b>. Al continuar te comunicamos por <b>WhatsApp</b> 💬 y te enviamos el <b>link de pago</b> de Addi para que la financies. (Incluye recargo del 10%.)</div>
     </label>
   </div>
 
@@ -223,7 +223,7 @@
 <!-- BARRA DE PAGO -->
 <div class="paybar">
   <div class="tot"><small id="bar_label">Pagas ahora</small><b id="bar_now">$0</b></div>
-  <button class="btn-pay" onclick="pagar()">Ir a pagar →</button>
+  <button class="btn-pay" id="btnPay" onclick="pagar()">Ir a pagar →</button>
 </div>
 
 <!-- MODAL -->
@@ -316,6 +316,7 @@
     if(metodo==='contra') label = 'Anticipo ahora';
     if(metodo==='addi')   label = 'Financias con Addi';
     document.getElementById('bar_label').textContent = label;
+    document.getElementById('btnPay').textContent = metodo==='addi' ? 'Coordinar por WhatsApp 💬' : (metodo==='contra' ? 'Pagar anticipo →' : 'Ir a pagar →');
     document.getElementById('s_now_label').textContent = label + ':';
 
     let rest='';
@@ -349,7 +350,26 @@
   }
   async function irAPagar(){
     await guardarPedido();   // guarda el pedido en la base de datos primero
+    if(metodo==='addi'){ addiWhatsApp(); return; }   // Addi: coordinar por WhatsApp
     mercadoPago();
+  }
+
+  // Addi (manual): manda al cliente al WhatsApp de DAVFOOR con el detalle y el total
+  function addiWhatsApp(){
+    const {total}=totals();
+    const nombre=(document.getElementById('f_nombre').value||'').trim();
+    const cel=(document.getElementById('f_cel').value||'').trim();
+    const ciudad=(document.getElementById('f_ciudad').value||'').trim();
+    const lineas=cart.map(it=>{
+      const ex=[];
+      if(it.talla) ex.push('Talla '+it.talla);
+      if(it.perso) ex.push(it.perso);
+      if(it.parches) ex.push('Parche '+(it.parcheTipo||''));
+      if(it.caja) ex.push('Caja '+(it.cajaNombre||''));
+      return `• ${it.qty||1}x ${it.team} - ${it.season}${ex.length?' ('+ex.join(', ')+')':''} — ${fmt((it.base+it.extra)*(it.qty||1))}`;
+    }).join('\n');
+    const msg=`¡Hola DAVFOOR LEGEND! 👋 Quiero pagar mi pedido con *Addi* (a cuotas).\n\n🛒 *Mi pedido:*\n${lineas}\n\n*Total a pagar (con Addi): ${fmt(total)}*\n(Incluye el recargo del 10%. El envío se paga al recibir.)\n\n*Mis datos:*\nNombre: ${nombre}\nCiudad: ${ciudad}\nCelular: ${cel}\n\n¿Me pasan el link de pago de Addi, por favor? 🙌`;
+    window.location.href = `https://wa.me/573222664358?text=${encodeURIComponent(msg)}`;
   }
 
   // Guarda el pedido en Supabase (aparece en la página de Pedidos)
