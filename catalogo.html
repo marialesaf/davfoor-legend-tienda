@@ -108,6 +108,10 @@
   .card:hover{transform:translateY(-6px);border-color:rgba(63,225,103,.5);box-shadow:0 12px 26px rgba(0,0,0,.55)}
   .topnav a{transition:transform .15s ease}
   .topnav a:hover{transform:translateY(-2px)}
+  .tab{transition:transform .14s ease, background .25s ease, color .25s ease}
+  .tab:hover{transform:translateY(-2px)}
+  .tab.active{animation:tabpop .35s ease}
+  @keyframes tabpop{0%{transform:scale(.92)}55%{transform:scale(1.05)}100%{transform:scale(1)}}
   @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 </style>
 </head>
