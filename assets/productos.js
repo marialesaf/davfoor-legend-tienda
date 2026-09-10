@@ -28,9 +28,11 @@ const SELECCIONES = [
   {id:'brasil', name:'Brasil', flag:'🇧🇷', bg:"linear-gradient(90deg,#009739 50%,#ffdf00 50%)", logo:'assets/img/logo-brasil.png'},
   {id:'espana', name:'España', flag:'🇪🇸', bg:"linear-gradient(90deg,#c60b1e 50%,#ffc400 50%)", logo:'assets/img/logo-espana.png'},
   {id:'colombia', name:'Colombia', flag:'🇨🇴', bg:"linear-gradient(90deg,#fcd116 50%,#003893 50%)", logo:'assets/img/logo-colombia.png'},
+  {id:'noruega', name:'Noruega', flag:'🇳🇴', bg:"linear-gradient(90deg,#ef2b2d 50%,#002868 50%)", logo:''},
 ];
 
 const PRODUCTOS = [
+  {id:162, clase:'camiseta', team:'Noruega', categoria:'seleccion', equipo:'noruega', tipo:'actual', nombre:'Noruega Visitante 26', season:'Noruega Visitante 26', precio:110000, num:10, c1:'#111111', c2:'#ef2b2d', crest:'NOR', stock:'ok', nota:'', foto:'assets/img/fotos/noruega-visitante-26__1.jpg', fotos:['assets/img/fotos/noruega-visitante-26__1.jpg','assets/img/fotos/noruega-visitante-26__2.jpg','assets/img/fotos/noruega-visitante-26__3.jpg']},
   {id:161, clase:'camiseta', team:'Liverpool', categoria:'club', equipo:'liverpool', tipo:'actual', nombre:'Liverpool Tercera 26', season:'Liverpool Tercera 26', precio:90000, num:10, c1:'#2e8b78', c2:'#ffffff', crest:'LFC', stock:'ok', nota:'', foto:'assets/img/fotos/liverpool-tercera-26__1.jpg', fotos:['assets/img/fotos/liverpool-tercera-26__1.jpg','assets/img/fotos/liverpool-tercera-26__2.jpg','assets/img/fotos/liverpool-tercera-26__3.jpg']},
   {id:146, clase:'camiseta', team:'Milan', categoria:'club', equipo:'milan', tipo:'retro', nombre:'AC Milan Local 2006', season:'AC Milan Local 2006', precio:130000, num:10, c1:'#fb090b', c2:'#000000', crest:'ACM', stock:'ok', nota:'', foto:'assets/img/fotos/ac-milan-local-2006__1.jpg', fotos:['assets/img/fotos/ac-milan-local-2006__1.jpg','assets/img/fotos/ac-milan-local-2006__2.jpg','assets/img/fotos/ac-milan-local-2006__3.jpg']},
   {id:147, clase:'camiseta', team:'Milan', categoria:'club', equipo:'milan', tipo:'actual', nombre:'AC Milan Local 27', season:'AC Milan Local 27', precio:110000, num:10, c1:'#fb090b', c2:'#ffffff', crest:'ACM', stock:'ok', nota:'', foto:'assets/img/fotos/ac-milan-local-27__1.jpg', fotos:['assets/img/fotos/ac-milan-local-27__1.jpg','assets/img/fotos/ac-milan-local-27__2.jpg','assets/img/fotos/ac-milan-local-27__3.jpg']},
