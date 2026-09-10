@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pedidos — DAVFOOR LEGEND (Privado)</title>
+<title>Panel — DAVFOOR LEGEND (Privado)</title>
 <style>
   :root{--bg:#0a0a0a;--panel:#151515;--panel2:#1d1d1d;--line:#282828;--green:#3fe167;--amber:#e8a33d;--red:#ff6b6b;--txt:#fff;--muted:#9aa0a6}
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.4}
-  .wrap{max-width:820px;margin:0 auto;padding-bottom:50px}
+  .wrap{max-width:860px;margin:0 auto;padding-bottom:50px}
   input,select,button{font-family:inherit}
   header{position:sticky;top:0;z-index:30;background:rgba(10,10,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:12px 16px}
   header img{height:30px}
@@ -16,6 +16,13 @@
   header .out{margin-left:auto;background:none;border:1px solid var(--line);color:#fff;border-radius:9px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;display:none}
 
   .warn{margin:16px;background:rgba(232,163,61,.1);border:1px solid rgba(232,163,61,.4);border-radius:12px;padding:14px;font-size:13px;color:#e9c88a;line-height:1.6}
+
+  /* NAV */
+  .nav{display:flex;gap:6px;padding:12px 16px 4px;overflow-x:auto;scrollbar-width:none}
+  .nav::-webkit-scrollbar{display:none}
+  .nav b{flex:0 0 auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:800;color:var(--muted);cursor:pointer;transition:transform .12s ease}
+  .nav b.active{background:var(--green);color:#04240f;border-color:var(--green)}
+  .nav b:active{transform:scale(.96)}
 
   /* LOGIN */
   .login{max-width:360px;margin:8vh auto;padding:26px 22px;background:var(--panel);border:1px solid var(--line);border-radius:18px;text-align:center}
@@ -28,7 +35,7 @@
   .login .err{color:var(--red);font-size:12.5px;margin-top:10px;min-height:16px}
 
   /* TOOLBAR */
-  .toolbar{padding:14px 16px 4px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+  .toolbar{padding:8px 16px 4px;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
   .toolbar::-webkit-scrollbar{display:none}
   .fchip{flex:0 0 auto;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:8px 14px;font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer}
   .fchip.active{background:var(--green);color:#04240f;border-color:var(--green)}
@@ -59,24 +66,65 @@
   .contact a{flex:1;text-align:center;border-radius:10px;padding:9px;font-size:12.5px;font-weight:700;text-decoration:none}
   .wa{background:#25d366;color:#04240f}
   .mail{background:var(--panel2);color:#fff;border:1px solid var(--line)}
-  /* Avisos WhatsApp por estado */
-  .avisos{margin-top:12px}
-  .av-lbl{font-size:11.5px;color:var(--muted);margin-bottom:7px;font-weight:700}
-  .av-btns{display:flex;gap:8px;flex-wrap:wrap}
-  .avbtn{flex:1;min-width:96px;background:#25d366;color:#04240f;border:none;border-radius:10px;padding:9px;font-size:12.5px;font-weight:800;cursor:pointer}
-  .avbtn.alt{background:rgba(37,211,102,.14);color:#25d366;border:1px solid rgba(37,211,102,.45)}
-  .avbtn:active{transform:scale(.98)}
   .manage{display:flex;gap:8px;align-items:center;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap}
   .manage select,.manage input{background:#0e0e0e;border:1px solid var(--line);border-radius:9px;padding:9px;color:#fff;font-size:13px}
   .manage input{flex:1;min-width:120px}
   .manage .save{background:var(--green);color:#04240f;border:none;font-weight:800;cursor:pointer;padding:9px 14px;border-radius:9px}
+  .manage .del{background:rgba(255,107,107,.14);color:var(--red);border:1px solid rgba(255,107,107,.4);font-weight:800;cursor:pointer;padding:9px 12px;border-radius:9px}
   .empty{text-align:center;color:var(--muted);padding:40px 10px;font-size:14px}
+
+  /* ESTADÍSTICAS */
+  .stats{padding:14px 16px}
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+  .kpi small{color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+  .kpi b{display:block;font-size:22px;margin-top:5px;color:var(--green)}
+  .month{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+  .month .mh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .month .mh span{font-weight:800;font-size:14px;text-transform:capitalize}
+  .month .mh em{color:var(--muted);font-style:normal;font-size:12px}
+  .bar{height:9px;background:#0e0e0e;border-radius:6px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--green)}
+  .mrow{display:flex;justify-content:space-between;font-size:13px;margin-top:8px;color:#cfcfcf}
+  .mrow b{color:#fff}
+
+  /* INVENTARIO */
+  .inv{padding:14px 16px}
+  .addbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:16px}
+  .addbox h3{font-size:14px;margin-bottom:10px}
+  .addbox .rowf{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .addbox select,.addbox input{background:#0e0e0e;border:1px solid var(--line);border-radius:9px;padding:10px;color:#fff;font-size:13px}
+  .addbox select{flex:1;min-width:150px}
+  .addbox input{width:80px}
+  .addbox .add{background:var(--green);color:#04240f;border:none;font-weight:800;cursor:pointer;padding:10px 16px;border-radius:9px}
+  .invcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-bottom:12px}
+  .invcard .nm{font-weight:800;font-size:14px;margin-bottom:2px}
+  .invcard .idp{color:var(--muted);font-size:11px;margin-bottom:10px}
+  .sizes{display:flex;gap:8px;flex-wrap:wrap}
+  .sz{display:flex;align-items:center;gap:0;background:#0e0e0e;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .sz .t{padding:0 8px;font-weight:800;font-size:13px;min-width:34px;text-align:center}
+  .sz .q{padding:0 6px;min-width:26px;text-align:center;font-weight:800;color:var(--green)}
+  .sz button{background:none;border:none;color:#fff;font-size:16px;font-weight:800;width:30px;height:34px;cursor:pointer}
+  .sz .rm{color:var(--red);font-size:13px;width:28px;border-left:1px solid var(--line)}
+  .agotado{color:var(--red);font-size:12px;margin-top:8px;font-weight:700}
+
+  /* NUEVO PRODUCTO */
+  .npform{padding:14px 16px}
+  .npform .fld{margin-bottom:12px}
+  .npform label{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
+  .npform input,.npform select,.npform textarea{width:100%;background:#0e0e0e;border:1px solid var(--line);border-radius:11px;padding:12px;color:#fff;font-size:14px}
+  .npform .two{display:flex;gap:10px}
+  .npform .two>div{flex:1}
+  .npform .gen{width:100%;background:var(--green);color:#04240f;border:none;border-radius:12px;padding:14px;font-weight:900;font-size:14px;cursor:pointer;margin-top:4px}
+  .npout{margin-top:14px;background:#0e0e0e;border:1px solid var(--line);border-radius:12px;padding:12px;font-family:monospace;font-size:12px;white-space:pre-wrap;word-break:break-word;color:#bfe}
+  .copy{margin-top:8px;background:var(--panel2);border:1px solid var(--line);color:#fff;border-radius:9px;padding:9px 14px;font-weight:700;cursor:pointer;font-size:13px}
+  .hint{color:var(--muted);font-size:12.5px;line-height:1.6;margin-top:10px}
 </style>
 </head>
 <body>
 <header>
   <img src="assets/img/logo-white.png" alt="DAVFOOR">
-  <span class="badge">🔒 Pedidos</span>
+  <span class="badge">🔒 Admin</span>
   <button class="out" id="btnOut" onclick="logout()">Salir</button>
 </header>
 
@@ -86,7 +134,7 @@
   <!-- LOGIN -->
   <div class="login" id="loginView" style="display:none">
     <img src="assets/img/logo-white.png" alt="DAVFOOR">
-    <h1>Panel de pedidos</h1>
+    <h1>Panel administrativo</h1>
     <p>Ingresa con tu correo y contraseña.</p>
     <input id="email" type="email" placeholder="correo@ejemplo.com" autocomplete="username">
     <input id="pass" type="password" placeholder="Contraseña" autocomplete="current-password">
@@ -96,31 +144,89 @@
 
   <!-- APP -->
   <div id="appView" style="display:none">
-    <div class="toolbar" id="filters">
-      <div class="fchip active" data-f="todos" onclick="setFiltro(this)">Todos</div>
-      <div class="fchip" data-f="Nuevo" onclick="setFiltro(this)">🆕 Nuevos</div>
-      <div class="fchip" data-f="En preparación" onclick="setFiltro(this)">📦 En preparación</div>
-      <div class="fchip" data-f="Enviado" onclick="setFiltro(this)">🚚 Enviados</div>
-      <div class="fchip" data-f="Entregado" onclick="setFiltro(this)">✅ Entregados</div>
+    <div class="nav" id="nav">
+      <b class="active" data-s="pedidos" onclick="setSection(this)">📋 Pedidos</b>
+      <b data-s="stats" onclick="setSection(this)">📊 Estadísticas</b>
+      <b data-s="inv" onclick="setSection(this)">📦 Inventario</b>
+      <b data-s="nuevo" onclick="setSection(this)">➕ Nuevo producto</b>
     </div>
-    <div class="subbar" id="subbar"></div>
-    <div class="list" id="list"></div>
+
+    <!-- SECCIÓN PEDIDOS -->
+    <div id="sec-pedidos">
+      <div class="toolbar" id="filters">
+        <div class="fchip active" data-f="todos" onclick="setFiltro(this)">Todos</div>
+        <div class="fchip" data-f="Nuevo" onclick="setFiltro(this)">🆕 Nuevos</div>
+        <div class="fchip" data-f="En preparación" onclick="setFiltro(this)">📦 En preparación</div>
+        <div class="fchip" data-f="Enviado" onclick="setFiltro(this)">🚚 Enviados</div>
+        <div class="fchip" data-f="Entregado" onclick="setFiltro(this)">✅ Entregados</div>
+      </div>
+      <div class="subbar" id="subbar"></div>
+      <div class="list" id="list"></div>
+    </div>
+
+    <!-- SECCIÓN ESTADÍSTICAS -->
+    <div id="sec-stats" style="display:none">
+      <div class="stats" id="statsBox"></div>
+    </div>
+
+    <!-- SECCIÓN INVENTARIO -->
+    <div id="sec-inv" style="display:none">
+      <div class="inv">
+        <div class="addbox">
+          <h3>➕ Agregar / reponer talla</h3>
+          <div class="rowf">
+            <select id="invProd"></select>
+            <select id="invTalla">
+              <option>S</option><option>M</option><option>L</option><option>XL</option><option>2XL</option>
+            </select>
+            <input id="invCant" type="number" min="1" value="1">
+            <button class="add" onclick="addStock()">Agregar</button>
+          </div>
+          <p class="hint">Elige una camiseta del catálogo, la talla y las unidades. Si ya existía esa talla, suma las unidades.</p>
+        </div>
+        <div id="invList"></div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN NUEVO PRODUCTO -->
+    <div id="sec-nuevo" style="display:none">
+      <div class="npform">
+        <div class="fld"><label>Nombre de la camiseta</label><input id="np_nombre" placeholder="Ej: Barcelona Local 27"></div>
+        <div class="fld"><label>Equipo</label><input id="np_equipo" list="equipos" placeholder="Ej: barcelona"><datalist id="equipos"></datalist></div>
+        <div class="two">
+          <div class="fld"><label>Categoría</label><select id="np_cat"><option value="club">Club</option><option value="seleccion">Selección</option></select></div>
+          <div class="fld"><label>Tipo</label><select id="np_tipo"><option value="actual">Actual</option><option value="retro">Retro</option></select></div>
+        </div>
+        <div class="two">
+          <div class="fld"><label>Precio</label><input id="np_precio" type="number" placeholder="110000"></div>
+          <div class="fld"><label>Escudo (3 letras)</label><input id="np_crest" placeholder="FCB" maxlength="4"></div>
+        </div>
+        <div class="fld"><label>Nota / dorsal (opcional)</label><input id="np_nota" placeholder="Ej: Sin dorsal  ·  Condicional: Messi 10"></div>
+        <button class="gen" onclick="generarProducto()">Generar producto</button>
+        <div class="npout" id="npOut" style="display:none"></div>
+        <button class="copy" id="npCopy" style="display:none" onclick="copiarProducto()">📋 Copiar</button>
+        <p class="hint">Esto genera el código de la camiseta. Las <b>fotos</b> se suben aparte: pásame el código generado y las fotos por chat y yo lo dejo publicado. (El catálogo vive en un archivo, por eso el alta final la hago yo.)</p>
+      </div>
+    </div>
   </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/productos.js"></script>
 <script src="assets/supabase-config.js"></script>
 <script>
   const fmt = n => '$'+Number(n||0).toLocaleString('es-CO');
-  let sb=null, pedidos=[], filtro='todos';
+  let sb=null, pedidos=[], filtro='todos', stock=[], seccion='pedidos';
 
-  // ¿Configuró Supabase?
+  const CATALOGO = (typeof PRODUCTOS!=='undefined'?PRODUCTOS:[]).filter(p=>p.clase==='camiseta');
+  const NOMBRE = {}; CATALOGO.forEach(p=>NOMBRE[p.id]=p.nombre||p.team);
+
   const cfgOk = (typeof SUPABASE_URL!=='undefined') && SUPABASE_URL.startsWith('https://') && !SUPABASE_URL.includes('TU-PROYECTO') && SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes('PEGA_AQUI');
 
   async function init(){
     if(!cfgOk){
       document.getElementById('cfgWarn').style.display='block';
-      document.getElementById('cfgWarn').innerHTML='⚙️ <b>Falta conectar Supabase.</b> Abre el archivo <b>assets/supabase-config.js</b> y pega tu <b>Project URL</b> y tu <b>anon public key</b>. Luego recarga esta página.';
+      document.getElementById('cfgWarn').innerHTML='⚙️ <b>Falta conectar Supabase.</b> Revisa <b>assets/supabase-config.js</b>.';
       return;
     }
     sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -140,12 +246,22 @@
   }
   async function logout(){ await sb.auth.signOut(); showLogin(); }
 
-  async function loadPedidos(){
-    const { data, error } = await sb.from('pedidos').select('*').order('creado',{ascending:false});
-    if(error){ document.getElementById('list').innerHTML='<div class="empty">No pudimos cargar los pedidos. ¿Corriste el SQL en Supabase?</div>'; return; }
-    pedidos = data||[]; render();
+  // ---- NAVEGACIÓN ----
+  function setSection(el){
+    document.querySelectorAll('#nav b').forEach(b=>b.classList.remove('active')); el.classList.add('active');
+    seccion=el.dataset.s;
+    ['pedidos','stats','inv','nuevo'].forEach(s=>document.getElementById('sec-'+s).style.display = (s===seccion?'block':'none'));
+    if(seccion==='stats') renderStats();
+    if(seccion==='inv') loadStock();
+    if(seccion==='nuevo') initNuevo();
   }
 
+  // ---- PEDIDOS ----
+  async function loadPedidos(){
+    const { data, error } = await sb.from('pedidos').select('*').order('creado',{ascending:false});
+    if(error){ document.getElementById('list').innerHTML='<div class="empty">No pudimos cargar los pedidos.</div>'; return; }
+    pedidos = data||[]; render();
+  }
   function setFiltro(el){ document.querySelectorAll('#filters .fchip').forEach(c=>c.classList.remove('active')); el.classList.add('active'); filtro=el.dataset.f; render(); }
 
   function render(){
@@ -172,47 +288,19 @@
         <div class="o-row">Método: <b>${p.metodo||'—'}</b> · Envío: ${fmt(p.envio)}</div>
         <div class="o-total">Total: ${fmt(p.total)}</div>
         <div class="contact">
-          ${cel?`<a class="wa" href="https://wa.me/57${cel}" target="_blank">💬 Abrir chat</a>`:''}
+          ${cel?`<a class="wa" href="https://wa.me/57${cel}" target="_blank">💬 WhatsApp</a>`:''}
           ${p.correo?`<a class="mail" href="mailto:${p.correo}">✉️ Correo</a>`:''}
         </div>
-        ${cel?`<div class="avisos">
-          <div class="av-lbl">Avisar al cliente por WhatsApp:</div>
-          <div class="av-btns">
-            <button class="avbtn" onclick="waAviso(${p.id},'compra')">✅ Compra recibida</button>
-            <button class="avbtn alt" onclick="waAviso(${p.id},'alistamiento')">📦 En alistamiento</button>
-            <button class="avbtn alt" onclick="waAviso(${p.id},'enviado')">🚚 Enviado + guía</button>
-          </div>
-        </div>`:''}
         <div class="manage">
           <select id="est-${p.id}">
             ${['Nuevo','En preparación','Enviado','Entregado'].map(s=>`<option ${s===est?'selected':''}>${s}</option>`).join('')}
           </select>
           <input id="guia-${p.id}" placeholder="N° de guía" value="${p.guia||''}">
           <button class="save" onclick="guardar(${p.id})">Guardar</button>
+          <button class="del" onclick="eliminarPedido(${p.id})">🗑 Eliminar</button>
         </div>
       </div>`;
     }).join('');
-  }
-
-  // Abre WhatsApp del cliente con el mensaje del estado ya escrito
-  function waAviso(id, tipo){
-    const p = pedidos.find(x=>x.id===id); if(!p) return;
-    const cel=(p.celular||'').replace(/\D/g,'');
-    if(!cel){ alert('Este pedido no tiene número de celular.'); return; }
-    const nombre=(p.cliente||'').trim().split(' ')[0]||'';
-    const items=(p.items||[]).map(i=>`• ${i.cant||1}× ${i.team||i.nombre||'Producto'}${i.talla?' (Talla '+i.talla+')':''}`).join('\n');
-    const inp=document.getElementById('guia-'+id);
-    const guia = inp ? inp.value.trim() : (p.guia||'');
-    let m='';
-    if(tipo==='compra'){
-      m=`¡Hola ${nombre}! 👋 Te escribimos de *DAVFOOR LEGEND* ⚽\n\n¡Recibimos tu pedido *#${p.id}*! ✅\n${items}\nTotal: ${fmt(p.total)}\n\nYa lo estamos gestionando y te avisaremos por aquí en cada paso. ¡Gracias por tu compra! 🙌`;
-    } else if(tipo==='alistamiento'){
-      m=`¡Hola ${nombre}! 📦\n\nTu pedido *#${p.id}* ya está *en alistamiento*: lo estamos empacando con cuidado y muy pronto sale para tu envío. 🚀`;
-    } else if(tipo==='enviado'){
-      if(!guia){ if(!confirm('No hay N° de guía escrito en este pedido. ¿Enviar el mensaje sin guía?')) return; }
-      m=`¡Hola ${nombre}! 🚚\n\n¡Tu pedido *#${p.id}* ya fue *enviado* por Interrapidísimo!${guia?`\n\n📮 Guía de rastreo: *${guia}*\nPuedes seguirlo en https://www.interrapidisimo.com/`:''}\n\n¡Gracias por comprar en DAVFOOR LEGEND! ⚽`;
-    }
-    window.open(`https://wa.me/57${cel}?text=${encodeURIComponent(m)}`,'_blank');
   }
 
   async function guardar(id){
@@ -222,6 +310,144 @@
     if(error){ alert('No se pudo guardar. Intenta de nuevo.'); return; }
     const p=pedidos.find(x=>x.id===id); if(p){p.estado=estado;p.guia=guia;}
     render();
+  }
+
+  async function eliminarPedido(id){
+    if(!confirm('¿Eliminar el pedido #'+id+'? Esto no se puede deshacer.')) return;
+    const { error } = await sb.from('pedidos').delete().eq('id',id);
+    if(error){ alert('No se pudo eliminar. ¿Corriste el SQL de permisos?'); return; }
+    pedidos = pedidos.filter(p=>p.id!==id);
+    render();
+  }
+
+  // ---- ESTADÍSTICAS ----
+  function renderStats(){
+    const box=document.getElementById('statsBox');
+    if(!pedidos.length){ box.innerHTML='<div class="empty">Aún no hay pedidos para mostrar estadísticas. 📊</div>'; return; }
+    const meses={};
+    pedidos.forEach(p=>{
+      const d=p.creado?new Date(p.creado):null; if(!d) return;
+      const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+      if(!meses[key]) meses[key]={n:0,total:0};
+      meses[key].n++; meses[key].total += Number(p.total||0);
+    });
+    const keys=Object.keys(meses).sort().reverse();
+    const totalPed=pedidos.length, totalDinero=pedidos.reduce((a,p)=>a+Number(p.total||0),0);
+    const maxT=Math.max(...keys.map(k=>meses[k].total),1);
+    const nombreMes=k=>{const[y,m]=k.split('-');return new Date(y,m-1,1).toLocaleDateString('es-CO',{month:'long',year:'numeric'});};
+    box.innerHTML =
+      `<div class="kpis">
+         <div class="kpi"><small>Pedidos totales</small><b>${totalPed}</b></div>
+         <div class="kpi"><small>Total en pedidos</small><b>${fmt(totalDinero)}</b></div>
+       </div>` +
+      keys.map(k=>`<div class="month">
+          <div class="mh"><span>${nombreMes(k)}</span><em>${meses[k].n} pedido(s)</em></div>
+          <div class="bar"><i style="width:${Math.round(meses[k].total/maxT*100)}%"></i></div>
+          <div class="mrow"><span>Dinero</span><b>${fmt(meses[k].total)}</b></div>
+        </div>`).join('') +
+      `<p class="hint">* "Dinero" suma el total de todos los pedidos registrados en el mes (incluye pendientes de pago).</p>`;
+  }
+
+  // ---- INVENTARIO ----
+  async function loadStock(){
+    // llenar selector de productos (una sola vez)
+    const sel=document.getElementById('invProd');
+    if(!sel.dataset.ready){
+      sel.innerHTML = CATALOGO.slice().sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||'')).map(p=>`<option value="${p.id}">${p.nombre||p.team} (#${p.id})</option>`).join('');
+      sel.dataset.ready='1';
+    }
+    const { data, error } = await sb.from('stock').select('*').order('producto_id');
+    if(error){ document.getElementById('invList').innerHTML='<div class="empty">No pudimos cargar el inventario.</div>'; return; }
+    stock = data||[]; renderInv();
+  }
+
+  function renderInv(){
+    const el=document.getElementById('invList');
+    if(!stock.length){ el.innerHTML='<div class="empty">Sin tallas en inventario todavía. Agrega arriba. 📦</div>'; return; }
+    const orden=['S','M','L','XL','2XL'];
+    const byProd={};
+    stock.forEach(r=>{ (byProd[r.producto_id]=byProd[r.producto_id]||[]).push(r); });
+    el.innerHTML = Object.keys(byProd).map(pid=>{
+      const rows=byProd[pid].sort((a,b)=>orden.indexOf(a.talla)-orden.indexOf(b.talla));
+      const total=rows.reduce((a,r)=>a+r.cantidad,0);
+      return `<div class="invcard">
+        <div class="nm">${NOMBRE[pid]||('Producto #'+pid)}</div>
+        <div class="idp">ID ${pid}${total===0?' · <span style="color:var(--red)">agotada (oculta en la web)</span>':''}</div>
+        <div class="sizes">
+          ${rows.map(r=>`<div class="sz">
+            <button onclick="chg(${pid},'${r.talla}',-1)">−</button>
+            <span class="t">${r.talla}</span>
+            <span class="q" id="q-${pid}-${r.talla}">${r.cantidad}</span>
+            <button onclick="chg(${pid},'${r.talla}',1)">+</button>
+            <button class="rm" onclick="rmSize(${pid},'${r.talla}')" title="Quitar talla">✕</button>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  async function chg(pid, talla, delta){
+    const r=stock.find(x=>String(x.producto_id)===String(pid)&&x.talla===talla); if(!r) return;
+    const nueva=Math.max(0, r.cantidad+delta);
+    const { error } = await sb.from('stock').update({cantidad:nueva}).eq('producto_id',pid).eq('talla',talla);
+    if(error){ alert('No se pudo actualizar. ¿Corriste el SQL de permisos?'); return; }
+    r.cantidad=nueva;
+    const q=document.getElementById('q-'+pid+'-'+talla); if(q) q.textContent=nueva;
+    // si un cambio deja el producto en 0 total, refrescamos para mostrar el aviso
+    const total=stock.filter(x=>String(x.producto_id)===String(pid)).reduce((a,x)=>a+x.cantidad,0);
+    if(total===0 || delta>0) renderInv();
+  }
+
+  async function rmSize(pid, talla){
+    if(!confirm('¿Quitar la talla '+talla+' de esta camiseta?')) return;
+    const { error } = await sb.from('stock').delete().eq('producto_id',pid).eq('talla',talla);
+    if(error){ alert('No se pudo quitar. ¿Corriste el SQL de permisos?'); return; }
+    stock = stock.filter(x=>!(String(x.producto_id)===String(pid)&&x.talla===talla));
+    renderInv();
+  }
+
+  async function addStock(){
+    const pid=parseInt(document.getElementById('invProd').value,10);
+    const talla=document.getElementById('invTalla').value;
+    const cant=Math.max(1, parseInt(document.getElementById('invCant').value,10)||1);
+    const existente=stock.find(x=>x.producto_id===pid&&x.talla===talla);
+    const nueva=(existente?existente.cantidad:0)+cant;
+    const { error } = await sb.from('stock').upsert({producto_id:pid, talla, cantidad:nueva}, {onConflict:'producto_id,talla'});
+    if(error){ alert('No se pudo agregar. ¿Corriste el SQL de permisos?'); return; }
+    if(existente) existente.cantidad=nueva; else stock.push({producto_id:pid,talla,cantidad:nueva});
+    renderInv();
+  }
+
+  // ---- NUEVO PRODUCTO ----
+  function initNuevo(){
+    const dl=document.getElementById('equipos');
+    if(!dl.dataset.ready){
+      const eq=[...new Set(CATALOGO.map(p=>p.equipo).filter(Boolean))].sort();
+      dl.innerHTML=eq.map(e=>`<option value="${e}">`).join('');
+      dl.dataset.ready='1';
+    }
+  }
+  function generarProducto(){
+    const nombre=document.getElementById('np_nombre').value.trim();
+    if(!nombre){ alert('Escribe el nombre de la camiseta'); return; }
+    const equipo=document.getElementById('np_equipo').value.trim().toLowerCase();
+    const cat=document.getElementById('np_cat').value;
+    const tipo=document.getElementById('np_tipo').value;
+    const precio=parseInt(document.getElementById('np_precio').value,10)|| (tipo==='retro'?130000:110000);
+    const crest=(document.getElementById('np_crest').value.trim()|| nombre.substring(0,3)).toUpperCase();
+    const nota=document.getElementById('np_nota').value.trim();
+    const team = CATALOGO.find(p=>p.equipo===equipo)?.team || nombre.split(' ')[0];
+    const ids = (typeof PRODUCTOS!=='undefined'?PRODUCTOS:[]).map(p=>p.id).filter(n=>n<1000);
+    const nextId = (Math.max(0,...ids)||99)+1;
+    const obj = `  {id:${nextId}, clase:'camiseta', team:'${team}', categoria:'${cat}', equipo:'${equipo}', tipo:'${tipo}', nombre:'${nombre}', season:'${nombre}', precio:${precio}, num:10, c1:'#888888', c2:'#3fe167', crest:'${crest}', stock:'ok', nota:'${nota}', foto:'', fotos:[]},`;
+    const out=document.getElementById('npOut');
+    out.style.display='block'; out.textContent=obj;
+    document.getElementById('npCopy').style.display='inline-block';
+    window._npText=obj;
+  }
+  function copiarProducto(){
+    if(!window._npText) return;
+    navigator.clipboard.writeText(window._npText).then(()=>{ const b=document.getElementById('npCopy'); b.textContent='✅ Copiado'; setTimeout(()=>b.textContent='📋 Copiar',1500); });
   }
 
   init();
