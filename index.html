@@ -188,7 +188,7 @@
     <button class="icon-btn menu" onclick="openMenu()" aria-label="Menú">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
-    <img class="logo-top" src="assets/img/logo-white.png" alt="DAVFOOR LEGEND">
+    <a href="index.html" style="display:inline-flex;align-items:center"><img class="logo-top" src="assets/img/logo-white.png" alt="DAVFOOR LEGEND" style="cursor:pointer"></a>
     <nav class="topnav">
       <a href="index.html" class="active">Inicio</a>
       <a href="catalogo.html?cat=club">Clubes</a>
@@ -250,9 +250,9 @@
     <div class="chips" id="clubes"></div>
   </section>
 
-  <!-- ===== MÁS VENDIDOS ===== -->
+  <!-- ===== NUEVA COLECCIÓN ===== -->
   <section style="padding-top:4px">
-    <div class="sec-title"><span class="bar"></span><h2>🔥 Más vendidos</h2></div>
+    <div class="sec-title"><span class="bar"></span><h2>✨ Nueva colección</h2></div>
     <div class="grid" id="grid"></div>
   </section>
 
@@ -322,14 +322,13 @@
 
   let fTipo='todos', fCat='todos', fPais='todos', fClub='todos';
 
-  // Destacadas en el inicio (cuando no hay ningún filtro activo)
-  const DESTACADAS = ['Argentina Local 26','Manchester United 2008','Barcelona 2009','Barcelona Local 27','Real Madrid Local 27','Portugal Black Panther'];
+  // Nueva colección en el inicio (temporada 27) — cuando no hay ningún filtro activo
   function render(){
     const g = document.getElementById('grid');
     const sinFiltro = (fTipo==='todos' && fCat==='todos' && fPais==='todos' && fClub==='todos');
     let list;
     if(sinFiltro){
-      list = DESTACADAS.map(n=>productos.find(p=>p.season===n && p.fotos && p.fotos.length)).filter(Boolean);
+      list = productos.filter(p => (p.fotos && p.fotos.length) && /\b27$/.test((p.season||p.nombre||'').trim()));
     } else {
       list = productos.filter(p =>
         (p.fotos && p.fotos.length) &&
