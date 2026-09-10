@@ -381,6 +381,7 @@
   async function guardarPedido(){
     const {sub,envio,total}=totals();
     const items = cart.map(it=>({
+      id: it.id,
       team: it.team + (it.perso?(' ('+it.perso+')'):''),
       talla: it.talla || '',
       cant: it.qty || 1,
@@ -399,6 +400,12 @@
       metodo, pago: 'pendiente', estado: 'Nuevo'
     };
     if(_sb){ try { await _sb.from('pedidos').insert(pedido); } catch(e){ /* no bloquea la compra */ } }
+    // Descontar stock por talla (solo afecta productos que estén en la tabla 'stock'; el resto no cambia)
+    if(_sb){ try {
+      await Promise.all(cart.filter(it=>it.id && it.talla).map(it =>
+        _sb.rpc('descontar_stock', { pid: it.id, t: it.talla, n: (it.qty||1) })
+      ));
+    } catch(e){ /* no bloquea la compra */ } }
     // Enviar correos (a la tienda y al cliente). sendBeacon asegura el envío aunque la página redirija.
     try {
       const blob = new Blob([JSON.stringify(pedido)], {type:'application/json'});

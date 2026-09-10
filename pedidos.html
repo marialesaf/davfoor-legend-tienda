@@ -313,11 +313,21 @@
   }
 
   async function eliminarPedido(id){
-    if(!confirm('¿Eliminar el pedido #'+id+'? Esto no se puede deshacer.')) return;
+    const p=pedidos.find(x=>x.id===id);
+    if(!confirm('¿Eliminar el pedido #'+id+'? Se devolverán las unidades al inventario. Esto no se puede deshacer.')) return;
+    // Devolver stock: por cada item con id de producto y talla que exista en inventario
+    try{
+      for(const it of ((p&&p.items)||[])){
+        if(!it.id || !it.talla) continue;
+        const { data:row } = await sb.from('stock').select('cantidad').eq('producto_id',it.id).eq('talla',it.talla).maybeSingle();
+        if(row){ await sb.from('stock').update({cantidad: row.cantidad + (it.cant||1)}).eq('producto_id',it.id).eq('talla',it.talla); }
+      }
+    }catch(e){}
     const { error } = await sb.from('pedidos').delete().eq('id',id);
     if(error){ alert('No se pudo eliminar. ¿Corriste el SQL de permisos?'); return; }
     pedidos = pedidos.filter(p=>p.id!==id);
     render();
+    if(seccion==='inv') loadStock();
   }
 
   // ---- ESTADÍSTICAS ----
