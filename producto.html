@@ -190,7 +190,7 @@
   <!-- GALERÍA -->
   <div class="gallery">
     <div class="main-img" id="mainImg">
-      <span class="tag">Actual</span>
+      <span class="tag" id="tipoTag">Actual</span>
       <button class="nav prev" id="navPrev" onclick="prevView()" aria-label="Anterior">‹</button>
       <div id="mainView"></div>
       <button class="nav next" id="navNext" onclick="nextView()" aria-label="Siguiente">›</button>
@@ -423,6 +423,9 @@
       ? '<p>Gorra bordada con el escudo del equipo o la palabra representativa del jugador. Ajuste universal.</p>'
       : `<p>Camiseta ${P.tipo==='retro'?'retro (clásica)':'de la temporada actual'} de <b>${P.team}</b>. Tela de alta calidad, ideal para hinchas y coleccionistas.</p>`;
     document.getElementById('pDetalle').innerHTML = det;
+    // Etiqueta Actual/Retro/Gorra según el producto
+    const _tag=document.getElementById('tipoTag');
+    if(_tag){ _tag.textContent = esGorra ? 'Gorra' : (TIPO==='retro' ? 'Retro' : 'Actual'); _tag.style.background = (TIPO==='retro') ? '#e8a33d' : ''; }
     // Título de la pestaña según el producto
     document.title = (esGorra ? ('Gorra '+(P.team||'')) : (P.nombre||P.team||'Camiseta')) + ' — DAVFOOR LEGEND';
     // Botón flotante de WhatsApp con el nombre de esta camiseta
