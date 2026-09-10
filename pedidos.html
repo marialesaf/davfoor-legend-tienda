@@ -8,7 +8,8 @@
   :root{--bg:#0a0a0a;--panel:#151515;--panel2:#1d1d1d;--line:#282828;--green:#3fe167;--amber:#e8a33d;--red:#ff6b6b;--txt:#fff;--muted:#9aa0a6}
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.4}
-  .wrap{max-width:860px;margin:0 auto;padding-bottom:50px}
+  .wrap{max-width:1400px;margin:0 auto;padding:0 10px 50px}
+  @media(min-width:1000px){ .wrap{padding:0 26px 60px} }
   input,select,button{font-family:inherit}
   header{position:sticky;top:0;z-index:30;background:rgba(10,10,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:12px 16px}
   header img{height:30px}
@@ -42,7 +43,14 @@
   .subbar{padding:6px 18px 0;color:var(--muted);font-size:12px}
 
   /* PEDIDO */
-  .list{padding:10px 16px}
+  .list{padding:10px 6px}
+  @media(min-width:1000px){ .list{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start} }
+  @media(min-width:1500px){ .list{grid-template-columns:1fr 1fr 1fr} }
+  .tag-wa{background:rgba(37,211,102,.16);color:#25d366;font-size:10px;font-weight:800;padding:4px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}
+  .msgs{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+  .msgs button{flex:1;min-width:90px;background:var(--panel2);border:1px solid var(--line);color:#fff;border-radius:9px;padding:8px;font-size:11.5px;font-weight:700;cursor:pointer}
+  .msgs button:hover{border-color:#25d366;color:#25d366}
+  .abono-row{font-size:13px;color:var(--amber);padding:2px 0}
   .order{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:15px;margin-bottom:14px}
   .o-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
   .o-id{font-weight:900;font-size:15px}
@@ -75,7 +83,11 @@
 
   /* ESTADÍSTICAS */
   .stats{padding:14px 16px}
-  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+  .kpi.g b{color:var(--green)} .kpi.r b{color:var(--amber)}
+  .stats{max-width:900px;margin:0 auto}
+  .split{display:flex;gap:14px;margin-top:8px;flex-wrap:wrap}
+  .split span{font-size:12.5px;color:var(--muted)} .split b{color:#fff}
   .kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
   .kpi small{color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
   .kpi b{display:block;font-size:22px;margin-top:5px;color:var(--green)}
@@ -146,6 +158,7 @@
   <div id="appView" style="display:none">
     <div class="nav" id="nav">
       <b class="active" data-s="pedidos" onclick="setSection(this)">📋 Pedidos</b>
+      <b data-s="venta" onclick="setSection(this)">💬 Venta WhatsApp</b>
       <b data-s="stats" onclick="setSection(this)">📊 Estadísticas</b>
       <b data-s="inv" onclick="setSection(this)">📦 Inventario</b>
       <b data-s="nuevo" onclick="setSection(this)">➕ Nuevo producto</b>
@@ -162,6 +175,33 @@
       </div>
       <div class="subbar" id="subbar"></div>
       <div class="list" id="list"></div>
+    </div>
+
+    <!-- SECCIÓN VENTA WHATSAPP -->
+    <div id="sec-venta" style="display:none">
+      <div class="npform" style="max-width:640px;margin:0 auto">
+        <h3 style="font-size:16px;margin-bottom:14px">💬 Registrar venta por WhatsApp</h3>
+        <div class="two">
+          <div class="fld"><label>Nombre</label><input id="v_nombre" placeholder="Nombre del cliente"></div>
+          <div class="fld"><label>Cédula</label><input id="v_cedula"></div>
+        </div>
+        <div class="two">
+          <div class="fld"><label>Celular</label><input id="v_cel" placeholder="3001234567"></div>
+          <div class="fld"><label>Ciudad</label><input id="v_ciudad"></div>
+        </div>
+        <div class="fld"><label>Dirección</label><input id="v_dir"></div>
+        <div class="two">
+          <div class="fld"><label>Camiseta</label><select id="v_prod"></select></div>
+          <div class="fld"><label>Talla</label><select id="v_talla"><option>S</option><option>M</option><option>L</option><option>XL</option><option>2XL</option></select></div>
+        </div>
+        <div class="two">
+          <div class="fld"><label>Método</label><select id="v_metodo"><option value="Contraentrega">Contraentrega</option><option value="Contado">Contado</option><option value="Addi">Addi</option></select></div>
+          <div class="fld"><label>Abono recibido (opcional)</label><input id="v_abono" type="number" placeholder="0"></div>
+        </div>
+        <button class="gen" onclick="registrarVenta()">Registrar venta</button>
+        <div id="vErr" style="color:var(--red);font-size:13px;margin-top:8px;min-height:16px"></div>
+        <p class="hint">Se guarda como pedido con etiqueta <b>WhatsApp</b>, descuenta la talla del inventario y aparece en Estadísticas. Luego, desde <b>Pedidos</b>, le mandas los mensajes de estado.</p>
+      </div>
     </div>
 
     <!-- SECCIÓN ESTADÍSTICAS -->
@@ -250,10 +290,11 @@
   function setSection(el){
     document.querySelectorAll('#nav b').forEach(b=>b.classList.remove('active')); el.classList.add('active');
     seccion=el.dataset.s;
-    ['pedidos','stats','inv','nuevo'].forEach(s=>document.getElementById('sec-'+s).style.display = (s===seccion?'block':'none'));
+    ['pedidos','venta','stats','inv','nuevo'].forEach(s=>document.getElementById('sec-'+s).style.display = (s===seccion?'block':'none'));
     if(seccion==='stats') renderStats();
     if(seccion==='inv') loadStock();
     if(seccion==='nuevo') initNuevo();
+    if(seccion==='venta') initVenta();
   }
 
   // ---- PEDIDOS ----
@@ -282,14 +323,21 @@
           <span class="pill pay-${pago}">${pago==='pagado'?'✔ Pagado':(pago==='rechazado'?'✖ Rechazado':'⏳ Pendiente')}</span>
           <span class="pill st st-${estKey}">${est}</span>
         </div>
+        ${(p.metodo||'').toLowerCase()==='whatsapp'?'<div style="margin:-4px 0 8px"><span class="tag-wa">💬 WhatsApp</span></div>':''}
         <div class="o-row"><b>${p.cliente||'Cliente'}</b> · ${p.ciudad||''} ${p.departamento||''}</div>
         <div class="o-row">${p.direccion||''}</div>
         <div class="items">${items}</div>
         <div class="o-row">Método: <b>${p.metodo||'—'}</b> · Envío: ${fmt(p.envio)}</div>
         <div class="o-total">Total: ${fmt(p.total)}</div>
+        ${Number(p.abono)>0?`<div class="abono-row">Abono recibido: ${fmt(p.abono)} · Saldo por cobrar: ${fmt((p.total||0)-(p.abono||0))}</div>`:''}
         <div class="contact">
-          ${cel?`<a class="wa" href="https://wa.me/57${cel}" target="_blank">💬 WhatsApp</a>`:''}
+          ${cel?`<a class="wa" href="https://wa.me/57${cel}" target="_blank">💬 Chat</a>`:''}
           ${p.correo?`<a class="mail" href="mailto:${p.correo}">✉️ Correo</a>`:''}
+        </div>
+        <div class="msgs">
+          <button onclick="waAviso(${p.id},'compra')">✅ Compra recibida</button>
+          <button onclick="waAviso(${p.id},'preparacion')">📦 En preparación</button>
+          <button onclick="waAviso(${p.id},'enviado')">🚚 Enviado + guía</button>
         </div>
         <div class="manage">
           <select id="est-${p.id}">
@@ -330,6 +378,65 @@
     if(seccion==='inv') loadStock();
   }
 
+  // ---- MENSAJES DE WHATSAPP ----
+  function waAviso(id, tipo){
+    const p=pedidos.find(x=>x.id===id); if(!p) return;
+    const cel=(p.celular||'').replace(/\D/g,'');
+    if(!cel){ alert('Este pedido no tiene número de celular.'); return; }
+    const nombre=(p.cliente||'').split(' ')[0]||'';
+    const guia=((document.getElementById('guia-'+id)||{}).value || p.guia || '').trim();
+    const items=(p.items||[]).map(i=>`${i.cant||1}x ${i.team||i.nombre||''}${i.talla?' talla '+i.talla:''}`).join(', ');
+    let msg='';
+    if(tipo==='compra') msg=`Hola ${nombre}, gracias por tu compra en DAVFOOR LEGEND. Confirmamos tu pedido: ${items}. Total: ${fmt(p.total)}. Ya lo estamos gestionando, cualquier duda estamos atentos.`;
+    else if(tipo==='preparacion') msg=`Hola ${nombre}, tu pedido de DAVFOOR LEGEND ya esta en preparacion. Pronto te avisamos cuando salga el envio.`;
+    else if(tipo==='enviado'){
+      if(!guia && !confirm('No escribiste el número de guía en el pedido. ¿Enviar el mensaje sin guía?')) return;
+      msg=`Hola ${nombre}, tu pedido de DAVFOOR LEGEND ya fue enviado por Interrapidisimo${guia?'. Numero de guia: '+guia:''}. Gracias por tu compra.`;
+    }
+    window.open('https://wa.me/57'+cel+'?text='+encodeURIComponent(msg),'_blank');
+  }
+
+  // ---- VENTA MANUAL (WHATSAPP) ----
+  function initVenta(){
+    const sel=document.getElementById('v_prod');
+    if(sel.dataset.ready) return;
+    sel.innerHTML = CATALOGO.slice().sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||'')).map(p=>`<option value="${p.id}">${p.nombre||p.team} — ${fmt(p.precio)}</option>`).join('');
+    sel.dataset.ready='1';
+  }
+  async function registrarVenta(){
+    const err=document.getElementById('vErr'); err.textContent='';
+    const nombre=document.getElementById('v_nombre').value.trim().toUpperCase();
+    if(!nombre){ err.textContent='Escribe el nombre del cliente.'; return; }
+    const pid=parseInt(document.getElementById('v_prod').value,10);
+    const prod=CATALOGO.find(p=>p.id===pid);
+    const talla=document.getElementById('v_talla').value;
+    const abono=Math.max(0, parseInt(document.getElementById('v_abono').value,10)||0);
+    const precio=prod?prod.precio:0;
+    const pedido={
+      cliente:nombre,
+      cedula:document.getElementById('v_cedula').value.trim(),
+      celular:document.getElementById('v_cel').value.trim(),
+      correo:'', departamento:'',
+      ciudad:document.getElementById('v_ciudad').value.trim().toUpperCase(),
+      direccion:document.getElementById('v_dir').value.trim().toUpperCase(),
+      notas:'Venta por WhatsApp ('+document.getElementById('v_metodo').value+')',
+      items:[{id:pid, team:(prod?prod.nombre:'Producto'), talla, cant:1, precio}],
+      subtotal:precio, envio:0, total:precio,
+      abono, metodo:'WhatsApp', pago:(abono>0?'abono':'pendiente'), estado:'Nuevo'
+    };
+    const { error } = await sb.from('pedidos').insert(pedido);
+    if(error){ err.textContent='No se pudo guardar. ¿Corriste el SQL (columna abono + permiso)?'; return; }
+    // descontar stock de esa talla si existe en inventario
+    try{
+      const { data:row } = await sb.from('stock').select('cantidad').eq('producto_id',pid).eq('talla',talla).maybeSingle();
+      if(row){ await sb.from('stock').update({cantidad:Math.max(0,row.cantidad-1)}).eq('producto_id',pid).eq('talla',talla); }
+    }catch(e){}
+    ['v_nombre','v_cedula','v_cel','v_ciudad','v_dir','v_abono'].forEach(i=>document.getElementById(i).value='');
+    await loadPedidos();
+    alert('✅ Venta registrada y agregada a Pedidos.');
+    document.querySelector('#nav b[data-s="pedidos"]').click();
+  }
+
   // ---- ESTADÍSTICAS ----
   function renderStats(){
     const box=document.getElementById('statsBox');
@@ -345,17 +452,27 @@
     const totalPed=pedidos.length, totalDinero=pedidos.reduce((a,p)=>a+Number(p.total||0),0);
     const maxT=Math.max(...keys.map(k=>meses[k].total),1);
     const nombreMes=k=>{const[y,m]=k.split('-');return new Date(y,m-1,1).toLocaleDateString('es-CO',{month:'long',year:'numeric'});};
+    const ganancia=totalDinero*0.3, reinv=totalDinero*0.7;
     box.innerHTML =
       `<div class="kpis">
-         <div class="kpi"><small>Pedidos totales</small><b>${totalPed}</b></div>
-         <div class="kpi"><small>Total en pedidos</small><b>${fmt(totalDinero)}</b></div>
+         <div class="kpi"><small>Pedidos</small><b>${totalPed}</b></div>
+         <div class="kpi"><small>Ventas totales</small><b>${fmt(totalDinero)}</b></div>
+         <div class="kpi g"><small>Ganancia (30%)</small><b>${fmt(ganancia)}</b></div>
+         <div class="kpi r"><small>Reinversión (70%)</small><b>${fmt(reinv)}</b></div>
        </div>` +
-      keys.map(k=>`<div class="month">
+      keys.map(k=>{
+        const t=meses[k].total;
+        return `<div class="month">
           <div class="mh"><span>${nombreMes(k)}</span><em>${meses[k].n} pedido(s)</em></div>
-          <div class="bar"><i style="width:${Math.round(meses[k].total/maxT*100)}%"></i></div>
-          <div class="mrow"><span>Dinero</span><b>${fmt(meses[k].total)}</b></div>
-        </div>`).join('') +
-      `<p class="hint">* "Dinero" suma el total de todos los pedidos registrados en el mes (incluye pendientes de pago).</p>`;
+          <div class="bar"><i style="width:${Math.round(t/maxT*100)}%"></i></div>
+          <div class="split">
+            <span>Ventas: <b>${fmt(t)}</b></span>
+            <span>Ganancia 30%: <b style="color:var(--green)">${fmt(t*0.3)}</b></span>
+            <span>Reinversión 70%: <b style="color:var(--amber)">${fmt(t*0.7)}</b></span>
+          </div>
+        </div>`;
+      }).join('') +
+      `<p class="hint">* Ganancia = 30% de las ventas. Reinversión = 70% (para reponer camisetas). Se calcula sobre el total de los pedidos del mes.</p>`;
   }
 
   // ---- INVENTARIO ----
