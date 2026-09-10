@@ -15,6 +15,11 @@ const CLUBES = [
   {id:'santafe', name:'Santa Fé', bg:"linear-gradient(90deg,#d50032 50%,#7a0020 50%)", crest:'ISF', cc:'#ffffff', logo:'assets/img/logo-santafe.png'},
   {id:'nacional', name:'A. Nacional', bg:"linear-gradient(90deg,#00843d 50%,#024f26 50%)", crest:'AN', cc:'#ffffff', logo:'assets/img/logo-nacional.png'},
   {id:'america', name:'América', bg:"linear-gradient(90deg,#d3122a 50%,#7a0018 50%)", crest:'AC', cc:'#ffd100', logo:'assets/img/logo-america.png'},
+  {id:'arsenal', name:'Arsenal', bg:"linear-gradient(90deg,#ef0107 50%,#023474 50%)", crest:'AFC', cc:'#ffffff', logo:'assets/img/logo-arsenal.png'},
+  {id:'chelsea', name:'Chelsea', bg:"linear-gradient(90deg,#034694 50%,#ffffff 50%)", crest:'CFC', cc:'#ffffff', logo:'assets/img/logo-chelsea.png'},
+  {id:'mancity', name:'Manchester City', bg:"linear-gradient(90deg,#6cabdd 50%,#1c2c5b 50%)", crest:'MCFC', cc:'#1c2c5b', logo:'assets/img/logo-mancity.png'},
+  {id:'psg', name:'PSG', bg:"linear-gradient(90deg,#0b1e50 50%,#e30613 50%)", crest:'PSG', cc:'#ffffff', logo:'assets/img/logo-psg.png'},
+  {id:'intermiami', name:'Inter Miami', bg:"linear-gradient(90deg,#f7b5cd 50%,#111111 50%)", crest:'IMCF', cc:'#111111', logo:'assets/img/logo-intermiami.png'},
 ];
 
 const SELECCIONES = [
