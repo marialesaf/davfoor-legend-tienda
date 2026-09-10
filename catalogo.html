@@ -258,7 +258,7 @@
       const boxes=['Barcelona','Real Madrid','Portugal','Argentina','Colombia','Adidas','Nike'];
       g.innerHTML = boxes.map(b=>`
         <div class="card">
-          <div class="imgbox"><span class="tag acc">caja</span><div class="acc-emoji">📦</div><img src="assets/img/caja-${b.toLowerCase().replace(/\s+/g,'-')}.jpg" alt="Caja ${b}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.remove()"></div>
+          <div class="imgbox"><span class="tag acc">caja</span><div class="acc-emoji">📦</div><img src="${(window.CAJAS_IMG&&CAJAS_IMG[b.toLowerCase().replace(/\s+/g,'-')])||''}" alt="Caja ${b}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" onerror="this.remove()"></div>
           <div class="info"><div class="team">Caja ${b}</div>
           <div class="season">Se agrega al comprar tu camiseta</div>
           <div class="price">${fmt(10000)}</div></div>

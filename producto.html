@@ -473,8 +473,8 @@
       document.getElementById('cajaDesc').textContent='Caja de colección '+cajaNombre;
       const slug=cajaNombre.toLowerCase().replace(/\s+/g,'-');
       const cim=document.getElementById('cajaImg');
-      cim.style.display='block';
-      cim.src='assets/img/caja-'+slug+'.jpg';   // se oculta solo si aún no existe la foto
+      const cdata=(window.CAJAS_IMG&&CAJAS_IMG[slug])||'';
+      if(cdata){ cim.style.display='block'; cim.src=cdata; } else { cim.style.display='none'; }
     } else { cajaRow.style.display='none'; }
     const g=document.getElementById('sizeGuide');
     if(esGorra){ g.style.display='none'; return; }
