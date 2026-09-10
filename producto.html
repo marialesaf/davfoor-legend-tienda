@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Camiseta Real Madrid 2024/25 — DAVFOOR LEGEND</title>
+<title>DAVFOOR LEGEND — Camisetas de fútbol</title>
 <style>
   :root{
     --bg:#0a0a0a; --panel:#151515; --panel2:#1d1d1d; --line:#282828;
@@ -423,6 +423,8 @@
       ? '<p>Gorra bordada con el escudo del equipo o la palabra representativa del jugador. Ajuste universal.</p>'
       : `<p>Camiseta ${P.tipo==='retro'?'retro (clásica)':'de la temporada actual'} de <b>${P.team}</b>. Tela de alta calidad, ideal para hinchas y coleccionistas.</p>`;
     document.getElementById('pDetalle').innerHTML = det;
+    // Título de la pestaña según el producto
+    document.title = (esGorra ? ('Gorra '+(P.team||'')) : (P.nombre||P.team||'Camiseta')) + ' — DAVFOOR LEGEND';
     // Botón flotante de WhatsApp con el nombre de esta camiseta
     const _wa=document.getElementById('waFloat');
     if(_wa){ const nom = esGorra ? ('gorra de '+(P.team||'')) : (P.nombre||'...'); _wa.href='https://wa.me/573222664358?text='+encodeURIComponent('¡Holaa Davfoor!, quiero comprar la camiseta de '+nom); }
