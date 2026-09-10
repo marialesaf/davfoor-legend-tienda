@@ -28,7 +28,7 @@ const SELECCIONES = [
   {id:'brasil', name:'Brasil', flag:'🇧🇷', bg:"linear-gradient(90deg,#009739 50%,#ffdf00 50%)", logo:'assets/img/logo-brasil.png'},
   {id:'espana', name:'España', flag:'🇪🇸', bg:"linear-gradient(90deg,#c60b1e 50%,#ffc400 50%)", logo:'assets/img/logo-espana.png'},
   {id:'colombia', name:'Colombia', flag:'🇨🇴', bg:"linear-gradient(90deg,#fcd116 50%,#003893 50%)", logo:'assets/img/logo-colombia.png'},
-  {id:'noruega', name:'Noruega', flag:'🇳🇴', bg:"linear-gradient(90deg,#ef2b2d 50%,#002868 50%)", logo:''},
+  {id:'noruega', name:'Noruega', flag:'🇳🇴', bg:"linear-gradient(90deg,#ef2b2d 50%,#002868 50%)", logo:'assets/img/logo-noruega.png'},
 ];
 
 const PRODUCTOS = [
