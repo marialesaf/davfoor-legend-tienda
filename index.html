@@ -252,7 +252,7 @@
 
   <!-- ===== NUEVA COLECCIÓN ===== -->
   <section style="padding-top:4px">
-    <div class="sec-title"><span class="bar"></span><h2>✨ Nueva colección</h2></div>
+    <div class="sec-title"><span class="bar"></span><h2 id="secTitle">✨ Nueva colección</h2></div>
     <div class="grid" id="grid"></div>
   </section>
 
@@ -326,6 +326,19 @@
   function render(){
     const g = document.getElementById('grid');
     const sinFiltro = (fTipo==='todos' && fCat==='todos' && fPais==='todos' && fClub==='todos');
+    // Título dinámico: "Nueva colección" sin filtro; el nombre del equipo al filtrar
+    const tt=document.getElementById('secTitle');
+    if(tt){
+      if(sinFiltro){ tt.textContent='✨ Nueva colección'; }
+      else {
+        let nombre='Resultados';
+        if(fClub!=='todos' && typeof CLUBES!=='undefined'){ const c=CLUBES.find(x=>x.id===fClub); if(c) nombre=c.name; }
+        else if(fPais!=='todos' && typeof SELECCIONES!=='undefined'){ const s=SELECCIONES.find(x=>x.id===fPais); if(s) nombre=s.name; }
+        else if(fCat!=='todos'){ nombre = fCat==='seleccion'?'Selecciones':(fCat==='club'?'Clubes':'Resultados'); }
+        else if(fTipo!=='todos'){ nombre = fTipo==='retro'?'Retro':'Actuales'; }
+        tt.textContent=nombre;
+      }
+    }
     let list;
     if(sinFiltro){
       list = productos.filter(p => (p.fotos && p.fotos.length) && /\b27$/.test((p.season||p.nombre||'').trim()));
