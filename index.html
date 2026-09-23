@@ -43,12 +43,13 @@
   .drawer .mini{padding:18px 20px;color:var(--muted);font-size:12px}
 
   /* ---------- HERO ---------- */
-  .hero{position:relative;padding:34px 20px 30px;background:
-     radial-gradient(120% 90% at 80% 10%, rgba(63,225,103,.18), transparent 60%),
-     linear-gradient(180deg,#0f0f0f, #0a0a0a);
-     border-bottom:1px solid var(--line);overflow:hidden}
-  .hero:before{content:"";position:absolute;right:-40px;top:-30px;width:220px;height:220px;
-     background:radial-gradient(circle, rgba(63,225,103,.25), transparent 65%);filter:blur(6px)}
+  .hero{position:relative;padding:40px 20px 34px;min-height:300px;display:flex;flex-direction:column;justify-content:center;
+     background:
+       linear-gradient(90deg,#0a0a0a 6%, rgba(10,10,10,.85) 32%, rgba(10,10,10,.45) 60%, rgba(10,10,10,.15) 100%),
+       radial-gradient(120% 90% at 82% 15%, rgba(63,225,103,.16), transparent 55%),
+       url('assets/img/hero.jpg') center right/cover no-repeat,
+       linear-gradient(180deg,#0f0f0f,#0a0a0a);
+     background-color:#0a0a0a;border-bottom:1px solid var(--line);overflow:hidden}
   .hero h1{font-size:34px;line-height:1;font-weight:900;letter-spacing:-1px;text-transform:uppercase}
   .hero h1 .g{color:var(--green)}
   .hero p{color:var(--muted);margin:12px 0 20px;font-size:14px;max-width:280px}
@@ -141,7 +142,7 @@
     .icon-btn.menu{display:none}
     .topnav{display:flex}
     .logo-top{height:40px}
-    .hero{padding:64px 48px 56px}
+    .hero{padding:90px 56px 80px;min-height:440px}
     .hero h1{font-size:58px}
     .hero p{font-size:17px;max-width:460px}
     section{padding:34px 40px}
