@@ -43,7 +43,7 @@
   .drawer .mini{padding:18px 20px;color:var(--muted);font-size:12px}
 
   /* ---------- HERO ---------- */
-  .hero{position:relative;padding:40px 20px 34px;min-height:300px;display:flex;flex-direction:column;justify-content:center;
+  .hero{position:relative;padding:40px 20px 34px;min-height:300px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
      background:
        linear-gradient(90deg,#0a0a0a 6%, rgba(10,10,10,.85) 32%, rgba(10,10,10,.45) 60%, rgba(10,10,10,.15) 100%),
        radial-gradient(120% 90% at 82% 15%, rgba(63,225,103,.16), transparent 55%),
@@ -56,6 +56,7 @@
   .btn{display:inline-flex;align-items:center;gap:8px;background:var(--green);color:#04240f;font-weight:800;
      border:none;border-radius:30px;padding:13px 22px;font-size:14px;cursor:pointer;text-transform:uppercase;letter-spacing:.4px}
   .btn:active{transform:scale(.97)}
+  .hero .btn{width:100%;max-width:620px;justify-content:center}
 
   /* ---------- SECTION ---------- */
   section{padding:22px 16px}
