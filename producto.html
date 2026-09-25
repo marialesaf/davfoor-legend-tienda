@@ -251,12 +251,15 @@
     <!-- Condicional: estampado incluido (fijo o a elegir) -->
     <div id="persoCond" style="display:none">
       <div class="perso">
-        <div class="switch-row" style="cursor:default">
+        <div class="switch-row" onclick="toggleCond()">
           <div>
-            <div class="t">Estampado incluido ✔</div>
+            <div class="t">Agregar estampado del jugador</div>
             <div class="s" id="condDesc">Viene con su dorsal especial</div>
           </div>
-          <span class="plus">+$15.000</span>
+          <div style="display:flex;align-items:center;gap:12px">
+            <span class="plus">+$15.000</span>
+            <div class="toggle on" id="condToggle"></div>
+          </div>
         </div>
         <div class="field" id="condSelWrap" style="margin-top:14px;display:none">
           <label>Elige el jugador</label>
@@ -377,9 +380,17 @@
   const CONDOPTS = esGorra ? null : parseCond(P.nota);
   const esCond = !!(CONDOPTS && CONDOPTS.length);
 
-  let sel=null, perso=false, cart=0, currentView='front', condIndex=0;
+  let sel=null, perso=false, cart=0, currentView='front', condIndex=0, persoCondOn=true;
 
-  function estampado(){ return esCond ? true : perso; }
+  function estampado(){ return esCond ? persoCondOn : perso; }
+  function toggleCond(){
+    persoCondOn=!persoCondOn;
+    document.getElementById('condToggle').classList.toggle('on',persoCondOn);
+    const multi = CONDOPTS && CONDOPTS.length>1;
+    const w=document.getElementById('condSelWrap'); if(w) w.style.display=(persoCondOn&&multi)?'block':'none';
+    if(persoCondOn) currentView='back';
+    renderGallery(); updateTotal();
+  }
   function curPerso(){
     if(esCond){ const o=CONDOPTS[condIndex]||CONDOPTS[0]; return {name:o.name, num:o.num}; }
     return {name:(document.getElementById('inName')?.value||'').toUpperCase(), num:(document.getElementById('inNum')?.value||'')};
