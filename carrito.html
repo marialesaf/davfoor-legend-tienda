@@ -402,6 +402,7 @@
       metodo, pago: 'pendiente', estado: 'Nuevo'
     };
     pedidoRef = 'DAV-'+Date.now()+'-'+Math.random().toString(36).slice(2,7);
+    pedido.ref = pedidoRef;
     lastPedido = pedido;
     if(_sb){ try { await _sb.from('pedidos').insert(pedido); } catch(e){ /* no bloquea la compra */ } }
     // Descontar stock por talla (solo afecta productos que estén en la tabla 'stock'; el resto no cambia)
