@@ -28,6 +28,19 @@ export default async function handler(req, res) {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido),
         });
       }
+      // Marcar el pedido como PAGADO en el panel (Supabase). La anon key es pública (ya va en el sitio).
+      try {
+        const ref = pago.external_reference;
+        if (ref) {
+          const SB_URL = 'https://kjulotygyqxeyafjbfhf.supabase.co';
+          const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqdWxvdHlneXF4ZXlhZmpiZmhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyMjMyODIsImV4cCI6MjA5OTc5OTI4Mn0.FABdIqyogePPnlAQxGQpGwXGiashLhrpp3oE8cDOzaE';
+          await fetch(`${SB_URL}/rest/v1/rpc/marcar_pagado`, {
+            method: 'POST',
+            headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ r: ref }),
+          });
+        }
+      } catch (e) {}
     }
     return res.status(200).json({ ok: true, status: pago.status });
   } catch (e) {
