@@ -198,6 +198,11 @@
           <div class="fld"><label>Método</label><select id="v_metodo"><option value="Contraentrega">Contraentrega</option><option value="Contado">Contado</option><option value="Addi">Addi</option></select></div>
           <div class="fld"><label>Abono recibido (opcional)</label><input id="v_abono" type="number" placeholder="0"></div>
         </div>
+        <div class="two">
+          <div class="fld"><label>Dorsal — Nombre (opcional)</label><input id="v_dnombre" placeholder="Ej: JAMES"></div>
+          <div class="fld"><label>Dorsal — Número (opcional)</label><input id="v_dnumero" type="number" placeholder="10"></div>
+        </div>
+        <div class="fld"><label>Parche (opcional · +$10.000)</label><select id="v_parche"><option value="">Ninguno</option><option>Champions</option><option>Premier</option><option>Liga</option></select></div>
         <button class="gen" onclick="registrarVenta()">Registrar venta</button>
         <div id="vErr" style="color:var(--red);font-size:13px;margin-top:8px;min-height:16px"></div>
         <p class="hint">Se guarda como pedido con etiqueta <b>WhatsApp</b>, descuenta la talla del inventario y aparece en Estadísticas. Luego, desde <b>Pedidos</b>, le mandas los mensajes de estado.</p>
@@ -311,7 +316,16 @@
     const el=document.getElementById('list');
     if(!list.length){ el.innerHTML='<div class="empty">No hay pedidos en este filtro. 📭</div>'; return; }
     el.innerHTML = list.map(p=>{
-      const items = (p.items||[]).map(i=>`<div>${i.cant||1}× ${i.team||i.nombre||'Producto'}${i.talla?' · Talla '+i.talla:''}${i.color?' · '+i.color:''} — ${fmt(i.precio)}</div>`).join('') || '<div>—</div>';
+      const items = (p.items||[]).map(i=>{
+        const nom = NOMBRE[i.id];
+        let ref = i.team || i.nombre || 'Producto';
+        // Si el nombre real del catálogo es más específico, anteponerlo y conservar los adicionales (dorsal, parche, caja)
+        if(nom && !ref.includes(nom)){
+          const m = ref.search(/[(·]/);
+          ref = nom + (m>=0 ? (' '+ref.slice(m).trim()) : '');
+        }
+        return `<div>${i.cant||1}× ${ref}${i.talla?' · Talla '+i.talla:''}${i.color?' · '+i.color:''} — ${fmt(i.precio)}</div>`;
+      }).join('') || '<div>—</div>';
       const est=(p.estado||'Nuevo'); const estKey=est.replace(/\s/g,'');
       const pago=(p.pago||'pendiente');
       const fecha = p.creado ? new Date(p.creado).toLocaleString('es-CO',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
@@ -412,6 +426,12 @@
     const talla=document.getElementById('v_talla').value;
     const abono=Math.max(0, parseInt(document.getElementById('v_abono').value,10)||0);
     const precio=prod?prod.precio:0;
+    const dnombre=document.getElementById('v_dnombre').value.trim().toUpperCase();
+    const dnumero=document.getElementById('v_dnumero').value.trim();
+    const perso=(dnombre||dnumero)?(dnombre+(dnumero?(' #'+dnumero):'')).trim():'';
+    const parche=document.getElementById('v_parche').value;
+    const extra=(perso?15000:0)+(parche?10000:0);
+    const total=precio+extra;
     const pedido={
       cliente:nombre,
       cedula:document.getElementById('v_cedula').value.trim(),
@@ -420,8 +440,8 @@
       ciudad:document.getElementById('v_ciudad').value.trim().toUpperCase(),
       direccion:document.getElementById('v_dir').value.trim().toUpperCase(),
       notas:'Venta por WhatsApp ('+document.getElementById('v_metodo').value+')',
-      items:[{id:pid, team:(prod?prod.nombre:'Producto'), talla, cant:1, precio}],
-      subtotal:precio, envio:0, total:precio,
+      items:[{id:pid, team:(prod?prod.nombre:'Producto')+(perso?(' ('+perso+')'):'')+(parche?(' · Parche '+parche):''), talla, cant:1, precio:total}],
+      subtotal:total, envio:0, total:total,
       abono, metodo:'WhatsApp', pago:(abono>0?'abono':'pendiente'), estado:'Nuevo'
     };
     const { error } = await sb.from('pedidos').insert(pedido);
@@ -431,7 +451,7 @@
       const { data:row } = await sb.from('stock').select('cantidad').eq('producto_id',pid).eq('talla',talla).maybeSingle();
       if(row){ await sb.from('stock').update({cantidad:Math.max(0,row.cantidad-1)}).eq('producto_id',pid).eq('talla',talla); }
     }catch(e){}
-    ['v_nombre','v_cedula','v_cel','v_ciudad','v_dir','v_abono'].forEach(i=>document.getElementById(i).value='');
+    ['v_nombre','v_cedula','v_cel','v_ciudad','v_dir','v_abono','v_dnombre','v_dnumero','v_parche'].forEach(i=>document.getElementById(i).value='');
     await loadPedidos();
     alert('✅ Venta registrada y agregada a Pedidos.');
     document.querySelector('#nav b[data-s="pedidos"]').click();

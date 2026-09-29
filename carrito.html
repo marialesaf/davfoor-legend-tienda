@@ -381,13 +381,14 @@
   // Guarda el pedido en Supabase (aparece en la página de Pedidos)
   async function guardarPedido(){
     const {sub,envio,total}=totals();
-    const items = cart.map(it=>({
-      id: it.id,
-      team: it.team + (it.perso?(' ('+it.perso+')'):''),
-      talla: it.talla || '',
-      cant: it.qty || 1,
-      precio: (it.base+it.extra)
-    }));
+    const items = cart.map(it=>{
+      const refName = (it.season && it.season !== 'Gorra bordada') ? it.season : (it.team + (it.season?(' - '+it.season):''));
+      const detalle = refName
+        + (it.perso?(' ('+it.perso+')'):'')
+        + (it.parches?(' · Parche '+(it.parcheTipo||'')):'')
+        + (it.caja?(' · Caja '+(it.cajaNombre||'')):'');
+      return { id: it.id, team: detalle, talla: it.talla || '', cant: it.qty || 1, precio: (it.base+it.extra) };
+    });
     const pedido = {
       cliente: document.getElementById('f_nombre').value.trim().toUpperCase(),
       cedula: document.getElementById('f_cedula').value.trim(),
