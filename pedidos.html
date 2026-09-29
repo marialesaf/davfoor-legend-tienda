@@ -338,8 +338,12 @@
           <span class="pill st st-${estKey}">${est}</span>
         </div>
         ${(p.metodo||'').toLowerCase()==='whatsapp'?'<div style="margin:-4px 0 8px"><span class="tag-wa">💬 WhatsApp</span></div>':''}
-        <div class="o-row"><b>${p.cliente||'Cliente'}</b> · ${p.ciudad||''} ${p.departamento||''}</div>
-        <div class="o-row">${p.direccion||''}</div>
+        <div class="o-row"><b>${p.cliente||'Cliente'}</b></div>
+        <div class="o-row">🪪 Cédula: <b>${p.cedula||'—'}</b></div>
+        <div class="o-row">📱 Celular: <b>${p.celular||'—'}</b></div>
+        <div class="o-row">✉️ Correo: <b>${p.correo||'—'}</b></div>
+        <div class="o-row">📍 ${p.direccion||'—'}, ${p.ciudad||''} ${p.departamento||''}</div>
+        ${p.notas?`<div class="o-row">📝 Notas: ${p.notas}</div>`:''}
         <div class="items">${items}</div>
         <div class="o-row">Método: <b>${p.metodo||'—'}</b> · Envío: ${fmt(p.envio)}</div>
         <div class="o-total">Total: ${fmt(p.total)}</div>
