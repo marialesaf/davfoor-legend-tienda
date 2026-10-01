@@ -346,8 +346,9 @@
         ${p.notas?`<div class="o-row">📝 Notas: ${p.notas}</div>`:''}
         <div class="items">${items}</div>
         <div class="o-row">Método: <b>${p.metodo||'—'}</b> · Envío: ${fmt(p.envio)}</div>
-        <div class="o-total">Total: ${fmt(p.total)}</div>
-        ${Number(p.abono)>0?`<div class="abono-row">Abono recibido: ${fmt(p.abono)} · Saldo por cobrar: ${fmt((p.total||0)-(p.abono||0))}</div>`:''}
+        ${/contra/i.test(p.metodo||'')
+          ? `<div class="o-total">Pagado (anticipo): ${fmt(30000)}</div><div class="abono-row">Valor del pedido: ${fmt(p.total)} · Saldo contra entrega: ${fmt((p.total||0)-30000)}</div>`
+          : `<div class="o-total">Total: ${fmt(p.total)}</div>${Number(p.abono)>0?`<div class="abono-row">Abono recibido: ${fmt(p.abono)} · Saldo por cobrar: ${fmt((p.total||0)-(p.abono||0))}</div>`:''}`}
         <div class="contact">
           ${cel?`<a class="wa" href="https://wa.me/57${cel}" target="_blank">💬 Chat</a>`:''}
           ${p.correo?`<a class="mail" href="mailto:${p.correo}">✉️ Correo</a>`:''}
