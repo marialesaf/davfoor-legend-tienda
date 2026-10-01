@@ -159,6 +159,8 @@
   /* ---------- MOVIMIENTO / ANIMACIONES ---------- */
   .size{transition:transform .14s ease, border-color .14s ease}
   .size:hover{transform:translateY(-3px);border-color:var(--green)}
+  .size.off{opacity:.3;cursor:not-allowed;pointer-events:none;text-decoration:line-through}
+  .size.off:hover{transform:none;border-color:var(--line)}
   .thumb{transition:transform .16s ease, border-color .16s ease}
   .thumb:hover{transform:translateY(-3px) scale(1.03)}
   .btn-buy{transition:box-shadow .15s ease, filter .15s ease}
@@ -543,7 +545,13 @@
     }
     if(buyBtn) buyBtn.style.display='';
     if(sel && !disp.includes(sel)) sel=null;
-    cont.innerHTML = disp.map(t=>`<div class="size" onclick="setOpcion('${t}',this)">${t}</div>`).join('');
+    // Mostrar TODAS las tallas; las que no hay quedan opacas y sin click
+    cont.innerHTML = OPCIONES.map(t=>{
+      const hay = !AVAIL || (AVAIL[t]||0)>0;
+      return hay
+        ? `<div class="size${t===sel?' active':''}" onclick="setOpcion('${t}',this)">${t}</div>`
+        : `<div class="size off" title="Agotada">${t}</div>`;
+    }).join('');
   }
   function setOpcion(t,el){ sel=t; document.querySelectorAll('#sizes .size').forEach(s=>s.classList.remove('active')); el.classList.add('active'); document.getElementById('sizeWarn').style.display='none'; if(esGorra) renderGallery(); }
 
