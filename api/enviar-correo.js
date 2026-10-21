@@ -55,7 +55,7 @@ export default async function handler(req, res) {
     const clienteBody = `
       <p style="font-size:14px;color:#333">¡Gracias por tu compra! Recibimos tu pedido y ya lo estamos gestionando. Te avisaremos por WhatsApp y correo cuando cambie de estado.</p>
       <h3 style="font-size:14px;margin:16px 0 6px">Resumen de tu pedido</h3>${resumen}
-      <p style="font-size:13px;color:#555;margin-top:14px">Envío a: ${esc(p.direccion)}, ${esc(p.ciudad)}. Entrega estimada de 3 a 4 días hábiles.</p>`;
+      <p style="font-size:13px;color:#555;margin-top:14px">Envío a: ${esc(p.direccion)}, ${esc(p.ciudad)}. Se envía en 3 a 4 días hábiles.</p>`;
     const clienteHtml = bloque(`<h2 style="font-size:18px;margin:0 0 10px">¡Hola ${esc(nombreCli)}! Tu pedido está confirmado ✅</h2>`, clienteBody);
 
     const enviar = (to, subject, html) => fetch('https://api.resend.com/emails', {
