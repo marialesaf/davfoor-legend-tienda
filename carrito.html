@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Carrito y pago — DAVFOOR LEGEND</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/favicon-32.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <style>
   :root{
     --bg:#0a0a0a; --panel:#151515; --panel2:#1d1d1d; --line:#282828;
@@ -170,6 +173,8 @@
     </div>
     <div class="field"><label>Dirección</label><input id="f_dir" placeholder="Calle, carrera, # y barrio"></div>
     <div class="field"><label>Notas para el envío (opcional)</label><textarea id="f_notas" rows="2" placeholder="Ej: apartamento, portería, horario"></textarea></div>
+    <!-- Anti-spam: campo oculto (honeypot). Un humano no lo ve ni lo llena. -->
+    <input id="f_web" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0">
   </div>
 
   <!-- 3. FACTURACIÓN -->
@@ -339,6 +344,8 @@
 
   // ---- PAGAR ----
   function pagar(){
+    // Anti-spam: si el campo oculto viene lleno, es un bot -> cortamos en silencio
+    const hp=document.getElementById('f_web'); if(hp && hp.value){ return; }
     const req=['f_nombre','f_cedula','f_cel','f_correo','f_depto','f_ciudad','f_dir'];
     let ok=true, first=null;
     req.forEach(id=>{

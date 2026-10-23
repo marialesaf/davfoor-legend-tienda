@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DAVFOOR LEGEND — Camisetas de fútbol</title>
+<meta name="description" content="Camiseta de fútbol DAVFOOR LEGEND. Personaliza con nombre y dorsal, agrega parches o caja de colección. Se envía en 3 a 4 días hábiles a todo Colombia.">
+<link rel="icon" href="assets/img/favicon-32.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<meta property="og:type" content="product">
+<meta property="og:title" content="Camiseta de fútbol — DAVFOOR LEGEND">
+<meta property="og:description" content="Camiseta personalizable con nombre y dorsal. Envíos a todo Colombia.">
+<meta property="og:image" content="https://davfoorlegend.com/assets/img/hero.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <style>
   :root{
     --bg:#0a0a0a; --panel:#151515; --panel2:#1d1d1d; --line:#282828;
@@ -441,6 +449,15 @@
     if(_tag){ _tag.textContent = esGorra ? 'Gorra' : (TIPO==='retro' ? 'Retro' : 'Actual'); _tag.style.background = (TIPO==='retro') ? '#e8a33d' : ''; }
     // Título de la pestaña según el producto
     document.title = (esGorra ? ('Gorra '+(P.team||'')) : (P.nombre||P.team||'Camiseta')) + ' — DAVFOOR LEGEND';
+    // Datos estructurados (Producto) para Google
+    try{
+      const img = P.foto ? ('https://davfoorlegend.com/'+P.foto) : 'https://davfoorlegend.com/assets/img/hero.jpg';
+      const ld = {"@context":"https://schema.org","@type":"Product","name":(P.nombre||P.team||'Camiseta'),"image":img,
+        "description":"Camiseta de fútbol "+(P.team||'')+", "+(TIPO==='retro'?'retro':'actual')+". Personalizable con nombre y dorsal.",
+        "brand":{"@type":"Brand","name":"DAVFOOR LEGEND"},
+        "offers":{"@type":"Offer","price":String(PRECIO_BASE),"priceCurrency":"COP","availability":"https://schema.org/InStock","url":location.href}};
+      const s=document.createElement('script'); s.type='application/ld+json'; s.textContent=JSON.stringify(ld); document.head.appendChild(s);
+    }catch(e){}
     // Botón flotante de WhatsApp con el nombre de esta camiseta
     const _wa=document.getElementById('waFloat');
     if(_wa){ const nom = esGorra ? ('gorra de '+(P.team||'')) : (P.nombre||'...'); _wa.href='https://wa.me/573222664358?text='+encodeURIComponent('¡Holaa Davfoor!, quiero comprar la camiseta de '+nom); }
