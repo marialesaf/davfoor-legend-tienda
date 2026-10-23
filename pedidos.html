@@ -175,6 +175,13 @@
         <div class="fchip" data-f="Enviado" onclick="setFiltro(this)">🚚 Enviados</div>
         <div class="fchip" data-f="Entregado" onclick="setFiltro(this)">✅ Entregados</div>
       </div>
+      <div class="toolbar" id="filtrosPago">
+        <div class="fchip active" data-p="todos" onclick="setFpago(this)">💳 Todos los pagos</div>
+        <div class="fchip" data-p="contado" onclick="setFpago(this)">💵 Contado</div>
+        <div class="fchip" data-p="contra" onclick="setFpago(this)">📦 Contraentrega</div>
+        <div class="fchip" data-p="addi" onclick="setFpago(this)">🟣 Addi</div>
+        <div class="fchip" data-p="whatsapp" onclick="setFpago(this)">💬 WhatsApp</div>
+      </div>
       <div class="subbar" id="subbar"></div>
       <div class="list" id="list"></div>
     </div>
@@ -263,7 +270,7 @@
 <script src="assets/supabase-config.js"></script>
 <script>
   const fmt = n => '$'+Number(n||0).toLocaleString('es-CO');
-  let sb=null, pedidos=[], filtro='todos', stock=[], seccion='pedidos';
+  let sb=null, pedidos=[], filtro='todos', fpago='todos', stock=[], seccion='pedidos';
 
   const CATALOGO = (typeof PRODUCTOS!=='undefined'?PRODUCTOS:[]).filter(p=>p.clase==='camiseta');
   const NOMBRE = {}; CATALOGO.forEach(p=>NOMBRE[p.id]=p.nombre||p.team);
@@ -311,9 +318,23 @@
     pedidos = data||[]; render();
   }
   function setFiltro(el){ document.querySelectorAll('#filters .fchip').forEach(c=>c.classList.remove('active')); el.classList.add('active'); filtro=el.dataset.f; render(); }
+  function setFpago(el){ document.querySelectorAll('#filtrosPago .fchip').forEach(c=>c.classList.remove('active')); el.classList.add('active'); fpago=el.dataset.p; render(); }
+  // Normaliza el método de pago a: contado | contra | addi | whatsapp
+  function metodoClave(m){ m=(m||'').toLowerCase(); if(m.includes('contra'))return 'contra'; if(m.includes('contado'))return 'contado'; if(m.includes('addi'))return 'addi'; if(m.includes('whats'))return 'whatsapp'; return m; }
+  // Un pedido es "válido" si no es un contado/contra nuevo que quedó sin pagar.
+  function pedidoValido(p){ const mk=metodoClave(p.metodo); if((mk==='contado'||mk==='contra') && p.ref && (p.pago||'pendiente')!=='pagado') return false; return true; }
 
   function render(){
-    const list = pedidos.filter(p=> filtro==='todos' || (p.estado||'Nuevo')===filtro);
+    const list = pedidos.filter(p=>{
+      const mk = metodoClave(p.metodo);
+      // Ocultar pedidos NUEVOS de contado/contra que no se pagaron. Los viejos (sin ref) siempre se muestran.
+      if(!pedidoValido(p)) return false;
+      // Filtro por estado
+      if(!(filtro==='todos' || (p.estado||'Nuevo')===filtro)) return false;
+      // Filtro por tipo de pago
+      if(fpago!=='todos' && mk!==fpago) return false;
+      return true;
+    });
     document.getElementById('subbar').textContent = `${list.length} pedido(s)`;
     const el=document.getElementById('list');
     if(!list.length){ el.innerHTML='<div class="empty">No hay pedidos en este filtro. 📭</div>'; return; }
@@ -467,16 +488,18 @@
   // ---- ESTADÍSTICAS ----
   function renderStats(){
     const box=document.getElementById('statsBox');
-    if(!pedidos.length){ box.innerHTML='<div class="empty">Aún no hay pedidos para mostrar estadísticas. 📊</div>'; return; }
+    // Solo pedidos válidos (sin los contado/contra nuevos que quedaron sin pagar)
+    const base = pedidos.filter(pedidoValido);
+    if(!base.length){ box.innerHTML='<div class="empty">Aún no hay pedidos para mostrar estadísticas. 📊</div>'; return; }
     const meses={};
-    pedidos.forEach(p=>{
+    base.forEach(p=>{
       const d=p.creado?new Date(p.creado):null; if(!d) return;
       const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
       if(!meses[key]) meses[key]={n:0,total:0};
       meses[key].n++; meses[key].total += Number(p.total||0);
     });
     const keys=Object.keys(meses).sort().reverse();
-    const totalPed=pedidos.length, totalDinero=pedidos.reduce((a,p)=>a+Number(p.total||0),0);
+    const totalPed=base.length, totalDinero=base.reduce((a,p)=>a+Number(p.total||0),0);
     const maxT=Math.max(...keys.map(k=>meses[k].total),1);
     const nombreMes=k=>{const[y,m]=k.split('-');return new Date(y,m-1,1).toLocaleDateString('es-CO',{month:'long',year:'numeric'});};
     const ganancia=totalDinero*0.3, reinv=totalDinero*0.7;
