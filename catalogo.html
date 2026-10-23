@@ -311,5 +311,6 @@
   loadStock().then(renderGrid); // re-pinta ocultando las agotadas cuando llega el stock
   try{const _c=JSON.parse(localStorage.getItem('davfoor_cart')||'[]');document.querySelectorAll('.cart-count').forEach(e=>e.textContent=_c.reduce((a,it)=>a+(it.qty||1),0));}catch(e){}
 </script>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
