@@ -133,6 +133,40 @@
   .npout{margin-top:14px;background:#0e0e0e;border:1px solid var(--line);border-radius:12px;padding:12px;font-family:monospace;font-size:12px;white-space:pre-wrap;word-break:break-word;color:#bfe}
   .copy{margin-top:8px;background:var(--panel2);border:1px solid var(--line);color:#fff;border-radius:9px;padding:9px 14px;font-weight:700;cursor:pointer;font-size:13px}
   .hint{color:var(--muted);font-size:12.5px;line-height:1.6;margin-top:10px}
+
+  /* ===== RESUMEN / DASHBOARD ===== */
+  .dash{padding:14px 16px}
+  .dash .hello{font-size:22px;font-weight:900;margin-bottom:2px}
+  .dash .hello small{display:block;color:var(--muted);font-size:13px;font-weight:600;margin-top:3px}
+  .kcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:16px 0}
+  .kcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+  .kcard .lbl{color:var(--muted);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:7px}
+  .kcard .val{font-size:26px;font-weight:900;margin-top:8px;color:var(--green)}
+  .kcard .val.white{color:#fff}
+  .kcard .sub{color:var(--muted);font-size:12px;margin-top:4px}
+  .dgrid{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:900px){ .dgrid{grid-template-columns:1fr 1fr} }
+  .dbox{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+  .dbox h3{font-size:14px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .dbox h3 .bar{width:18px;height:3px;background:var(--green);border-radius:3px}
+  .brow{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:13px}
+  .brow .bn{width:150px;flex:0 0 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e4e4e4}
+  .brow .btrack{flex:1;height:10px;background:#0e0e0e;border-radius:6px;overflow:hidden}
+  .brow .btrack i{display:block;height:100%;background:linear-gradient(90deg,#2a9d50,#3fe167);border-radius:6px}
+  .brow .bv{width:52px;text-align:right;flex:0 0 auto;font-weight:800;color:var(--green)}
+  .rord{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #1c1c1c;font-size:13px}
+  .rord:last-child{border-bottom:none}
+  .rord .av{width:30px;height:30px;border-radius:50%;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--green);flex:0 0 auto;font-size:12px}
+  .rord .who{flex:1;min-width:0}
+  .rord .who b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rord .who span{color:var(--muted);font-size:11.5px}
+  .rord .amt{font-weight:800;color:var(--green);font-size:12.5px;white-space:nowrap}
+  .ialert{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1c1c1c;font-size:13px}
+  .ialert:last-child{border-bottom:none}
+  .ialert .q{font-weight:800}
+  .ialert .q.low{color:var(--amber)} .ialert .q.out{color:var(--red)}
+  .spark{width:100%;height:90px;display:block}
+  .emptybox{color:var(--muted);font-size:13px;padding:10px 0}
 </style>
 </head>
 <body>
@@ -159,15 +193,19 @@
   <!-- APP -->
   <div id="appView" style="display:none">
     <div class="nav" id="nav">
-      <b class="active" data-s="pedidos" onclick="setSection(this)">📋 Pedidos</b>
+      <b class="active" data-s="resumen" onclick="setSection(this)">🏠 Resumen</b>
+      <b data-s="pedidos" onclick="setSection(this)">📋 Pedidos</b>
       <b data-s="venta" onclick="setSection(this)">💬 Venta WhatsApp</b>
       <b data-s="stats" onclick="setSection(this)">📊 Estadísticas</b>
       <b data-s="inv" onclick="setSection(this)">📦 Inventario</b>
       <b data-s="nuevo" onclick="setSection(this)">➕ Nuevo producto</b>
     </div>
 
+    <!-- SECCIÓN RESUMEN / DASHBOARD -->
+    <div id="sec-resumen"><div class="dash" id="dashBox"></div></div>
+
     <!-- SECCIÓN PEDIDOS -->
-    <div id="sec-pedidos">
+    <div id="sec-pedidos" style="display:none">
       <div class="toolbar" id="filters">
         <div class="fchip active" data-f="todos" onclick="setFiltro(this)">Todos</div>
         <div class="fchip" data-f="Nuevo" onclick="setFiltro(this)">🆕 Nuevos</div>
@@ -270,7 +308,7 @@
 <script src="assets/supabase-config.js"></script>
 <script>
   const fmt = n => '$'+Number(n||0).toLocaleString('es-CO');
-  let sb=null, pedidos=[], filtro='todos', fpago='todos', stock=[], seccion='pedidos';
+  let sb=null, pedidos=[], filtro='todos', fpago='todos', stock=[], seccion='resumen';
 
   const CATALOGO = (typeof PRODUCTOS!=='undefined'?PRODUCTOS:[]).filter(p=>p.clase==='camiseta');
   const NOMBRE = {}; CATALOGO.forEach(p=>NOMBRE[p.id]=p.nombre||p.team);
@@ -288,7 +326,7 @@
     session ? showApp() : showLogin();
   }
   function showLogin(){ document.getElementById('loginView').style.display='block'; document.getElementById('appView').style.display='none'; document.getElementById('btnOut').style.display='none'; }
-  async function showApp(){ document.getElementById('loginView').style.display='none'; document.getElementById('appView').style.display='block'; document.getElementById('btnOut').style.display='block'; await loadPedidos(); }
+  async function showApp(){ document.getElementById('loginView').style.display='none'; document.getElementById('appView').style.display='block'; document.getElementById('btnOut').style.display='block'; await loadPedidos(); try{ await loadStock(); }catch(e){} renderResumen(); }
 
   async function login(){
     const email=document.getElementById('email').value.trim();
@@ -304,7 +342,8 @@
   function setSection(el){
     document.querySelectorAll('#nav b').forEach(b=>b.classList.remove('active')); el.classList.add('active');
     seccion=el.dataset.s;
-    ['pedidos','venta','stats','inv','nuevo'].forEach(s=>document.getElementById('sec-'+s).style.display = (s===seccion?'block':'none'));
+    ['resumen','pedidos','venta','stats','inv','nuevo'].forEach(s=>document.getElementById('sec-'+s).style.display = (s===seccion?'block':'none'));
+    if(seccion==='resumen') renderResumen();
     if(seccion==='stats') renderStats();
     if(seccion==='inv') loadStock();
     if(seccion==='nuevo') initNuevo();
@@ -323,6 +362,90 @@
   function metodoClave(m){ m=(m||'').toLowerCase(); if(m.includes('contra'))return 'contra'; if(m.includes('contado'))return 'contado'; if(m.includes('addi'))return 'addi'; if(m.includes('whats'))return 'whatsapp'; return m; }
   // Un pedido es "válido" si no es un contado/contra nuevo que quedó sin pagar.
   function pedidoValido(p){ const mk=metodoClave(p.metodo); if((mk==='contado'||mk==='contra') && p.ref && (p.pago||'pendiente')!=='pagado') return false; return true; }
+
+  // ---- RESUMEN / DASHBOARD ----
+  function fmtK(n){ n=Number(n||0); return n>=1000000 ? '$'+(n/1000000).toFixed(1)+'M' : fmt(n); }
+  function barras(rows){
+    if(!rows.length) return '<div class="emptybox">Sin datos todavía.</div>';
+    const max=Math.max(...rows.map(r=>r.val),1);
+    return rows.map(r=>`<div class="brow"><span class="bn">${r.name}</span><span class="btrack"><i style="width:${Math.max(4,Math.round(r.val/max*100))}%"></i></span><span class="bv">${r.fmt||r.val}</span></div>`).join('');
+  }
+  function sparkline(vals){
+    const w=320,h=80,pad=6,max=Math.max(...vals,1),n=vals.length;
+    const pts=vals.map((v,i)=>[pad+i*(w-2*pad)/Math.max(1,n-1), h-pad-(v/max)*(h-2*pad)]);
+    const line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+    const area=line+` L ${pts[pts.length-1][0].toFixed(1)} ${h-pad} L ${pts[0][0].toFixed(1)} ${h-pad} Z`;
+    return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+      <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3fe167" stop-opacity=".35"/><stop offset="1" stop-color="#3fe167" stop-opacity="0"/></linearGradient></defs>
+      <path d="${area}" fill="url(#g1)"/><path d="${line}" fill="none" stroke="#3fe167" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>`;
+  }
+  function renderResumen(){
+    const box=document.getElementById('dashBox');
+    const V=pedidos.filter(pedidoValido);
+    const ventas=V.reduce((a,p)=>a+Number(p.total||0),0);
+    const nPed=V.length;
+    const abiertos=V.filter(p=>['Nuevo','En preparación'].includes(p.estado||'Nuevo')).length;
+    const ticket=nPed?Math.round(ventas/nPed):0;
+    const clientes=new Set(V.map(p=>(p.cedula||p.celular||p.cliente||'').trim()).filter(Boolean)).size;
+
+    // Tendencia últimos 14 días
+    const dias=[],labels=[]; const hoy=new Date(); hoy.setHours(0,0,0,0);
+    for(let i=13;i>=0;i--){ const d=new Date(hoy); d.setDate(d.getDate()-i); dias.push(d); labels.push(d); }
+    const serie=dias.map(d=>V.filter(p=>{ const c=p.creado?new Date(p.creado):null; return c && c.toDateString()===d.toDateString(); }).length);
+
+    // Métodos de pago
+    const mp={contado:0,contra:0,addi:0,whatsapp:0};
+    V.forEach(p=>{ const k=metodoClave(p.metodo); if(mp[k]!==undefined) mp[k]++; });
+    const mpRows=[['💵 Contado','contado'],['📦 Contraentrega','contra'],['🟣 Addi','addi'],['💬 WhatsApp','whatsapp']].map(([n,k])=>({name:n,val:mp[k]}));
+
+    // Más vendidas (por cantidad)
+    const vend={};
+    V.forEach(p=>(p.items||[]).forEach(i=>{ const ref=NOMBRE[i.id]||((i.team||'Producto').split(' · ')[0].split(' (')[0]); vend[ref]=(vend[ref]||0)+(i.cant||1); }));
+    const topVend=Object.entries(vend).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([n,v])=>({name:n,val:v}));
+
+    // Ciudades top
+    const ciu={};
+    V.forEach(p=>{ const c=(p.ciudad||'—').trim()||'—'; ciu[c]=(ciu[c]||0)+1; });
+    const topCiu=Object.entries(ciu).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([n,v])=>({name:n,val:v}));
+
+    // Pedidos recientes (últimos 5)
+    const recientes=[...V].sort((a,b)=>new Date(b.creado||0)-new Date(a.creado||0)).slice(0,5);
+
+    // Alertas de inventario (stock bajo)
+    const byProd={}; stock.forEach(r=>{ byProd[r.producto_id]=(byProd[r.producto_id]||0)+r.cantidad; });
+    const alertas=Object.entries(byProd).map(([pid,tot])=>({name:NOMBRE[pid]||('#'+pid),tot:tot})).filter(a=>a.tot<=2).sort((a,b)=>a.tot-b.tot).slice(0,8);
+
+    box.innerHTML=`
+      <div class="hello">¡Hola! Bienvenida de nuevo 👋<small>Resumen de tu tienda DAVFOOR LEGEND</small></div>
+      <div class="kcards">
+        <div class="kcard"><div class="lbl">💰 Ventas totales</div><div class="val">${fmtK(ventas)}</div><div class="sub">${nPed} pedido(s)</div></div>
+        <div class="kcard"><div class="lbl">👥 Clientes</div><div class="val white">${clientes}</div><div class="sub">compradores únicos</div></div>
+        <div class="kcard"><div class="lbl">📬 Por enviar</div><div class="val white">${abiertos}</div><div class="sub">nuevos + en preparación</div></div>
+        <div class="kcard"><div class="lbl">🧾 Ticket promedio</div><div class="val">${fmt(ticket)}</div><div class="sub">por pedido</div></div>
+      </div>
+      <div class="dgrid">
+        <div class="dbox"><h3><span class="bar"></span>Tendencia de pedidos (14 días)</h3>${sparkline(serie)}<div class="sub" style="color:var(--muted);font-size:12px;margin-top:6px">${serie.reduce((a,b)=>a+b,0)} pedidos en las últimas 2 semanas</div></div>
+        <div class="dbox"><h3><span class="bar"></span>Métodos de pago</h3>${barras(mpRows)}</div>
+      </div>
+      <div class="dgrid">
+        <div class="dbox"><h3><span class="bar"></span>Más vendidas</h3>${barras(topVend)}</div>
+        <div class="dbox"><h3><span class="bar"></span>Ciudades top</h3>${barras(topCiu)}</div>
+      </div>
+      <div class="dgrid">
+        <div class="dbox"><h3><span class="bar"></span>Pedidos recientes</h3>
+          ${recientes.length?recientes.map(p=>{
+            const ini=(p.cliente||'C').trim().charAt(0).toUpperCase();
+            const est=p.estado||'Nuevo'; const estKey=est.replace(/\s/g,'');
+            const it0=(p.items&&p.items[0])?(NOMBRE[p.items[0].id]||p.items[0].team||''):'';
+            return `<div class="rord"><div class="av">${ini}</div><div class="who"><b>${p.cliente||'Cliente'}</b><span>${it0}</span></div><span class="pill st st-${estKey}">${est}</span><span class="amt">${fmt(p.total)}</span></div>`;
+          }).join(''):'<div class="emptybox">Aún no hay pedidos.</div>'}
+        </div>
+        <div class="dbox"><h3><span class="bar"></span>Alertas de inventario</h3>
+          ${alertas.length?alertas.map(a=>`<div class="ialert"><span>${a.name}</span><span class="q ${a.tot===0?'out':'low'}">${a.tot===0?'Agotada':(a.tot+' uds')}</span></div>`).join(''):'<div class="emptybox">Todo con buen stock ✅</div>'}
+        </div>
+      </div>`;
+  }
 
   function render(){
     const list = pedidos.filter(p=>{
