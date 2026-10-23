@@ -20,12 +20,21 @@
 
   .warn{margin:16px;background:rgba(232,163,61,.1);border:1px solid rgba(232,163,61,.4);border-radius:12px;padding:14px;font-size:13px;color:#e9c88a;line-height:1.6}
 
-  /* NAV */
-  .nav{display:flex;gap:6px;padding:12px 16px 4px;overflow-x:auto;scrollbar-width:none}
-  .nav::-webkit-scrollbar{display:none}
-  .nav b{flex:0 0 auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:800;color:var(--muted);cursor:pointer;transition:transform .12s ease}
-  .nav b.active{background:var(--green);color:#04240f;border-color:var(--green)}
-  .nav b:active{transform:scale(.96)}
+  /* LAYOUT con menú lateral izquierdo */
+  .layout{display:flex;gap:16px;align-items:flex-start;padding:14px 16px}
+  .sidebar{width:220px;flex:0 0 auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 10px;position:sticky;top:76px;display:flex;flex-direction:column;gap:4px}
+  .sidebar b{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:11px;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer;transition:.12s;white-space:nowrap}
+  .sidebar b:hover{background:var(--panel2);color:#fff}
+  .sidebar b.active{background:var(--green);color:#04240f}
+  .content{flex:1;min-width:0}
+  .content .dash,.content .inv,.content .stats,.content .npform,.content .list,.content .toolbar,.content .subbar{padding-left:0;padding-right:0}
+  @media(max-width:860px){
+    .layout{flex-direction:column;gap:10px;padding:10px 8px}
+    .sidebar{width:auto;flex-direction:row;overflow-x:auto;position:static;top:auto;gap:6px;scrollbar-width:none}
+    .sidebar::-webkit-scrollbar{display:none}
+    .sidebar b{flex:0 0 auto;font-size:13px;padding:10px 13px}
+    .content{width:100%}
+  }
 
   /* LOGIN */
   .login{max-width:360px;margin:8vh auto;padding:26px 22px;background:var(--panel);border:1px solid var(--line);border-radius:18px;text-align:center}
@@ -192,14 +201,16 @@
 
   <!-- APP -->
   <div id="appView" style="display:none">
-    <div class="nav" id="nav">
+    <div class="layout">
+    <aside class="sidebar" id="nav">
       <b class="active" data-s="resumen" onclick="setSection(this)">🏠 Resumen</b>
       <b data-s="pedidos" onclick="setSection(this)">📋 Pedidos</b>
       <b data-s="venta" onclick="setSection(this)">💬 Venta WhatsApp</b>
       <b data-s="stats" onclick="setSection(this)">📊 Estadísticas</b>
       <b data-s="inv" onclick="setSection(this)">📦 Inventario</b>
       <b data-s="nuevo" onclick="setSection(this)">➕ Nuevo producto</b>
-    </div>
+    </aside>
+    <main class="content">
 
     <!-- SECCIÓN RESUMEN / DASHBOARD -->
     <div id="sec-resumen"><div class="dash" id="dashBox"></div></div>
@@ -299,6 +310,8 @@
         <button class="copy" id="npCopy" style="display:none" onclick="copiarProducto()">📋 Copiar</button>
         <p class="hint">Esto genera el código de la camiseta. Las <b>fotos</b> se suben aparte: pásame el código generado y las fotos por chat y yo lo dejo publicado. (El catálogo vive en un archivo, por eso el alta final la hago yo.)</p>
       </div>
+    </div>
+    </main>
     </div>
   </div>
 </div>
