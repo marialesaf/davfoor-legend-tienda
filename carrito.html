@@ -210,6 +210,7 @@
   <!-- RESUMEN -->
   <div class="summary">
     <div class="l"><span>Subtotal productos</span><span id="s_sub">$0</span></div>
+    <div class="l" id="s_desc_row" style="display:none;color:var(--green)"><span>Descuento combo</span><span id="s_desc" style="color:var(--green)">$0</span></div>
     <div class="l" id="s_fee_row" style="display:none"><span>Recargo Addi (10%)</span><span id="s_fee">$0</span></div>
     <div class="l" id="s_ship_row"><span>Envío</span><span id="s_ship">$0</span></div>
     <div class="divider"></div>
@@ -281,10 +282,13 @@
   }
 
   function totals(){
-    const sub = cart.reduce((a,it)=>a+itemPrice(it),0);
-    // Envío $18.000 SOLO si el pago es de contado y la compra no supera $300.000.
+    // subFull = suma sin descuentos; desc = total de descuentos (combo); sub = neto
+    const subFull = cart.reduce((a,it)=>a+(it.tipo==='descuento'?0:itemPrice(it)),0);
+    const desc = cart.reduce((a,it)=>a+(it.tipo==='descuento'?-itemPrice(it):0),0);
+    const sub = subFull - desc;
+    // Envío $18.000 siempre que el pago sea de contado (nunca gratis).
     // Contra entrega y Addi: el envío se paga en la entrega con Interrapidísimo.
-    const envio = (metodo==='contado' && cart.length && sub < GRATIS_DESDE) ? ENVIO : 0;
+    const envio = (metodo==='contado' && cart.length) ? ENVIO : 0;
     // Addi: recarga el 10% sobre el valor de la compra
     const fee = (metodo==='addi' && cart.length) ? Math.round(sub*0.10) : 0;
     const total = sub + envio + fee;
@@ -292,12 +296,17 @@
     let ahora = total;                           // contado: total
     if(metodo==='contra') ahora = ANTICIPO;      // contra: solo anticipo (resto + envío en la entrega)
     // addi: se financia el total (sub + 10%) a través de Addi
-    return {sub,envio,fee,total,ahora};
+    return {subFull,desc,sub,envio,fee,total,ahora};
   }
 
   function calc(){
-    const {sub,envio,fee,total,ahora}=totals();
-    document.getElementById('s_sub').textContent=fmt(sub);
+    const {subFull,desc,sub,envio,fee,total,ahora}=totals();
+    document.getElementById('s_sub').textContent=fmt(subFull);
+
+    // Descuento combo — solo visible si hay descuento
+    const descRow=document.getElementById('s_desc_row');
+    descRow.style.display = desc>0 ? 'flex' : 'none';
+    if(desc>0) document.getElementById('s_desc').textContent='−'+fmt(desc);
 
     // Recargo Addi (10%) — solo visible con Addi
     const feeRow=document.getElementById('s_fee_row');
@@ -305,15 +314,14 @@
     if(fee>0) document.getElementById('s_fee').textContent=fmt(fee);
 
     // Etiqueta de envío según el método de pago
-    let shipTxt, shipFree=false;
+    let shipTxt;
     if(metodo==='contado'){
-      if(envio>0){ shipTxt=fmt(envio); }
-      else { shipTxt='¡GRATIS!'; shipFree=true; }
+      shipTxt=fmt(envio);
     } else {
       shipTxt='En la entrega (Interrapidísimo)';   // contra entrega / Addi
     }
     document.getElementById('s_ship').textContent = shipTxt;
-    document.getElementById('s_ship_row').classList.toggle('free',shipFree);
+    document.getElementById('s_ship_row').classList.remove('free');
 
     document.getElementById('s_total').textContent=fmt(total);
     document.getElementById('s_paynow').textContent=fmt(ahora);
@@ -333,8 +341,7 @@
     if(metodo==='addi')    rest = `Incluye el recargo del 10%. Lo pagas en cuotas con Addi. El envío se paga al recibir con Interrapidísimo.`;
     document.getElementById('s_rest').innerHTML=rest;
 
-    const falta = GRATIS_DESDE - sub;
-    document.getElementById('s_hint').textContent = (metodo==='contado' && envio>0 && falta>0) ? `🚚 Te faltan ${fmt(falta)} para envío gratis` : '';
+    document.getElementById('s_hint').textContent = metodo==='contado' ? `🚚 Envío $18.000 a todo Colombia` : '';
   }
 
   // facturación distinta
@@ -406,6 +413,8 @@
       direccion: document.getElementById('f_dir').value.trim().toUpperCase(),
       notas: (document.getElementById('f_notas')?document.getElementById('f_notas').value.trim().toUpperCase():''),
       items, subtotal: sub, envio, total,
+      categoria: (cart.length && cart.every(it=>it.tipo==='retro')) ? 'Camisetas Retro' : 'Camisetas Actuales',
+      pagado: (metodo==='contra') ? ANTICIPO : total,
       metodo, pago: 'pendiente', estado: 'Nuevo'
     };
     pedidoRef = 'DAV-'+Date.now()+'-'+Math.random().toString(36).slice(2,7);
@@ -472,7 +481,7 @@
   }
 
   function confirmacion(){
-    const {sub,envio,fee,total,ahora}=totals();
+    const {subFull,desc,sub,envio,fee,total,ahora}=totals();
     const orden='DAV-'+Math.floor(100000+Math.random()*899999);
     const guia='CO'+Math.floor(100000000+Math.random()*899999999);
     const nombre=document.getElementById('f_nombre').value||'Cliente';
@@ -482,7 +491,8 @@
     const metodoTxt = metodo==='contado'?'Pago de contado':(metodo==='contra'?'Contra entrega (anticipo pagado)':'Addi (a cuotas)');
     const items = cart.map(it=>`• ${it.team} - Talla ${it.talla}${it.perso?' ('+it.perso+')':''} x${it.qty} — ${fmt(itemPrice(it))}`).join('<br>');
     const feeRow = fee>0 ? `<div class="row"><span>Recargo Addi (10%)</span><span>${fmt(fee)}</span></div>` : '';
-    const envioTxt = metodo==='contado' ? (envio===0?'GRATIS':fmt(envio)) : 'En la entrega (Interrapidísimo)';
+    const envioTxt = metodo==='contado' ? fmt(envio) : 'En la entrega (Interrapidísimo)';
+    const descRowM = desc>0 ? `<div class="row"><span>Descuento combo</span><span>−${fmt(desc)}</span></div>` : '';
     let restTxt;
     if(metodo==='contra'){
       restTxt = `<div class="row"><span><b>Pagado ahora (anticipo)</b></span><span><b>${fmt(ANTICIPO)}</b></span></div><div class="row"><span>Pagas al recibir</span><span>${fmt(sub-ANTICIPO)} + envío</span></div>`;
@@ -520,7 +530,8 @@
           <div style="font-weight:800;margin-bottom:8px">Confirmación de compra — Orden ${orden}</div>
           <div class="row"><span>Cliente</span><span>${nombre}</span></div>
           <div class="row"><span>Envío a</span><span>${ciudad}</span></div>
-          <div class="row"><span>Subtotal</span><span>${fmt(sub)}</span></div>
+          <div class="row"><span>Subtotal</span><span>${fmt(subFull)}</span></div>
+          ${descRowM}
           ${feeRow}
           <div class="row"><span>Envío</span><span>${envioTxt}</span></div>
           ${restTxt}
