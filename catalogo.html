@@ -504,7 +504,7 @@
         caja:false, cajaNombre:null, qty:1, c1:p.c1, c2:p.c2, foto:(p.foto||''), combo:comboLabel });
     });
     const cj=cmbCajaSel(); const cjn=CMB_CAJAS.find(c=>c[1]===cj);
-    if(cjn){ cart.push({ id:'caja-'+cj, team:'Caja de colección '+cjn[0], season:'Incluida', tipo:'caja', talla:'', perso:'', base:0, extra:0, parches:false, caja:true, cajaNombre:cjn[0], qty:1, foto:'', combo:comboLabel }); }
+    if(cjn){ cart.push({ id:'caja-'+cj, team:'Caja de colección '+cjn[0], season:'Incluida', tipo:'caja', talla:'', perso:'', base:0, extra:0, parches:false, caja:true, cajaNombre:cjn[0], qty:1, foto:((window.CAJAS_IMG&&CAJAS_IMG[cj])||''), combo:comboLabel }); }
     cart.push({ id:'combo-desc', team:'Descuento '+comboLabel, season:'', tipo:'descuento', talla:'', perso:'', base:-CMB_DESC[cmbTipo], extra:0, parches:false, caja:false, qty:1, foto:'', combo:comboLabel });
     localStorage.setItem('davfoor_cart', JSON.stringify(cart));
     location.href='carrito.html';

@@ -255,7 +255,22 @@
   const itemPrice = it => (it.base + it.extra) * it.qty;
 
   function renderCart(){
-    document.getElementById('cartList').innerHTML = cart.map((it,i)=>`
+    document.getElementById('cartList').innerHTML = cart.map((it,i)=>{
+      // La línea de descuento no se muestra en la lista (va en el resumen).
+      if(it.tipo==='descuento') return '';
+      // La caja va incluida: foto + $0, sin opción de cambiar cantidad ni quitar.
+      if(it.tipo==='caja'){
+        return `
+      <div class="item">
+        <div class="pic">${it.foto ? `<img src="${it.foto}" alt="${it.team}">` : '<div style="font-size:30px">📦</div>'}</div>
+        <div class="d">
+          <div class="t">${it.team}</div>
+          <div class="sub">Incluida en tu combo</div>
+          <div class="pr">$0</div>
+        </div>
+      </div>`;
+      }
+      return `
       <div class="item">
         <div class="pic">${it.foto ? `<img src="${it.foto}" alt="${it.team}">` : (it.tipo==='accesorio' ? '<div style="font-size:30px">'+(it.team.toLowerCase().includes('gorra')?'🧢':'🥤')+'</div>' : jersey(it.c1,it.c2))}</div>
         <div class="d">
@@ -267,7 +282,8 @@
             <button class="rm" onclick="rm(${i})" style="margin-left:10px">Quitar</button>
           </div>
         </div>
-      </div>`).join('') || '<div style="color:var(--muted);text-align:center;padding:20px">Tu carrito está vacío</div>';
+      </div>`;
+    }).join('') || '<div style="color:var(--muted);text-align:center;padding:20px">Tu carrito está vacío</div>';
     document.querySelectorAll('.cart-count').forEach(e=>e.textContent=cart.reduce((a,it)=>a+(it.qty||1),0));
     calc();
   }
@@ -489,7 +505,7 @@
     const correo=document.getElementById('f_correo').value||'—';
     const ciudad=document.getElementById('f_ciudad').value||'—';
     const metodoTxt = metodo==='contado'?'Pago de contado':(metodo==='contra'?'Contra entrega (anticipo pagado)':'Addi (a cuotas)');
-    const items = cart.map(it=>`• ${it.team} - Talla ${it.talla}${it.perso?' ('+it.perso+')':''} x${it.qty} — ${fmt(itemPrice(it))}`).join('<br>');
+    const items = cart.filter(it=>it.tipo!=='descuento').map(it=> it.tipo==='caja' ? `• ${it.team} (incluida)` : `• ${it.team}${it.talla?' - Talla '+it.talla:''}${it.perso?' ('+it.perso+')':''} x${it.qty} — ${fmt(itemPrice(it))}`).join('<br>');
     const feeRow = fee>0 ? `<div class="row"><span>Recargo Addi (10%)</span><span>${fmt(fee)}</span></div>` : '';
     const envioTxt = metodo==='contado' ? fmt(envio) : 'En la entrega (Interrapidísimo)';
     const descRowM = desc>0 ? `<div class="row"><span>Descuento combo</span><span>−${fmt(desc)}</span></div>` : '';
