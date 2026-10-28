@@ -250,17 +250,17 @@
     <p class="cmb-lead">Elige tus camisetas favoritas de cualquier equipo (puedes mezclar), añade dorsal, parche y tu caja de colección. ¡Entre más armas, más ahorras!</p>
     <div class="cmb-types">
       <div class="cmb-type on" data-n="2" onclick="cmbSetTipo(2)">
-        <div class="t">Combo 2 camisetas</div><div class="d">Ahorras $20.000</div><div class="s">+ caja obligatoria (se paga)</div>
+        <div class="t">Combo 2 camisetas</div><div class="d">Ahorras $20.000</div><div class="s">+ caja de colección</div>
       </div>
       <div class="cmb-type" data-n="3" onclick="cmbSetTipo(3)">
-        <div class="t">Combo 3 camisetas</div><div class="d">Ahorras $25.000</div><div class="s">+ caja obligatoria (se paga)</div>
+        <div class="t">Combo 3 camisetas</div><div class="d">Ahorras $25.000</div><div class="s">+ caja de colección</div>
       </div>
     </div>
     <div id="cmbSlots"></div>
     <div class="cmb-slot">
-      <h3><span class="n">📦</span> Elige tu caja de colección (obligatoria · +$10.000)</h3>
+      <h3><span class="n">📦</span> Elige tu caja de colección</h3>
       <div class="cmb-cajas" id="cmbCajas"></div>
-      <div class="cmb-warn" id="cmbCajaWarn">Debes elegir una caja para armar el combo.</div>
+      <div class="cmb-warn" id="cmbCajaWarn">Elige el diseño de tu caja.</div>
     </div>
   </section>
 
@@ -475,7 +475,7 @@
     document.getElementById('cmbCajas').innerHTML = CMB_CAJAS.map(c=>{
       const src = img[c[1]] || '';
       const pic = src ? '<img src="'+src+'" alt="Caja '+c[0]+'">' : '<img alt="" style="display:flex;align-items:center;justify-content:center">';
-      return '<div class="cmb-caja '+(cmbCajaId===c[1]?'on':'')+'" onclick="cmbPickCaja(\''+c[1]+'\')">'+pic+'<span class="cn">'+c[0]+'</span><span class="cp">+$10.000</span></div>';
+      return '<div class="cmb-caja '+(cmbCajaId===c[1]?'on':'')+'" onclick="cmbPickCaja(\''+c[1]+'\')">'+pic+'<span class="cn">'+c[0]+'</span></div>';
     }).join('');
   }
   function cmbPickCaja(slug){ cmbCajaId = (cmbCajaId===slug?'':slug); cmbRenderCajas(); cmbRecalc(); }
@@ -494,16 +494,17 @@
   function cmbAdd(){
     const comboLabel='Combo '+cmbTipo+' camisetas';
     const cart=JSON.parse(localStorage.getItem('davfoor_cart')||'[]');
-    cmbSlots.forEach(s=>{
+    cmbSlots.forEach((s,idx)=>{
       const p=CMB_CAMIS.find(x=>x.id==s.id); const cond=cmbParseCond(p.nota);
       let perso='';
       if(s.dorsalOn){ if(cond){ const o=cond[s.condIndex]||cond[0]; perso=(o.name+(o.num?(' #'+o.num):'')).trim(); } else { perso=((s.name||'')+(s.num?(' #'+s.num):'')).trim(); } }
+      // El costo de la caja ($10.000) va incluido dentro del valor de la primera camiseta (sin mostrarlo aparte).
       cart.push({ id:p.id, team:p.team, season:p.nombre||p.team, tipo:p.tipo, talla:s.talla, perso:perso,
-        base:p.precio, extra:(s.dorsalOn?CMB_PERSO:0)+(s.parcheOn?CMB_PARCHES:0), parches:s.parcheOn, parcheTipo:(s.parcheOn?s.parcheTipo:null),
+        base:p.precio + (idx===0?CMB_CAJA:0), extra:(s.dorsalOn?CMB_PERSO:0)+(s.parcheOn?CMB_PARCHES:0), parches:s.parcheOn, parcheTipo:(s.parcheOn?s.parcheTipo:null),
         caja:false, cajaNombre:null, qty:1, c1:p.c1, c2:p.c2, foto:(p.foto||''), combo:comboLabel });
     });
     const cj=cmbCajaSel(); const cjn=CMB_CAJAS.find(c=>c[1]===cj);
-    if(cjn){ cart.push({ id:'caja-'+cj, team:'Caja de colección '+cjn[0], season:'Caja '+cjn[0], tipo:'caja', talla:'', perso:'', base:CMB_CAJA, extra:0, parches:false, caja:true, cajaNombre:cjn[0], qty:1, foto:'', combo:comboLabel }); }
+    if(cjn){ cart.push({ id:'caja-'+cj, team:'Caja de colección '+cjn[0], season:'Incluida', tipo:'caja', talla:'', perso:'', base:0, extra:0, parches:false, caja:true, cajaNombre:cjn[0], qty:1, foto:'', combo:comboLabel }); }
     cart.push({ id:'combo-desc', team:'Descuento '+comboLabel, season:'', tipo:'descuento', talla:'', perso:'', base:-CMB_DESC[cmbTipo], extra:0, parches:false, caja:false, qty:1, foto:'', combo:comboLabel });
     localStorage.setItem('davfoor_cart', JSON.stringify(cart));
     location.href='carrito.html';
