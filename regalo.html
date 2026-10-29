@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Un regalo para ti · DAVFOOR LEGEND</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#ff4d8d; --accent2:#ffd1dc; --glow1:#ff6b9d; --glow2:#c8457a;
+    --bg:#0a0a0a; --card:rgba(255,255,255,.05); --line:rgba(255,255,255,.12); --txt:#f4f4f4; --muted:#b9b9b9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:'Poppins',system-ui,sans-serif;line-height:1.6;overflow-x:hidden}
+  .wrap{max-width:620px;margin:0 auto;padding:0 18px 70px}
+  /* Fondo con brillo del tema */
+  .bgglow{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(60% 45% at 50% 0%, var(--glow1) 0%, transparent 60%),
+               radial-gradient(50% 40% at 80% 90%, var(--glow2) 0%, transparent 55%);
+    opacity:.28}
+  .wrap>*{position:relative;z-index:1}
+
+  /* HERO */
+  .hero{text-align:center;padding:60px 10px 34px}
+  .heart{font-size:50px;filter:drop-shadow(0 4px 16px rgba(0,0,0,.4));animation:beat 1.6s ease-in-out infinite}
+  @keyframes beat{0%,100%{transform:scale(1)}15%{transform:scale(1.18)}30%{transform:scale(1)}45%{transform:scale(1.12)}}
+  .crest{display:inline-flex;align-items:center;justify-content:center;width:62px;height:62px;border-radius:50%;
+    background:var(--accent);color:#fff;font-weight:700;font-size:20px;letter-spacing:.5px;margin-bottom:10px;
+    box-shadow:0 8px 24px rgba(0,0,0,.35)}
+  h1{font-family:'Playfair Display',serif;font-size:clamp(30px,8vw,46px);font-weight:700;line-height:1.1;margin:14px 0 6px}
+  .sub{color:var(--accent2);font-style:italic;font-family:'Playfair Display',serif;font-size:19px}
+  .tag{display:inline-block;margin-top:18px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);
+    border:1px solid var(--line);padding:6px 14px;border-radius:30px}
+
+  /* Secciones */
+  .sec{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px 22px;margin-top:20px;
+    backdrop-filter:blur(8px)}
+  .sec h2{font-family:'Playfair Display',serif;font-weight:700;font-size:22px;margin-bottom:14px;color:#fff;display:flex;align-items:center;gap:9px}
+  .sec h2 .ic{color:var(--accent)}
+  .carta{font-family:'Playfair Display',serif;font-size:18px;line-height:1.85;white-space:pre-wrap;color:#f0f0f0}
+
+  /* Galería */
+  .galeria{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .galeria img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;cursor:pointer;transition:.2s}
+  .galeria img:hover{transform:scale(1.03)}
+  @media(max-width:420px){.galeria{grid-template-columns:repeat(2,1fr)}}
+
+  /* Canción */
+  .cancion iframe{width:100%;border:0;border-radius:14px}
+
+  /* Contador de días */
+  .contador{text-align:center;padding:30px 22px}
+  .contador .num{font-family:'Playfair Display',serif;font-size:clamp(46px,16vw,78px);font-weight:700;color:var(--accent);line-height:1;text-shadow:0 6px 30px rgba(0,0,0,.4)}
+  .contador .lbl{color:var(--accent2);font-style:italic;font-family:'Playfair Display',serif;font-size:18px;margin-top:6px}
+  .contador .sub{color:var(--muted);font-size:13px;margin-top:4px}
+
+  /* Timeline */
+  .tl{position:relative;padding-left:26px}
+  .tl::before{content:"";position:absolute;left:7px;top:4px;bottom:4px;width:2px;background:var(--accent);opacity:.5}
+  .tl .ev{position:relative;padding:0 0 22px}
+  .tl .ev:last-child{padding-bottom:0}
+  .tl .ev::before{content:"";position:absolute;left:-23px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(0,0,0,.25)}
+  .tl .ev .f{font-size:12px;color:var(--accent2);font-weight:600;letter-spacing:.5px}
+  .tl .ev .t{font-size:16px;color:#fff;font-weight:600}
+  .tl .ev .ds{font-size:14px;color:var(--muted);margin-top:2px}
+  .tl .ev img{width:100%;max-width:240px;border-radius:12px;margin-top:10px;display:block}
+
+  /* Lugares */
+  .lugar{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .lugar:last-child{border-bottom:0}
+  .lugar .pin{flex:0 0 auto;font-size:22px;line-height:1.3}
+  .lugar .n{font-weight:600;color:#fff}
+  .lugar .f{font-size:12px;color:var(--accent2);font-weight:600}
+  .lugar .ds{font-size:14px;color:var(--muted);margin-top:2px}
+
+  /* Voz */
+  .voz audio{width:100%;margin-top:4px}
+
+  /* Sorpresa */
+  .sorpresa{text-align:center}
+  .sorpresa .rev{background:var(--accent);color:#1a0010;border:0;border-radius:30px;padding:14px 30px;font-size:16px;font-weight:700;cursor:pointer;margin-top:6px;font-family:inherit}
+  .sorpresa .rev:disabled{opacity:.45;cursor:not-allowed}
+  .sorpresa .txt{display:none;margin-top:16px;font-family:'Playfair Display',serif;font-size:19px;line-height:1.8;color:#fff;white-space:pre-wrap;animation:fade .6s ease}
+  .sorpresa .txt.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  /* Quiz */
+  .quiz{text-align:left;margin:10px 0 4px}
+  .quiz .q{margin-bottom:16px}
+  .quiz .q .qt{font-weight:600;color:#fff;margin-bottom:8px}
+  .quiz .opt{display:block;width:100%;text-align:left;background:#0e0e0e;border:1px solid var(--line);color:#eee;border-radius:10px;padding:11px 14px;margin-bottom:7px;cursor:pointer;font-size:14px;font-family:inherit;transition:.15s}
+  .quiz .opt.sel{border-color:var(--accent);background:rgba(255,255,255,.06)}
+  .quiz .opt.ok{border-color:#3fe167;background:rgba(63,225,103,.12)}
+  .quiz .opt.bad{border-color:#ff5a5a;background:rgba(255,90,90,.1)}
+  .quiz-msg{font-size:14px;margin:6px 0 10px;min-height:18px;color:var(--accent2)}
+
+  footer{text-align:center;margin-top:40px;color:var(--muted);font-size:12px}
+  footer b{color:var(--accent)}
+
+  /* Lightbox */
+  .lb{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
+  .lb.on{display:flex}
+  .lb img{max-width:100%;max-height:90vh;border-radius:12px}
+  .lb .x{position:absolute;top:16px;right:20px;font-size:32px;color:#fff;cursor:pointer;line-height:1}
+
+  .loading,.err{text-align:center;padding:90px 20px;color:var(--muted)}
+  .err h1{font-size:26px;color:#fff;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="bgglow"></div>
+<div class="wrap" id="app">
+  <div class="loading">Abriendo tu regalo… 💌</div>
+</div>
+
+<div class="lb" id="lb" onclick="this.classList.remove('on')"><span class="x">&times;</span><img id="lbImg" alt=""></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-config.js"></script>
+<script>
+  // ---- Temas (7 equipos + 3 románticas) ----
+  const TEMAS = {
+    'madrid':      {nombre:'Real Madrid', crest:'RM',  accent:'#d4af37', accent2:'#cfe0ff', glow1:'#00529f', glow2:'#0a2a55'},
+    'barcelona':   {nombre:'Barcelona',   crest:'FCB', accent:'#ffcf3f', accent2:'#ffd1e0', glow1:'#a50044', glow2:'#004d98'},
+    'millonarios': {nombre:'Millonarios', crest:'MFC', accent:'#4d9bff', accent2:'#cfe3ff', glow1:'#004ba0', glow2:'#00245a'},
+    'nacional':    {nombre:'A. Nacional', crest:'AN',  accent:'#2ee07a', accent2:'#d2ffe4', glow1:'#00843d', glow2:'#00401e'},
+    'santafe':     {nombre:'Santa Fe',    crest:'ISF', accent:'#ff4d61', accent2:'#ffd6db', glow1:'#d3122a', glow2:'#6e0a16'},
+    'argentina':   {nombre:'Argentina',   crest:'ARG', accent:'#7fc0f5', accent2:'#e4f2ff', glow1:'#75AADB', glow2:'#2e6ea8'},
+    'portugal':    {nombre:'Portugal',    crest:'POR', accent:'#ffd23f', accent2:'#ffd6cf', glow1:'#C8102E', glow2:'#006600'},
+    'romantica-1': {nombre:'Romántica',   crest:'',    accent:'#ff4d8d', accent2:'#ffd1dc', glow1:'#ff6b9d', glow2:'#c8457a'},
+    'romantica-2': {nombre:'Romántica',   crest:'',    accent:'#d4af37', accent2:'#ffcccc', glow1:'#8b0000', glow2:'#c8102e'},
+    'romantica-3': {nombre:'Romántica',   crest:'',    accent:'#b08968', accent2:'#e8d9c5', glow1:'#c9a98a', glow2:'#8a6f52'}
+  };
+
+  const sb = (typeof supabase!=='undefined' && typeof SUPABASE_URL!=='undefined' && !SUPABASE_URL.includes('TU-PROYECTO'))
+    ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+  const esc = s => (s||'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  function aplicarTema(slug){
+    const t = TEMAS[slug] || TEMAS['romantica-1'];
+    const r = document.documentElement.style;
+    r.setProperty('--accent', t.accent);
+    r.setProperty('--accent2', t.accent2);
+    r.setProperty('--glow1', t.glow1);
+    r.setProperty('--glow2', t.glow2);
+    return t;
+  }
+
+  function embedCancion(url){
+    if(!url) return '';
+    url = url.trim();
+    let m;
+    // Spotify
+    if(/open\.spotify\.com/.test(url)){
+      m = url.match(/track\/([A-Za-z0-9]+)/);
+      if(m) return `<iframe style="height:152px" src="https://open.spotify.com/embed/track/${m[1]}" allow="encrypted-media" loading="lazy"></iframe>`;
+      m = url.match(/playlist\/([A-Za-z0-9]+)/);
+      if(m) return `<iframe style="height:352px" src="https://open.spotify.com/embed/playlist/${m[1]}" allow="encrypted-media" loading="lazy"></iframe>`;
+    }
+    // YouTube
+    m = url.match(/(?:youtu\.be\/|v=|embed\/)([A-Za-z0-9_-]{11})/);
+    if(m) return `<iframe style="height:220px" src="https://www.youtube.com/embed/${m[1]}" allow="encrypted-media" allowfullscreen loading="lazy"></iframe>`;
+    // Fallback: enlace
+    return `<a href="${esc(url)}" target="_blank" rel="noopener" style="color:var(--accent)">▶ Escuchar nuestra canción</a>`;
+  }
+
+  function diasJuntos(fini){
+    if(!fini) return null;
+    const ini = new Date(fini);
+    if(isNaN(ini)) return null;
+    const dias = Math.floor((Date.now()-ini.getTime())/86400000);
+    return dias>=0 ? dias : null;
+  }
+
+  function render(d){
+    const t = aplicarTema(d.tema);
+    const esEquipo = !!t.crest;
+    const fotos = Array.isArray(d.fotos)? d.fotos : [];
+    const fechas = Array.isArray(d.fechas)? d.fechas : [];
+    const lugares = Array.isArray(d.lugares)? d.lugares : [];
+    const dias = diasJuntos(d.fecha_inicio);
+
+    // 1) Portada
+    let html = `
+      <div class="hero">
+        ${esEquipo ? `<div class="crest">${esc(t.crest)}</div><br>` : `<div class="heart">❤️</div>`}
+        <h1>${esc(d.titulo)||'Para ti'}</h1>
+        ${d.subtitulo?`<div class="sub">${esc(d.subtitulo)}</div>`:''}
+        <div class="tag">Un regalo de DAVFOOR LEGEND</div>
+      </div>`;
+
+    // 2) Canción
+    const emb = embedCancion(d.cancion);
+    if(emb) html += `<div class="sec cancion"><h2><span class="ic">🎵</span> Nuestra canción</h2>${emb}</div>`;
+
+    // 3) Galería
+    if(fotos.length){
+      html += `<div class="sec"><h2><span class="ic">📸</span> Momentos que no se borran</h2><div class="galeria">${
+        fotos.map(u=>`<img src="${esc(u)}" alt="recuerdo" onclick="abrirFoto('${esc(u)}')">`).join('')
+      }</div></div>`;
+    }
+
+    // 4) Carta
+    if(d.mensaje) html += `<div class="sec"><h2><span class="ic">✉️</span> Para ti</h2><div class="carta">${esc(d.mensaje)}</div></div>`;
+
+    // 5) Contador de días
+    if(dias!==null){
+      html += `<div class="sec contador"><div class="num">${dias.toLocaleString('es-CO')}</div><div class="lbl">días juntos</div><div class="sub">y los que nos faltan ❤️</div></div>`;
+    }
+
+    // 6) Línea de tiempo (fecha + título + descripción + foto)
+    if(fechas.length){
+      html += `<div class="sec"><h2><span class="ic">📅</span> Nuestra línea del tiempo</h2><div class="tl">${
+        fechas.map(f=>`<div class="ev">${f.fecha?`<div class="f">${esc(f.fecha)}</div>`:''}${f.titulo?`<div class="t">${esc(f.titulo)}</div>`:''}${f.desc?`<div class="ds">${esc(f.desc)}</div>`:''}${f.foto?`<img src="${esc(f.foto)}" alt="" onclick="abrirFoto('${esc(f.foto)}')">`:''}</div>`).join('')
+      }</div></div>`;
+    }
+
+    // 7) Mensaje de voz
+    if(d.voz){
+      html += `<div class="sec voz"><h2><span class="ic">🎙️</span> Un mensaje de voz</h2><audio controls src="${esc(d.voz)}"></audio></div>`;
+    }
+
+    // 8) Nuestros lugares
+    if(lugares.length){
+      html += `<div class="sec"><h2><span class="ic">🗺️</span> El mapa de nuestra historia</h2>${
+        lugares.map(l=>`<div class="lugar"><div class="pin">📍</div><div><div class="n">${esc(l.nombre)}</div>${l.fecha?`<div class="f">${esc(l.fecha)}</div>`:''}${l.desc?`<div class="ds">${esc(l.desc)}</div>`:''}</div></div>`).join('')
+      }</div>`;
+    }
+
+    // 9) Última sorpresa (con quiz opcional para desbloquearla)
+    const preguntas = Array.isArray(d.preguntas)? d.preguntas.filter(p=>p && p.pregunta) : [];
+    window._preguntas = preguntas;
+    if(d.sorpresa){
+      let s = `<div class="sec sorpresa"><h2 style="justify-content:center">💝 Una última sorpresa</h2>
+        <p style="color:var(--muted)">Pensabas que el regalo había terminado…</p>`;
+      if(preguntas.length){
+        s += `<p style="color:var(--muted);margin-top:6px">Responde bien para desbloquearla 👇</p><div class="quiz" id="quiz">${
+          preguntas.map((p,qi)=>`<div class="q"><div class="qt">${qi+1}. ${esc(p.pregunta)}</div>${
+            (p.opciones||[]).map((o,oi)=>`<button type="button" class="opt" data-q="${qi}" data-o="${oi}" onclick="elegirOpt(${qi},${oi})">${esc(o)}</button>`).join('')
+          }</div>`).join('')
+        }</div><div class="quiz-msg" id="quizMsg"></div>
+        <button class="rev" id="revBtn" onclick="checarQuiz()">Desbloquear sorpresa 🔓</button>
+        <div class="txt" id="sorpresaTxt">${esc(d.sorpresa)}</div>`;
+      } else {
+        s += `<button class="rev" onclick="this.nextElementSibling.classList.add('on');this.style.display='none'">Descubre la sorpresa</button>
+        <div class="txt">${esc(d.sorpresa)}</div>`;
+      }
+      s += `</div>`;
+      html += s;
+    }
+
+    html += `<footer>Hecho con ❤️ por <b>DAVFOOR LEGEND</b></footer>`;
+    document.getElementById('app').innerHTML = html;
+    document.title = (d.titulo||'Un regalo') + ' · DAVFOOR LEGEND';
+  }
+
+  function abrirFoto(u){ document.getElementById('lbImg').src=u; document.getElementById('lb').classList.add('on'); }
+
+  // ---- Quiz de la sorpresa ----
+  window._resp = {};
+  function elegirOpt(qi, oi){
+    window._resp[qi] = oi;
+    document.querySelectorAll(`.quiz .opt[data-q="${qi}"]`).forEach(b=>{
+      b.classList.remove('sel','ok','bad');
+      if(+b.dataset.o===oi) b.classList.add('sel');
+    });
+    document.getElementById('quizMsg').textContent='';
+  }
+  function checarQuiz(){
+    const preguntas = window._preguntas || [];
+    let todasBien = true, respondidas = true;
+    preguntas.forEach((p,qi)=>{
+      if(window._resp[qi]===undefined){ respondidas=false; return; }
+      if(window._resp[qi]!==p.correcta) todasBien=false;
+    });
+    const msg = document.getElementById('quizMsg');
+    if(!respondidas){ msg.textContent='Responde todas las preguntas 💕'; return; }
+    if(todasBien){
+      document.getElementById('quiz').style.display='none';
+      document.getElementById('revBtn').style.display='none';
+      msg.textContent='¡Correcto! Aquí está tu sorpresa 💝';
+      document.getElementById('sorpresaTxt').classList.add('on');
+    } else {
+      // marcar las incorrectas en rojo
+      preguntas.forEach((p,qi)=>{
+        const sel=window._resp[qi];
+        if(sel!==undefined && sel!==p.correcta){
+          const b=document.querySelector(`.quiz .opt[data-q="${qi}"][data-o="${sel}"]`);
+          if(b){ b.classList.remove('sel'); b.classList.add('bad'); }
+        }
+      });
+      msg.textContent='¡Casi! Revisa las respuestas en rojo e inténtalo otra vez 😊';
+    }
+  }
+
+  async function cargar(){
+    const id = new URLSearchParams(location.search).get('id');
+    const app = document.getElementById('app');
+    if(!id){ app.innerHTML='<div class="err"><h1>Regalo no encontrado</h1><p>El enlace no es válido.</p></div>'; return; }
+    if(!sb){ app.innerHTML='<div class="err"><h1>Un momento…</h1><p>No se pudo conectar. Intenta de nuevo.</p></div>'; return; }
+    const {data, error} = await sb.from('regalos').select('*').eq('id', id).maybeSingle();
+    if(error || !data){ app.innerHTML='<div class="err"><h1>Regalo no encontrado 💔</h1><p>Revisa el enlace o el código QR.</p></div>'; return; }
+    render(data);
+  }
+  cargar();
+</script>
+</body>
+</html>

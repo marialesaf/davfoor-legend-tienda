@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crea tu regalo · DAVFOOR LEGEND</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.ico">
+<style>
+  :root{--green:#3fe167;--bg:#0b0b0b;--card:#141414;--line:#262626;--txt:#f4f4f4;--muted:#9a9a9a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,sans-serif;line-height:1.55}
+  .wrap{max-width:600px;margin:0 auto;padding:26px 18px 90px}
+  .brand{text-align:center;margin-bottom:6px;font-weight:800;letter-spacing:1px}
+  .brand .g{color:var(--green)}
+  h1{font-size:25px;text-align:center;margin:6px 0 4px}
+  .lead{text-align:center;color:var(--muted);font-size:14px;margin-bottom:22px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:16px}
+  label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px;color:#e8e8e8}
+  label:first-child{margin-top:0}
+  .hint{font-size:12px;color:var(--muted);font-weight:400;margin-top:3px}
+  input,textarea,select{width:100%;background:#0e0e0e;border:1px solid var(--line);border-radius:10px;padding:12px;color:#fff;font-size:15px;font-family:inherit}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--green)}
+  textarea{resize:vertical;min-height:120px}
+  select{-webkit-appearance:none;appearance:none;cursor:pointer}
+  .fecha-row{display:flex;gap:8px;margin-bottom:8px}
+  .fecha-row input:first-child{flex:0 0 40%}
+  .fecha-row .del{flex:0 0 auto;background:#2a1414;border:1px solid #512;color:#ff6b6b;border-radius:10px;padding:0 14px;cursor:pointer;font-size:18px}
+  .ev-row{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;position:relative}
+  .ev-row input,.ev-row textarea{margin-bottom:8px}
+  .ev-row textarea{min-height:60px}
+  .ev-row .del{position:absolute;top:8px;right:8px;background:#2a1414;border:1px solid #512;color:#ff6b6b;border-radius:8px;width:28px;height:28px;cursor:pointer;font-size:16px;z-index:2}
+  .ev-row .evfoto{font-size:13px}
+  .ev-row .evthumb{width:60px;height:60px;object-fit:cover;border-radius:8px;margin-top:6px;display:none}
+  .opt-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .opt-row input[type=radio]{width:20px;height:20px;flex:0 0 auto;accent-color:var(--green);margin:0}
+  .opt-row input[type=text]{margin-bottom:0}
+  .addbtn{background:transparent;border:1px dashed var(--line);color:var(--green);border-radius:10px;padding:10px;width:100%;cursor:pointer;font-size:14px;margin-top:4px}
+  .fotos-prev{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+  .fotos-prev .fp{position:relative;aspect-ratio:1/1}
+  .fotos-prev img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+  .fotos-prev .rm{position:absolute;top:-6px;right:-6px;background:#000;border:1px solid var(--line);color:#fff;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:14px;line-height:20px;text-align:center}
+  .bar{position:fixed;left:0;right:0;bottom:0;background:#0e0e0e;border-top:1px solid var(--line);padding:14px 18px;display:flex;justify-content:center}
+  .bar .btn{max-width:564px;width:100%;background:var(--green);color:#042;border:0;border-radius:12px;padding:15px;font-size:16px;font-weight:800;cursor:pointer}
+  .bar .btn:disabled{opacity:.5;cursor:not-allowed}
+  .msg{text-align:center;color:var(--muted);font-size:13px;margin-top:10px;min-height:18px}
+  /* Éxito */
+  .ok{text-align:center;padding:10px}
+  .ok .check{width:70px;height:70px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;margin:6px auto 14px;font-size:38px}
+  #qrbox{background:#fff;display:inline-block;padding:16px;border-radius:14px;margin:14px 0}
+  .linkbox{display:flex;gap:8px;margin:12px 0}
+  .linkbox input{font-size:13px}
+  .btn2{display:inline-block;background:#1b1b1b;border:1px solid var(--line);color:#fff;border-radius:10px;padding:12px 16px;cursor:pointer;font-size:14px;text-decoration:none;font-weight:600}
+  .btn2.g{background:var(--green);color:#042;border:0}
+  .btn2.wa{background:#25D366;color:#042;border:0}
+  .acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+  <div class="brand">DAVFOOR <span class="g">LEGEND</span></div>
+  <h1>Crea tu regalo 💌</h1>
+  <p class="lead">Llena los detalles y generamos tu código QR para regalar. Tu QR nunca caduca.</p>
+
+  <form id="form" onsubmit="return false">
+    <div class="card">
+      <label>Tema / plantilla</label>
+      <select id="f_tema"></select>
+      <div class="hint">Elige el equipo o la plantilla romántica.</div>
+
+      <label>Título <span class="hint" style="display:inline">(nombres o dedicatoria)</span></label>
+      <input id="f_titulo" maxlength="60" placeholder="Ej: Ale & Juan">
+
+      <label>Subtítulo <span class="hint" style="display:inline">(opcional)</span></label>
+      <input id="f_subtitulo" maxlength="80" placeholder="Ej: Nuestra historia ❤️">
+
+      <label>¿Desde cuándo están juntos? <span class="hint" style="display:inline">(para el contador de días)</span></label>
+      <input type="date" id="f_inicio">
+    </div>
+
+    <div class="card">
+      <label>Canción <span class="hint" style="display:inline">(link de Spotify o YouTube)</span></label>
+      <input id="f_cancion" placeholder="https://open.spotify.com/track/…">
+      <div class="hint">Copia el enlace de la canción desde Spotify o YouTube.</div>
+    </div>
+
+    <div class="card">
+      <label>Fotos <span class="hint" style="display:inline">(hasta 20)</span></label>
+      <input type="file" id="f_fotos" accept="image/*" multiple onchange="prevFotos(event)">
+      <div class="fotos-prev" id="prev"></div>
+    </div>
+
+    <div class="card">
+      <label>Carta / mensaje</label>
+      <textarea id="f_mensaje" maxlength="2000" placeholder="Escribe aquí tu mensaje especial…"></textarea>
+      <div class="hint">Puedes firmar al final, ej: — Alex</div>
+    </div>
+
+    <div class="card">
+      <label>Línea de tiempo <span class="hint" style="display:inline">(momentos importantes)</span></label>
+      <div id="fechas"></div>
+      <button type="button" class="addbtn" onclick="addFecha()">+ Agregar momento</button>
+    </div>
+
+    <div class="card">
+      <label>Nuestros lugares <span class="hint" style="display:inline">(opcional)</span></label>
+      <div id="lugares"></div>
+      <button type="button" class="addbtn" onclick="addLugar()">+ Agregar lugar</button>
+    </div>
+
+    <div class="card">
+      <label>Mensaje de voz <span class="hint" style="display:inline">(opcional · sube un audio)</span></label>
+      <input type="file" id="f_voz" accept="audio/*" onchange="prevVoz(event)">
+      <div class="hint" id="vozName"></div>
+    </div>
+
+    <div class="card">
+      <label>Una última sorpresa <span class="hint" style="display:inline">(opcional · mensaje secreto al final)</span></label>
+      <textarea id="f_sorpresa" maxlength="1000" placeholder="Un mensaje final que se revela al tocar un botón…" style="min-height:90px"></textarea>
+
+      <label style="margin-top:16px">Preguntas para desbloquearla <span class="hint" style="display:inline">(opcional)</span></label>
+      <div class="hint" style="margin-bottom:8px">La persona debe responder bien para ver la sorpresa. Marca con el círculo ⦿ la opción correcta.</div>
+      <div id="preguntas"></div>
+      <button type="button" class="addbtn" onclick="addPregunta()">+ Agregar pregunta</button>
+    </div>
+
+    <div class="msg" id="msg"></div>
+  </form>
+</div>
+
+<div class="bar" id="bar">
+  <button class="btn" id="btnGen" onclick="generar()">Generar mi regalo QR ✨</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="assets/supabase-config.js"></script>
+<script>
+  const TEMAS = [
+    ['madrid','Real Madrid'],['barcelona','Barcelona'],['millonarios','Millonarios'],
+    ['nacional','Atlético Nacional'],['santafe','Santa Fe'],['argentina','Argentina'],['portugal','Portugal'],
+    ['romantica-1','Romántica · Rosa'],['romantica-2','Romántica · Rojo elegante'],['romantica-3','Romántica · Minimal']
+  ];
+  const params = new URLSearchParams(location.search);
+  const REF = params.get('ref') || '';
+  const temaURL = params.get('tema') || '';
+
+  const sb = (typeof supabase!=='undefined' && typeof SUPABASE_URL!=='undefined' && !SUPABASE_URL.includes('TU-PROYECTO'))
+    ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+  // Poblar temas
+  const selTema = document.getElementById('f_tema');
+  selTema.innerHTML = TEMAS.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('');
+  if(temaURL && TEMAS.some(t=>t[0]===temaURL)) selTema.value = temaURL;
+
+  // Línea de tiempo: cada momento con fecha + título + descripción + foto opcional
+  function addFecha(){
+    const d=document.createElement('div');
+    d.className='ev-row';
+    d.innerHTML=`<button type="button" class="del" onclick="this.parentNode.remove()">×</button>
+                 <input placeholder="Fecha (ej: 14 feb 2024)">
+                 <input placeholder="Título (ej: Nuestra primera cita)">
+                 <textarea placeholder="Cuéntalo (opcional)"></textarea>
+                 <label class="evfoto">Foto de este momento (opcional)</label>
+                 <input type="file" accept="image/*" onchange="evFoto(event)">
+                 <img class="evthumb" alt="">`;
+    document.getElementById('fechas').appendChild(d);
+  }
+  async function evFoto(e){
+    const row=e.target.closest('.ev-row'); const f=e.target.files[0];
+    if(!f||!f.type.startsWith('image/')){ row._foto=null; return; }
+    const blob=await resize(f,1280,0.85);
+    row._foto=blob;
+    const img=row.querySelector('.evthumb'); img.src=await blobToDataUrl(blob); img.style.display='block';
+  }
+
+  // Lugares dinámicos
+  function addLugar(){
+    const d=document.createElement('div');
+    d.className='ev-row';
+    d.innerHTML=`<button type="button" class="del" onclick="this.parentNode.remove()">×</button>
+                 <input placeholder="Lugar (ej: Playa en Valencia)">
+                 <input placeholder="Fecha (opcional)">
+                 <textarea placeholder="Qué vivieron ahí (opcional)"></textarea>`;
+    document.getElementById('lugares').appendChild(d);
+  }
+
+  // Preguntas (quiz de la sorpresa)
+  let qCount=0;
+  function addPregunta(){
+    const gid='q'+(qCount++);
+    const d=document.createElement('div');
+    d.className='ev-row';
+    d.innerHTML=`<button type="button" class="del" onclick="this.parentNode.remove()">×</button>
+      <input class="q-text" placeholder="Pregunta (ej: ¿Dónde fue nuestra primera cita?)">
+      <div class="opt-row"><input type="radio" name="${gid}" value="0" checked><input type="text" class="q-opt" placeholder="Opción 1"></div>
+      <div class="opt-row"><input type="radio" name="${gid}" value="1"><input type="text" class="q-opt" placeholder="Opción 2"></div>
+      <div class="opt-row"><input type="radio" name="${gid}" value="2"><input type="text" class="q-opt" placeholder="Opción 3"></div>
+      <div class="hint">Marca el círculo de la respuesta correcta.</div>`;
+    document.getElementById('preguntas').appendChild(d);
+  }
+
+  // Mensaje de voz
+  let vozBlob=null;
+  function prevVoz(e){
+    const f=e.target.files[0];
+    if(!f){ vozBlob=null; document.getElementById('vozName').textContent=''; return; }
+    vozBlob=f; document.getElementById('vozName').textContent='🎙️ '+f.name;
+  }
+
+  // Fotos (redimensionar + preview en memoria)
+  let fotosData = []; // {dataUrl, blob}
+  async function prevFotos(e){
+    const files = [...e.target.files].slice(0, 20 - fotosData.length);
+    for(const f of files){
+      if(!f.type.startsWith('image/')) continue;
+      const blob = await resize(f, 1280, 0.85);
+      const dataUrl = await blobToDataUrl(blob);
+      fotosData.push({dataUrl, blob});
+    }
+    e.target.value='';
+    renderPrev();
+  }
+  function renderPrev(){
+    document.getElementById('prev').innerHTML = fotosData.map((f,i)=>
+      `<div class="fp"><img src="${f.dataUrl}" alt=""><span class="rm" onclick="quitarFoto(${i})">×</span></div>`).join('');
+  }
+  function quitarFoto(i){ fotosData.splice(i,1); renderPrev(); }
+
+  function resize(file, max, q){
+    return new Promise(res=>{
+      const img=new Image(); const url=URL.createObjectURL(file);
+      img.onload=()=>{
+        let {width:w, height:h}=img;
+        if(w>max||h>max){ if(w>h){h=Math.round(h*max/w); w=max;} else {w=Math.round(w*max/h); h=max;} }
+        const c=document.createElement('canvas'); c.width=w; c.height=h;
+        c.getContext('2d').drawImage(img,0,0,w,h);
+        URL.revokeObjectURL(url);
+        c.toBlob(b=>res(b||file), 'image/jpeg', q);
+      };
+      img.onerror=()=>res(file);
+      img.src=url;
+    });
+  }
+  const blobToDataUrl = b => new Promise(r=>{const fr=new FileReader();fr.onload=()=>r(fr.result);fr.readAsDataURL(b);});
+
+  function slug(){ return Math.random().toString(36).slice(2,8)+Math.random().toString(36).slice(2,6); }
+
+  async function generar(){
+    const btn=document.getElementById('btnGen'), msg=document.getElementById('msg');
+    const titulo=document.getElementById('f_titulo').value.trim();
+    if(!titulo){ msg.textContent='Escribe al menos un título 🙂'; return; }
+    if(!sb){ msg.textContent='No se pudo conectar. Intenta de nuevo.'; return; }
+    btn.disabled=true;
+
+    try{
+      const id=slug();
+      const subir=async(blob,path,type)=>{
+        const {error:e}=await sb.storage.from('regalos-fotos').upload(path, blob, {contentType:type,upsert:true});
+        if(e) throw e;
+        return sb.storage.from('regalos-fotos').getPublicUrl(path).data.publicUrl;
+      };
+      // 1) Subir fotos de la galería
+      const urls=[];
+      for(let i=0;i<fotosData.length;i++){
+        msg.textContent=`Subiendo foto ${i+1} de ${fotosData.length}…`;
+        urls.push(await subir(fotosData[i].blob, `${id}/g${i}-${Date.now()}.jpg`, 'image/jpeg'));
+      }
+      // 2) Línea de tiempo (con foto opcional por momento)
+      const fechas=[];
+      const evRows=[...document.querySelectorAll('#fechas .ev-row')];
+      for(const r of evRows){
+        const inp=r.querySelectorAll('input'); const ta=r.querySelector('textarea');
+        const ev={fecha:inp[0].value.trim(), titulo:inp[1].value.trim(), desc:ta.value.trim(), foto:''};
+        if(r._foto){ msg.textContent='Subiendo foto del momento…'; ev.foto=await subir(r._foto, `${id}/ev${fechas.length}-${Date.now()}.jpg`, 'image/jpeg'); }
+        if(ev.fecha||ev.titulo||ev.desc||ev.foto) fechas.push(ev);
+      }
+      // 3) Lugares
+      const lugares=[...document.querySelectorAll('#lugares .ev-row')].map(r=>{
+        const inp=r.querySelectorAll('input'); const ta=r.querySelector('textarea');
+        return {nombre:inp[0].value.trim(), fecha:inp[1].value.trim(), desc:ta.value.trim()};
+      }).filter(l=>l.nombre);
+      // 4) Mensaje de voz
+      let voz='';
+      if(vozBlob){ msg.textContent='Subiendo tu mensaje de voz…'; voz=await subir(vozBlob, `${id}/voz-${Date.now()}`, vozBlob.type||'audio/mpeg'); }
+      // 4b) Preguntas del quiz (quitando opciones vacías y ajustando la correcta)
+      const preguntas=[...document.querySelectorAll('#preguntas .ev-row')].map(r=>{
+        const preg=r.querySelector('.q-text').value.trim();
+        const raw=[...r.querySelectorAll('.q-opt')].map(i=>i.value.trim());
+        const selIdx=+(r.querySelector('input[type=radio]:checked')||{value:0}).value;
+        const opciones=[]; let correcta=0;
+        raw.forEach((o,idx)=>{ if(o){ if(idx===selIdx) correcta=opciones.length; opciones.push(o); } });
+        return {pregunta:preg, opciones, correcta};
+      }).filter(q=>q.pregunta && q.opciones.length>=2);
+      // 5) Guardar
+      msg.textContent='Creando tu regalo…';
+      const {error}=await sb.from('regalos').insert({
+        id, ref:REF, tema:selTema.value, titulo,
+        subtitulo:document.getElementById('f_subtitulo').value.trim(),
+        mensaje:document.getElementById('f_mensaje').value.trim(),
+        cancion:document.getElementById('f_cancion').value.trim(),
+        fecha_inicio:document.getElementById('f_inicio').value||null,
+        fotos:urls, fechas, lugares, voz,
+        sorpresa:document.getElementById('f_sorpresa').value.trim(),
+        preguntas,
+        publicado:true
+      });
+      if(error) throw error;
+      exito(id);
+    }catch(err){
+      msg.textContent='Ups, algo falló: '+(err.message||err)+'. Intenta de nuevo.';
+      btn.disabled=false;
+    }
+  }
+
+  function exito(id){
+    const link = location.origin + '/regalo.html?id=' + id;
+    document.getElementById('bar').style.display='none';
+    document.getElementById('wrap').innerHTML = `
+      <div class="brand">DAVFOOR <span class="g">LEGEND</span></div>
+      <div class="ok card">
+        <div class="check">✓</div>
+        <h1>¡Tu regalo está listo! 🎁</h1>
+        <p class="lead">Escanea o comparte el QR. Nunca caduca.</p>
+        <div id="qrbox"></div>
+        <div class="linkbox">
+          <input id="lnk" value="${link}" readonly>
+          <button class="btn2" onclick="copiar()">Copiar</button>
+        </div>
+        <div class="acts">
+          <a class="btn2 g" href="${link}" target="_blank" rel="noopener">Ver mi regalo</a>
+          <button class="btn2" onclick="descargarQR()">Descargar QR</button>
+          <a class="btn2 wa" href="https://wa.me/?text=${encodeURIComponent('Te tengo un regalo especial ❤️ '+link)}" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+        </div>
+        <p class="hint" style="margin-top:14px">Guarda este enlace. Si pediste la placa física, nosotros imprimimos este QR y te lo enviamos.</p>
+      </div>`;
+    new QRCode(document.getElementById('qrbox'), {text:link, width:200, height:200, correctLevel:QRCode.CorrectLevel.H});
+    window.scrollTo(0,0);
+  }
+  function copiar(){ const i=document.getElementById('lnk'); i.select(); document.execCommand('copy'); }
+  function descargarQR(){
+    const c=document.querySelector('#qrbox canvas'); if(!c) return;
+    const a=document.createElement('a'); a.href=c.toDataURL('image/png'); a.download='mi-regalo-qr.png'; a.click();
+  }
+
+  // Arranca con una fila de fecha vacía
+  addFecha();
+</script>
+</body>
+</html>
