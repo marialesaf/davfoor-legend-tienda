@@ -131,6 +131,19 @@
   .lb img{max-width:100%;max-height:90vh;border-radius:12px}
   .lb .x{position:absolute;top:16px;right:22px;font-size:34px;color:#fff;cursor:pointer;line-height:1}
 
+  /* Modal sorpresa tipo ticket */
+  .smodal{position:fixed;inset:0;background:rgba(40,12,14,.72);z-index:60;display:none;align-items:center;justify-content:center;padding:26px}
+  .smodal.on{display:flex}
+  .ticket{position:relative;background:#fffdf8;border-radius:18px;max-width:330px;width:100%;padding:28px 26px 26px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.45);animation:pop .45s cubic-bezier(.2,1.25,.4,1)}
+  @keyframes pop{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+  .ticket .tk-top{font-family:'Great Vibes',cursive;font-size:38px;color:var(--accent);line-height:1}
+  .ticket .perf{border-top:2px dashed var(--line);margin:18px -26px;position:relative}
+  .ticket .perf::before,.ticket .perf::after{content:"";position:absolute;top:-14px;width:28px;height:28px;border-radius:50%;background:#330f11}
+  .ticket .perf::before{left:-14px}
+  .ticket .perf::after{right:-14px}
+  .ticket .tk-msg{font-size:18px;line-height:1.75;color:var(--accent);white-space:pre-wrap;font-family:'Montserrat',sans-serif}
+  .ticket .tk-cls{margin-top:20px;background:var(--accent);color:#fff;border:0;border-radius:30px;padding:11px 26px;font-weight:600;font-size:13px;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;font-family:inherit}
+
   .loading,.err{text-align:center;padding:90px 20px;color:var(--muted)}
   .err h1{font-family:'Great Vibes',cursive;font-size:44px;color:var(--accent);margin-bottom:8px}
 </style>
@@ -142,20 +155,21 @@
 
 <div class="lb" id="lb" onclick="this.classList.remove('on')"><span class="x">&times;</span><img id="lbImg" alt=""></div>
 
+<div class="smodal" id="sorpresaModal">
+  <div class="ticket">
+    <div class="tk-top">Una sorpresa<br>para ti</div>
+    <div class="perf"></div>
+    <div class="tk-msg" id="tkMsg"></div>
+    <button class="tk-cls" onclick="cerrarSorpresa()">Cerrar</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script src="assets/supabase-config.js"></script>
 <script>
   const TEMAS = {
-    'madrid':      {crest:'RM',  accent:'#0a3d7a', accent2:'#c9a227', muted:'#6f86a8'},
-    'barcelona':   {crest:'FCB', accent:'#7a0b35', accent2:'#1a4a8a', muted:'#b06b84'},
-    'millonarios': {crest:'MFC', accent:'#00387a', accent2:'#2f6ea8', muted:'#6b84a8'},
-    'nacional':    {crest:'AN',  accent:'#0a6b34', accent2:'#2e8b4f', muted:'#6ba882'},
-    'santafe':     {crest:'ISF', accent:'#b00f24', accent2:'#d3122a', muted:'#c07b84'},
-    'argentina':   {crest:'ARG', accent:'#2f6ea8', accent2:'#5b9bd0', muted:'#7ba0c0'},
-    'portugal':    {crest:'POR', accent:'#9c0a22', accent2:'#0a6b34', muted:'#c07b84'},
-    'romantica-1': {crest:'',    accent:'#c23a6b', accent2:'#e07ba0', muted:'#cf8fa8'},
-    'romantica-2': {crest:'',    accent:'#8e1414', accent2:'#a8443b', muted:'#b06b5e'},
-    'romantica-3': {crest:'',    accent:'#8a6f52', accent2:'#b4916a', muted:'#b39a80'}
+    'romantica-2': {crest:'', accent:'#8e1414', accent2:'#a8443b', muted:'#b06b5e'}
   };
 
   const sb = (typeof supabase!=='undefined' && typeof SUPABASE_URL!=='undefined' && !SUPABASE_URL.includes('TU-PROYECTO'))
@@ -281,6 +295,7 @@
     const preguntas = Array.isArray(d.preguntas)? d.preguntas.filter(p=>p && p.pregunta) : [];
     window._preguntas = preguntas;
     if(d.sorpresa){
+      window._sorpresa = d.sorpresa;
       let s = `<div class="sec sorpresa" style="position:relative">${head('','Una última sorpresa')}<p>Pensabas que el regalo había terminado…</p>`;
       if(preguntas.length){
         s += `<p>Responde bien para desbloquearla 👇</p><div class="quiz" id="quiz">${
@@ -288,10 +303,9 @@
             (p.opciones||[]).map((o,oi)=>`<button type="button" class="opt" data-q="${qi}" data-o="${oi}" onclick="elegirOpt(${qi},${oi})">${esc(o)}</button>`).join('')
           }</div>`).join('')
         }</div><div class="quiz-msg" id="quizMsg"></div>
-        <button class="rev" id="revBtn" onclick="checarQuiz()">Desbloquear sorpresa 🔓</button>
-        <div class="txt" id="sorpresaTxt">${esc(d.sorpresa)}</div>`;
+        <button class="rev" id="revBtn" onclick="checarQuiz()">Desbloquear sorpresa 🔓</button>`;
       } else {
-        s += `<button class="rev" onclick="this.nextElementSibling.classList.add('on');this.style.display='none'">Descubre la sorpresa</button><div class="txt">${esc(d.sorpresa)}</div>`;
+        s += `<button class="rev" onclick="abrirSorpresa()">Descubre la sorpresa</button>`;
       }
       html += s + `</div>`;
     }
@@ -325,6 +339,10 @@
     audio.onended=()=>{ btn.textContent='▶'; wave.classList.remove('playing'); };
     // retraso aleatorio en cada barra de la onda (se mueve mientras suena)
     wave.querySelectorAll('span').forEach(s=>s.style.animationDelay=(Math.random()*0.8).toFixed(2)+'s');
+    // Intento de reproducción automática: arranca al primer toque/scroll (los navegadores no dejan antes).
+    audio.play().catch(()=>{});
+    const go=()=>{ if(audio.paused) audio.play().catch(()=>{}); };
+    ['touchstart','pointerdown','click','scroll','keydown'].forEach(ev=>window.addEventListener(ev, go, {once:true, passive:true}));
   }
 
   // Carrusel con puntos + auto-avance
@@ -366,12 +384,30 @@
     if(todasBien){
       document.getElementById('quiz').style.display='none';
       document.getElementById('revBtn').style.display='none';
-      msg.textContent='¡Correcto! Aquí está tu sorpresa 💝';
-      document.getElementById('sorpresaTxt').classList.add('on');
+      msg.textContent='¡Correcto! 💝';
+      abrirSorpresa();
     } else {
       preguntas.forEach((p,qi)=>{ const sel=window._resp[qi]; if(sel!==undefined && sel!==p.correcta){ const b=document.querySelector(`.quiz .opt[data-q="${qi}"][data-o="${sel}"]`); if(b){b.classList.remove('sel');b.classList.add('bad');} } });
       msg.textContent='¡Casi! Revisa las respuestas en rojo e inténtalo otra vez 😊';
     }
+  }
+
+  function abrirSorpresa(){
+    document.getElementById('tkMsg').textContent = window._sorpresa || '';
+    document.getElementById('sorpresaModal').classList.add('on');
+    lanzarConfeti();
+  }
+  function cerrarSorpresa(){ document.getElementById('sorpresaModal').classList.remove('on'); }
+  function lanzarConfeti(){
+    if(typeof confetti!=='function') return;
+    const cols=['#8e1414','#a8443b','#d4af37','#ff6b9d','#ffffff'];
+    confetti({particleCount:130, spread:85, origin:{y:.5}, colors:cols, zIndex:9999});
+    const fin=Date.now()+1600;
+    (function frame(){
+      confetti({particleCount:6, angle:60, spread:60, origin:{x:0}, colors:cols, zIndex:9999});
+      confetti({particleCount:6, angle:120, spread:60, origin:{x:1}, colors:cols, zIndex:9999});
+      if(Date.now()<fin) requestAnimationFrame(frame);
+    })();
   }
 
   async function cargar(){

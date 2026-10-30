@@ -64,10 +64,6 @@
 
   <form id="form" onsubmit="return false">
     <div class="card">
-      <label>Tema / plantilla</label>
-      <select id="f_tema"></select>
-      <div class="hint">Elige el equipo o la plantilla romántica.</div>
-
       <label>Título <span class="hint" style="display:inline">(nombres o dedicatoria)</span></label>
       <input id="f_titulo" maxlength="60" placeholder="Ej: Ale & Juan">
 
@@ -162,22 +158,12 @@
 <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
 <script src="assets/supabase-config.js"></script>
 <script>
-  const TEMAS = [
-    ['madrid','Real Madrid'],['barcelona','Barcelona'],['millonarios','Millonarios'],
-    ['nacional','Atlético Nacional'],['santafe','Santa Fe'],['argentina','Argentina'],['portugal','Portugal'],
-    ['romantica-1','Romántica · Rosa'],['romantica-2','Romántica · Rojo elegante'],['romantica-3','Romántica · Minimal']
-  ];
   const params = new URLSearchParams(location.search);
   const REF = params.get('ref') || '';
-  const temaURL = params.get('tema') || '';
+  const TEMA = 'romantica-2'; // único diseño
 
   const sb = (typeof supabase!=='undefined' && typeof SUPABASE_URL!=='undefined' && !SUPABASE_URL.includes('TU-PROYECTO'))
     ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
-
-  // Poblar temas
-  const selTema = document.getElementById('f_tema');
-  selTema.innerHTML = TEMAS.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('');
-  if(temaURL && TEMAS.some(t=>t[0]===temaURL)) selTema.value = temaURL;
 
   // Línea de tiempo: cada momento con fecha + título + descripción + foto opcional
   function addFecha(){
@@ -359,7 +345,7 @@
       // 5) Guardar
       msg.textContent='Creando tu regalo…';
       const {error}=await sb.from('regalos').insert({
-        id, ref:REF, tema:selTema.value, titulo,
+        id, ref:REF, tema:TEMA, titulo,
         subtitulo:document.getElementById('f_subtitulo').value.trim(),
         mensaje:document.getElementById('f_mensaje').value.trim(),
         cancion:document.getElementById('f_cancion').value.trim(),
