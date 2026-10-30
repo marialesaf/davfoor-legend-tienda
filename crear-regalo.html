@@ -76,12 +76,19 @@
 
       <label>¿Desde cuándo están juntos? <span class="hint" style="display:inline">(para el contador de días)</span></label>
       <input type="date" id="f_inicio">
+
+      <label>¿Dónde empezó todo? <span class="hint" style="display:inline">(opcional)</span></label>
+      <input id="f_lugarinicio" maxlength="40" placeholder="Ej: Tunja">
     </div>
 
     <div class="card">
-      <label>Canción <span class="hint" style="display:inline">(link de Spotify o YouTube)</span></label>
+      <label>Canción — sube el audio <span class="hint" style="display:inline">(para el disco que gira)</span></label>
+      <input type="file" id="f_cancionaudio" accept="audio/*" onchange="prevCancion(event)">
+      <div class="hint" id="cancionName">El disco gira y suena al darle play. Sube un MP3 de la canción.</div>
+
+      <label style="margin-top:14px">…o pega un link <span class="hint" style="display:inline">(Spotify / YouTube, alternativa)</span></label>
       <input id="f_cancion" placeholder="https://open.spotify.com/track/…">
-      <div class="hint">Copia el enlace de la canción desde Spotify o YouTube.</div>
+      <div class="hint">Si subes el audio, el disco gira. Si solo pegas el link, se muestra el reproductor de Spotify/YouTube.</div>
     </div>
 
     <div class="card">
@@ -207,6 +214,13 @@
     if(!f){ vozBlob=null; document.getElementById('vozName').textContent=''; return; }
     vozBlob=f; document.getElementById('vozName').textContent='🎙️ '+f.name;
   }
+  // Canción (audio)
+  let cancionBlob=null;
+  function prevCancion(e){
+    const f=e.target.files[0];
+    if(!f){ cancionBlob=null; document.getElementById('cancionName').textContent='El disco gira y suena al darle play. Sube un MP3 de la canción.'; return; }
+    cancionBlob=f; document.getElementById('cancionName').textContent='🎵 '+f.name;
+  }
 
   // Fotos (redimensionar + preview en memoria)
   let fotosData = []; // {dataUrl, blob}
@@ -280,9 +294,11 @@
         const inp=r.querySelectorAll('input'); const ta=r.querySelector('textarea');
         return {nombre:inp[0].value.trim(), fecha:inp[1].value.trim(), desc:ta.value.trim()};
       }).filter(l=>l.nombre);
-      // 4) Mensaje de voz
+      // 4) Mensaje de voz + canción (audio)
       let voz='';
       if(vozBlob){ msg.textContent='Subiendo tu mensaje de voz…'; voz=await subir(vozBlob, `${id}/voz-${Date.now()}`, vozBlob.type||'audio/mpeg'); }
+      let cancionAudio='';
+      if(cancionBlob){ msg.textContent='Subiendo la canción…'; cancionAudio=await subir(cancionBlob, `${id}/cancion-${Date.now()}`, cancionBlob.type||'audio/mpeg'); }
       // 4b) Preguntas del quiz (quitando opciones vacías y ajustando la correcta)
       const preguntas=[...document.querySelectorAll('#preguntas .ev-row')].map(r=>{
         const preg=r.querySelector('.q-text').value.trim();
@@ -299,7 +315,9 @@
         subtitulo:document.getElementById('f_subtitulo').value.trim(),
         mensaje:document.getElementById('f_mensaje').value.trim(),
         cancion:document.getElementById('f_cancion').value.trim(),
+        cancion_audio:cancionAudio,
         fecha_inicio:document.getElementById('f_inicio').value||null,
+        lugar_inicio:document.getElementById('f_lugarinicio').value.trim(),
         fotos:urls, fechas, lugares, voz,
         sorpresa:document.getElementById('f_sorpresa').value.trim(),
         preguntas,
