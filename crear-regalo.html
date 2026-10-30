@@ -92,7 +92,13 @@
     </div>
 
     <div class="card">
-      <label>Fotos <span class="hint" style="display:inline">(hasta 20)</span></label>
+      <label>Foto de portada <span class="hint" style="display:inline">(la principal — va arriba y en el disco)</span></label>
+      <input type="file" id="f_portada" accept="image/*" onchange="prevPortada(event)">
+      <div class="fotos-prev" id="prevPortada"></div>
+    </div>
+
+    <div class="card">
+      <label>Fotos de la galería <span class="hint" style="display:inline">(hasta 20)</span></label>
       <input type="file" id="f_fotos" accept="image/*" multiple onchange="prevFotos(event)">
       <div class="fotos-prev" id="prev"></div>
     </div>
@@ -131,6 +137,18 @@
       <button type="button" class="addbtn" onclick="addPregunta()">+ Agregar pregunta</button>
     </div>
 
+    <div class="card">
+      <label>Foto del final <span class="hint" style="display:inline">(la foto grande del cierre)</span></label>
+      <input type="file" id="f_cierre" accept="image/*" onchange="prevCierre(event)">
+      <div class="fotos-prev" id="prevCierre"></div>
+
+      <label style="margin-top:14px">Nombre sobre la foto <span class="hint" style="display:inline">(en cursiva, ej: Santi y Aleja)</span></label>
+      <input id="f_cierretitulo" maxlength="40" placeholder="Ej: Santi y Aleja">
+
+      <label>Frase del final <span class="hint" style="display:inline">(va en mayúscula)</span></label>
+      <input id="f_cierresub" maxlength="60" placeholder="Ej: Para Santi con todo mi amor">
+    </div>
+
     <div class="msg" id="msg"></div>
   </form>
 </div>
@@ -141,6 +159,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
 <script src="assets/supabase-config.js"></script>
 <script>
   const TEMAS = [
@@ -175,8 +194,8 @@
   }
   async function evFoto(e){
     const row=e.target.closest('.ev-row'); const f=e.target.files[0];
-    if(!f||!f.type.startsWith('image/')){ row._foto=null; return; }
-    const blob=await resize(f,1280,0.85);
+    if(!f){ row._foto=null; return; }
+    const blob=await prepararFoto(f);
     row._foto=blob;
     const img=row.querySelector('.evthumb'); img.src=await blobToDataUrl(blob); img.style.display='block';
   }
@@ -222,18 +241,44 @@
     cancionBlob=f; document.getElementById('cancionName').textContent='🎵 '+f.name;
   }
 
+  // Convierte HEIC (iPhone) a JPG para que se vea en cualquier navegador
+  async function aJpeg(file){
+    const esHeic = /heic|heif/i.test(file.type) || /\.(heic|heif)$/i.test(file.name);
+    if(esHeic && typeof heic2any!=='undefined'){
+      try{ const r = await heic2any({blob:file, toType:'image/jpeg', quality:0.9}); return Array.isArray(r)?r[0]:r; }
+      catch(e){ return file; }
+    }
+    return file;
+  }
+  async function prepararFoto(file){ return resize(await aJpeg(file), 1280, 0.85); }
+
   // Fotos (redimensionar + preview en memoria)
   let fotosData = []; // {dataUrl, blob}
   async function prevFotos(e){
     const files = [...e.target.files].slice(0, 20 - fotosData.length);
     for(const f of files){
-      if(!f.type.startsWith('image/')) continue;
-      const blob = await resize(f, 1280, 0.85);
+      if(!(f.type.startsWith('image/')||/\.(heic|heif)$/i.test(f.name))) continue;
+      const blob = await prepararFoto(f);
       const dataUrl = await blobToDataUrl(blob);
       fotosData.push({dataUrl, blob});
     }
     e.target.value='';
     renderPrev();
+  }
+
+  // Foto de portada y de cierre (una sola cada una)
+  let portadaBlob=null, cierreBlob=null;
+  async function prevPortada(e){
+    const f=e.target.files[0]; if(!f) return;
+    portadaBlob=await prepararFoto(f);
+    document.getElementById('prevPortada').innerHTML=`<div class="fp"><img src="${await blobToDataUrl(portadaBlob)}" alt=""></div>`;
+    e.target.value='';
+  }
+  async function prevCierre(e){
+    const f=e.target.files[0]; if(!f) return;
+    cierreBlob=await prepararFoto(f);
+    document.getElementById('prevCierre').innerHTML=`<div class="fp"><img src="${await blobToDataUrl(cierreBlob)}" alt=""></div>`;
+    e.target.value='';
   }
   function renderPrev(){
     document.getElementById('prev').innerHTML = fotosData.map((f,i)=>
@@ -274,7 +319,10 @@
         if(e) throw e;
         return sb.storage.from('regalos-fotos').getPublicUrl(path).data.publicUrl;
       };
-      // 1) Subir fotos de la galería
+      // 1) Portada, cierre y fotos de la galería
+      let portadaUrl='', cierreUrl='';
+      if(portadaBlob){ msg.textContent='Subiendo la portada…'; portadaUrl=await subir(portadaBlob, `${id}/portada-${Date.now()}.jpg`, 'image/jpeg'); }
+      if(cierreBlob){ msg.textContent='Subiendo la foto del final…'; cierreUrl=await subir(cierreBlob, `${id}/cierre-${Date.now()}.jpg`, 'image/jpeg'); }
       const urls=[];
       for(let i=0;i<fotosData.length;i++){
         msg.textContent=`Subiendo foto ${i+1} de ${fotosData.length}…`;
@@ -318,6 +366,9 @@
         cancion_audio:cancionAudio,
         fecha_inicio:document.getElementById('f_inicio').value||null,
         lugar_inicio:document.getElementById('f_lugarinicio').value.trim(),
+        foto_portada:portadaUrl, foto_cierre:cierreUrl,
+        cierre_titulo:document.getElementById('f_cierretitulo').value.trim(),
+        cierre_sub:document.getElementById('f_cierresub').value.trim(),
         fotos:urls, fechas, lugares, voz,
         sorpresa:document.getElementById('f_sorpresa').value.trim(),
         preguntas,
