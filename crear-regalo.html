@@ -36,6 +36,9 @@
   .opt-row input[type=radio]{width:20px;height:20px;flex:0 0 auto;accent-color:var(--green);margin:0}
   .opt-row input[type=text]{margin-bottom:0}
   .addbtn{background:transparent;border:1px dashed var(--line);color:var(--green);border-radius:10px;padding:10px;width:100%;cursor:pointer;font-size:14px;margin-top:4px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .chip{background:#0e0e0e;border:1px solid var(--line);color:#e8e8e8;border-radius:30px;padding:8px 13px;font-size:12.5px;cursor:pointer}
+  .chip:hover{border-color:var(--green);color:var(--green)}
   .fotos-prev{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
   .fotos-prev .fp{position:relative;aspect-ratio:1/1}
   .fotos-prev img{width:100%;height:100%;object-fit:cover;border-radius:10px}
@@ -128,9 +131,10 @@
       <textarea id="f_sorpresa" maxlength="1000" placeholder="Un mensaje final que se revela al tocar un botón…" style="min-height:90px"></textarea>
 
       <label style="margin-top:16px">Preguntas para desbloquearla <span class="hint" style="display:inline">(opcional)</span></label>
-      <div class="hint" style="margin-bottom:8px">La persona debe responder bien para ver la sorpresa. Marca con el círculo ⦿ la opción correcta.</div>
+      <div class="hint" style="margin-bottom:8px">Toca una pregunta sugerida o agrega las tuyas. Marca con el círculo ⦿ la opción correcta.</div>
+      <div class="chips" id="sugeridas"></div>
       <div id="preguntas"></div>
-      <button type="button" class="addbtn" onclick="addPregunta()">+ Agregar pregunta</button>
+      <button type="button" class="addbtn" onclick="addPregunta()">+ Agregar pregunta propia</button>
     </div>
 
     <div class="card">
@@ -182,6 +186,7 @@
     const row=e.target.closest('.ev-row'); const f=e.target.files[0];
     if(!f){ row._foto=null; return; }
     const blob=await prepararFoto(f);
+    if(!blob){ row._foto=null; document.getElementById('msg').textContent='⚠️ Esa foto (HEIC) no se pudo convertir. Guárdala como JPG e inténtalo.'; return; }
     row._foto=blob;
     const img=row.querySelector('.evthumb'); img.src=await blobToDataUrl(blob); img.style.display='block';
   }
@@ -199,18 +204,35 @@
 
   // Preguntas (quiz de la sorpresa)
   let qCount=0;
-  function addPregunta(){
+  function addPregunta(texto){
     const gid='q'+(qCount++);
     const d=document.createElement('div');
     d.className='ev-row';
     d.innerHTML=`<button type="button" class="del" onclick="this.parentNode.remove()">×</button>
-      <input class="q-text" placeholder="Pregunta (ej: ¿Dónde fue nuestra primera cita?)">
+      <input class="q-text" value="${(texto||'').replace(/"/g,'&quot;')}" placeholder="Pregunta (ej: ¿Dónde fue nuestra primera cita?)">
       <div class="opt-row"><input type="radio" name="${gid}" value="0" checked><input type="text" class="q-opt" placeholder="Opción 1"></div>
       <div class="opt-row"><input type="radio" name="${gid}" value="1"><input type="text" class="q-opt" placeholder="Opción 2"></div>
       <div class="opt-row"><input type="radio" name="${gid}" value="2"><input type="text" class="q-opt" placeholder="Opción 3"></div>
-      <div class="hint">Marca el círculo de la respuesta correcta.</div>`;
+      <div class="hint">Escribe las opciones y marca el círculo de la respuesta correcta.</div>`;
     document.getElementById('preguntas').appendChild(d);
+    d.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
+  // Preguntas sugeridas (se tocan para agregarlas ya escritas)
+  const SUGERIDAS = [
+    '¿Dónde fue nuestra primera cita?',
+    '¿En qué fecha nos conocimos?',
+    '¿Cuál es nuestra canción?',
+    '¿Cuál es mi comida favorita?',
+    '¿A dónde fue nuestro primer viaje?',
+    '¿Cómo me dices de cariño?',
+    '¿Cuál es mi color favorito?',
+    '¿Cuál es mi película favorita?',
+    '¿Cuántos años llevamos juntos?'
+  ];
+  (function(){
+    const c=document.getElementById('sugeridas');
+    if(c) c.innerHTML = SUGERIDAS.map(q=>`<span class="chip" onclick="addPregunta('${q.replace(/'/g,"\\'")}')">${q}</span>`).join('');
+  })();
 
   // Mensaje de voz
   let vozBlob=null;
@@ -227,28 +249,37 @@
     cancionBlob=f; document.getElementById('cancionName').textContent='🎵 '+f.name;
   }
 
-  // Convierte HEIC (iPhone) a JPG para que se vea en cualquier navegador
+  // Convierte HEIC (iPhone) a JPG. Devuelve null si no se pudo convertir.
   async function aJpeg(file){
     const esHeic = /heic|heif/i.test(file.type) || /\.(heic|heif)$/i.test(file.name);
-    if(esHeic && typeof heic2any!=='undefined'){
-      try{ const r = await heic2any({blob:file, toType:'image/jpeg', quality:0.9}); return Array.isArray(r)?r[0]:r; }
-      catch(e){ return file; }
+    if(esHeic){
+      if(typeof heic2any==='undefined') return null;
+      try{ const r = await heic2any({blob:file, toType:'image/jpeg', quality:0.9}); const b=Array.isArray(r)?r[0]:r; return (b&&b.size)?b:null; }
+      catch(e){ return null; }
     }
     return file;
   }
-  async function prepararFoto(file){ return resize(await aJpeg(file), 1280, 0.85); }
+  async function prepararFoto(file){
+    const j = await aJpeg(file); if(!j) return null;
+    const b = await resize(j, 1280, 0.85);
+    if(b && /heic|heif/i.test(b.type||'')) return null; // por si acaso siguió en HEIC
+    return b;
+  }
 
   // Fotos (redimensionar + preview en memoria)
   let fotosData = []; // {dataUrl, blob}
   async function prevFotos(e){
     const files = [...e.target.files].slice(0, 20 - fotosData.length);
+    let fallidas=0;
     for(const f of files){
       if(!(f.type.startsWith('image/')||/\.(heic|heif)$/i.test(f.name))) continue;
       const blob = await prepararFoto(f);
+      if(!blob){ fallidas++; continue; }
       const dataUrl = await blobToDataUrl(blob);
       fotosData.push({dataUrl, blob});
     }
     e.target.value='';
+    if(fallidas) document.getElementById('msg').textContent='⚠️ '+fallidas+' foto(s) del iPhone (HEIC) no se pudieron convertir. Ábrelas y vuelve a guardarlas como JPG (o haz captura de pantalla) y súbelas de nuevo.';
     renderPrev();
   }
 
@@ -256,15 +287,17 @@
   let portadaBlob=null, cierreBlob=null;
   async function prevPortada(e){
     const f=e.target.files[0]; if(!f) return;
-    portadaBlob=await prepararFoto(f);
-    document.getElementById('prevPortada').innerHTML=`<div class="fp"><img src="${await blobToDataUrl(portadaBlob)}" alt=""></div>`;
-    e.target.value='';
+    const b=await prepararFoto(f); e.target.value='';
+    if(!b){ document.getElementById('msg').textContent='⚠️ Esa foto (HEIC) no se pudo convertir. Guárdala como JPG.'; return; }
+    portadaBlob=b;
+    document.getElementById('prevPortada').innerHTML=`<div class="fp"><img src="${await blobToDataUrl(b)}" alt=""></div>`;
   }
   async function prevCierre(e){
     const f=e.target.files[0]; if(!f) return;
-    cierreBlob=await prepararFoto(f);
-    document.getElementById('prevCierre').innerHTML=`<div class="fp"><img src="${await blobToDataUrl(cierreBlob)}" alt=""></div>`;
-    e.target.value='';
+    const b=await prepararFoto(f); e.target.value='';
+    if(!b){ document.getElementById('msg').textContent='⚠️ Esa foto (HEIC) no se pudo convertir. Guárdala como JPG.'; return; }
+    cierreBlob=b;
+    document.getElementById('prevCierre').innerHTML=`<div class="fp"><img src="${await blobToDataUrl(b)}" alt=""></div>`;
   }
   function renderPrev(){
     document.getElementById('prev').innerHTML = fotosData.map((f,i)=>

@@ -254,7 +254,7 @@
     // 3) GALERÍA (carrusel)
     if(galeria.length){
       html += `<div class="sec" style="position:relative">${head('Galería','Momentos que no se olvidan')}
-        <div class="carrusel" id="carrusel">${galeria.map(u=>`<div class="slide"><img src="${esc(u)}" alt="" onclick="abrirFoto('${esc(u)}')"></div>`).join('')}</div>
+        <div class="carrusel" id="carrusel">${galeria.map(u=>`<div class="slide"><img src="${esc(u)}" alt="" onclick="abrirFoto('${esc(u)}')" onerror="this.closest('.slide').remove()"></div>`).join('')}</div>
         <div class="dots" id="dots">${galeria.map((_,i)=>`<i class="${i===0?'on':''}"></i>`).join('')}</div></div>`;
     }
 
@@ -275,7 +275,7 @@
       html += `<div class="sec" style="position:relative">
         
         <div class="tl">${
-          fechas.map(f=>`<div class="ev">${f.fecha?`<div class="f">📅 ${esc(f.fecha)}</div>`:''}${f.titulo?`<div class="st">${esc(f.titulo)}</div>`:''}${f.foto?`<div class="polaroid"><img src="${esc(f.foto)}" alt="" onclick="abrirFoto('${esc(f.foto)}')"></div>`:''}${f.desc?`<div class="st" style="margin-top:10px">${esc(f.desc)}</div>`:''}</div>`).join('')
+          fechas.map(f=>`<div class="ev">${f.fecha?`<div class="f">📅 ${esc(f.fecha)}</div>`:''}${f.titulo?`<div class="st">${esc(f.titulo)}</div>`:''}${f.foto?`<div class="polaroid"><img src="${esc(f.foto)}" alt="" onclick="abrirFoto('${esc(f.foto)}')" onerror="this.closest('.polaroid').remove()"></div>`:''}${f.desc?`<div class="st" style="margin-top:10px">${esc(f.desc)}</div>`:''}</div>`).join('')
         }</div></div>`;
     }
 
