@@ -164,6 +164,7 @@
 <script>
   const params = new URLSearchParams(location.search);
   const REF = params.get('ref') || '';
+  const PLACA = params.get('placa') || '';
   const TEMA = 'romantica-2'; // único diseño
 
   const sb = (typeof supabase!=='undefined' && typeof SUPABASE_URL!=='undefined' && !SUPABASE_URL.includes('TU-PROYECTO'))
@@ -388,6 +389,7 @@
         foto_portada:portadaUrl, foto_cierre:cierreUrl,
         cierre_titulo:document.getElementById('f_cierretitulo').value.trim(),
         cierre_sub:document.getElementById('f_cierresub').value.trim(),
+        placa:PLACA,
         fotos:urls, fechas, lugares, voz,
         sorpresa:document.getElementById('f_sorpresa').value.trim(),
         preguntas,
