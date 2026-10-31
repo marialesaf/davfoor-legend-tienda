@@ -205,6 +205,7 @@
     <aside class="sidebar" id="nav">
       <b class="active" data-s="resumen" onclick="setSection(this)">🏠 Resumen</b>
       <b data-s="pedidos" onclick="setSection(this)">📋 Pedidos</b>
+      <b data-s="regalos" onclick="setSection(this)">🎁 Regalos QR</b>
       <b data-s="venta" onclick="setSection(this)">💬 Venta WhatsApp</b>
       <b data-s="stats" onclick="setSection(this)">📊 Estadísticas</b>
       <b data-s="inv" onclick="setSection(this)">📦 Inventario</b>
@@ -233,6 +234,18 @@
       </div>
       <div class="subbar" id="subbar"></div>
       <div class="list" id="list"></div>
+    </div>
+
+    <!-- SECCIÓN REGALOS QR -->
+    <div id="sec-regalos" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+        <div>
+          <h3 style="font-size:16px;margin-bottom:2px">🎁 Regalos QR creados</h3>
+          <div style="font-size:12.5px;color:var(--muted)">Descarga el QR para imprimir la placa. Link para WhatsApp: <b style="color:#fff">davfoorlegend.com/crear-regalo</b></div>
+        </div>
+        <button onclick="loadRegalos()" style="background:#1b1b1b;border:1px solid var(--line);color:#fff;border-radius:10px;padding:10px 14px;cursor:pointer;font-size:13px;font-weight:600">↻ Actualizar</button>
+      </div>
+      <div id="regGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px"></div>
     </div>
 
     <!-- SECCIÓN VENTA WHATSAPP -->
@@ -317,6 +330,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="assets/productos.js"></script>
 <script src="assets/supabase-config.js"></script>
 <script>
@@ -355,12 +369,46 @@
   function setSection(el){
     document.querySelectorAll('#nav b').forEach(b=>b.classList.remove('active')); el.classList.add('active');
     seccion=el.dataset.s;
-    ['resumen','pedidos','venta','stats','inv','nuevo'].forEach(s=>document.getElementById('sec-'+s).style.display = (s===seccion?'block':'none'));
+    ['resumen','pedidos','regalos','venta','stats','inv','nuevo'].forEach(s=>document.getElementById('sec-'+s).style.display = (s===seccion?'block':'none'));
     if(seccion==='resumen') renderResumen();
     if(seccion==='stats') renderStats();
     if(seccion==='inv') loadStock();
     if(seccion==='nuevo') initNuevo();
     if(seccion==='venta') initVenta();
+    if(seccion==='regalos') loadRegalos();
+  }
+
+  // ---- REGALOS QR ----
+  async function loadRegalos(){
+    const grid=document.getElementById('regGrid');
+    grid.innerHTML='<div style="color:var(--muted);padding:20px">Cargando…</div>';
+    const {data,error}=await sb.from('regalos').select('id,creado,titulo,ref').order('creado',{ascending:false});
+    if(error){ grid.innerHTML='<div style="color:var(--muted);padding:20px">No se pudieron cargar los regalos.</div>'; return; }
+    if(!data||!data.length){ grid.innerHTML='<div style="color:var(--muted);padding:20px">Aún no hay regalos creados.</div>'; return; }
+    grid.innerHTML='';
+    data.forEach(r=>{
+      const link=location.origin+'/regalo.html?id='+r.id;
+      const f=r.creado? new Date(r.creado).toLocaleDateString('es-CO'):'';
+      const card=document.createElement('div');
+      card.style.cssText='background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center';
+      card.innerHTML=`<div style="font-weight:700;font-size:14px">${(r.titulo||'(sin título)').replace(/[<>]/g,'')}</div>
+        <div style="font-size:12px;color:var(--muted);margin:2px 0 10px">${f}${r.ref?' · '+r.ref:''}</div>
+        <div class="qrb" style="background:#fff;display:inline-block;padding:10px;border-radius:10px"></div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px">
+          <a href="${link}" target="_blank" rel="noopener" style="background:var(--green);color:#042;border-radius:9px;padding:9px 12px;font-size:12.5px;font-weight:700;text-decoration:none">Ver</a>
+          <button onclick="descargarQR('${r.id}')" style="background:#1b1b1b;border:1px solid var(--line);color:#fff;border-radius:9px;padding:9px 12px;cursor:pointer;font-size:12.5px;font-weight:600">Descargar QR</button>
+          <button onclick="navigator.clipboard.writeText('${link}')" style="background:#1b1b1b;border:1px solid var(--line);color:#fff;border-radius:9px;padding:9px 12px;cursor:pointer;font-size:12.5px;font-weight:600">Copiar link</button>
+        </div>`;
+      grid.appendChild(card);
+      new QRCode(card.querySelector('.qrb'), {text:link, width:140, height:140, correctLevel:QRCode.CorrectLevel.H});
+    });
+  }
+  function descargarQR(id){
+    const link=location.origin+'/regalo.html?id='+id;
+    const tmp=document.createElement('div');
+    new QRCode(tmp, {text:link, width:700, height:700, correctLevel:QRCode.CorrectLevel.H});
+    setTimeout(()=>{ const c=tmp.querySelector('canvas'); if(!c) return;
+      const a=document.createElement('a'); a.href=c.toDataURL('image/png'); a.download='QR-'+id+'.png'; a.click(); },120);
   }
 
   // ---- PEDIDOS ----
