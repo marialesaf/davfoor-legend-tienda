@@ -429,8 +429,6 @@
       direccion: document.getElementById('f_dir').value.trim().toUpperCase(),
       notas: (document.getElementById('f_notas')?document.getElementById('f_notas').value.trim().toUpperCase():''),
       items, subtotal: sub, envio, total,
-      categoria: (cart.length && cart.every(it=>it.tipo==='retro')) ? 'Camisetas Retro' : 'Camisetas Actuales',
-      pagado: (metodo==='contra') ? ANTICIPO : total,
       metodo, pago: 'pendiente', estado: 'Nuevo'
     };
     pedidoRef = 'DAV-'+Date.now()+'-'+Math.random().toString(36).slice(2,7);
